@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>중소제조기업 성장 로드맵 자가진단</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #283f55;
+            --primary-dark: #1a2d3f;
+            --primary-light: #3d5a73;
+            --accent: #1e3a5f;
+            --accent-dark: #152a45;
+            --tech: #1e4d7b;
+            --finance: #2d5a4f;
+            --management: #5a3d2d;
+            --bg-light: #f8f9fc;
+            --bg-white: #ffffff;
+            --text-dark: #1a1a2e;
+            --text-gray: #64748b;
+            --border: #e2e8f0;
+            --shadow: rgba(40, 63, 85, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: linear-gradient(135deg, #283f55 0%, #1a2d3f 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: var(--text-dark);
+            line-height: 1.7;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: var(--bg-white);
+            padding: 50px 40px;
+            border-radius: 24px 24px 0 0;
+            box-shadow: 0 20px 60px var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+        }
+
+        .header h1 {
+            font-family: 'Montserrat', 'Noto Sans KR', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 16px;
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            font-size: 1.05rem;
+            color: var(--text-gray);
+            line-height: 1.8;
+            margin-bottom: 8px;
+        }
+
+        .header .sub-desc {
+            font-size: 0.95rem;
+            color: var(--text-gray);
+            font-weight: 500;
+        }
+
+        .resource-legend {
+            display: flex;
+            gap: 24px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .legend-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+        }
+
+        .legend-dot.tech { background: var(--tech); }
+        .legend-dot.finance { background: var(--finance); }
+        .legend-dot.management { background: var(--management); }
+
+        .main-content {
+            background: var(--bg-white);
+            padding: 0;
+            border-radius: 0 0 24px 24px;
+            box-shadow: 0 20px 60px var(--shadow);
+        }
+
+        .progress-bar {
+            background: var(--bg-light);
+            padding: 30px 40px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .progress-track {
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: 10px;
+            width: 0%;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .progress-text {
+            text-align: center;
+            margin-top: 12px;
+            font-size: 0.95rem;
+            color: var(--text-gray);
+            font-weight: 500;
+        }
+
+        .question-section {
+            padding: 50px 40px;
+            display: none;
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        .question-section.active {
+            display: block;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .question-header {
+            margin-bottom: 35px;
+        }
+
+        .question-number {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
+        }
+
+        .question-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+
+        .question-subtitle {
+            font-size: 1rem;
+            color: var(--text-gray);
+            line-height: 1.7;
+        }
+
+        .resource-tags {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+
+        .resource-tag {
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border: 2px solid;
+        }
+
+        .resource-tag.tech {
+            background: rgba(30, 77, 123, 0.1);
+            border-color: var(--tech);
+            color: var(--tech);
+        }
+
+        .resource-tag.finance {
+            background: rgba(45, 90, 79, 0.1);
+            border-color: var(--finance);
+            color: var(--finance);
+        }
+
+        .resource-tag.management {
+            background: rgba(90, 61, 45, 0.1);
+            border-color: var(--management);
+            color: var(--management);
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-top: 30px;
+        }
+
+        .option {
+            background: var(--bg-light);
+            border: 3px solid transparent;
+            padding: 24px;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .option:hover {
+            background: white;
+            border-color: var(--primary-light);
+            transform: translateX(8px);
+            box-shadow: 0 8px 24px var(--shadow);
+        }
+
+        .option.selected {
+            background: white;
+            border-color: var(--primary);
+            box-shadow: 0 12px 32px var(--shadow);
+        }
+
+        .option-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .option-radio {
+            width: 24px;
+            height: 24px;
+            border: 3px solid var(--border);
+            border-radius: 50%;
+            flex-shrink: 0;
+            margin-top: 2px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .option.selected .option-radio {
+            border-color: var(--primary);
+            background: var(--primary);
+        }
+
+        .option.selected .option-radio::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .option-content {
+            flex: 1;
+        }
+
+        .option-title {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .option-desc {
+            font-size: 0.95rem;
+            color: var(--text-gray);
+            line-height: 1.6;
+        }
+
+        .option-score {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--primary);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            gap: 16px;
+        }
+
+        button {
+            padding: 16px 40px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        .btn-prev {
+            background: var(--bg-light);
+            color: var(--text-gray);
+        }
+
+        .btn-prev:hover {
+            background: #dde3ed;
+            transform: translateX(-4px);
+        }
+
+        .btn-next, .btn-result {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            flex: 1;
+        }
+
+        .btn-next:hover, .btn-result:hover {
+            transform: translateX(4px);
+            box-shadow: 0 8px 24px var(--shadow);
+        }
+
+        .btn-next:disabled, .btn-result:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .result-section {
+            display: none;
+            padding: 50px 40px;
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        .result-section.active {
+            display: block;
+        }
+
+        .result-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .result-header h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 16px;
+        }
+
+        .result-header p {
+            font-size: 1.1rem;
+            color: var(--text-gray);
+        }
+
+        .result-chart {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 4px 16px var(--shadow);
+            margin-bottom: 40px;
+        }
+
+        .chart-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .chart-bars {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-end;
+            gap: 40px;
+            height: 300px;
+            padding: 0 20px;
+        }
+
+        .chart-bar {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            height: 100%;
+        }
+
+        .chart-track {
+            width: 100%;
+            max-width: 120px;
+            height: 250px;
+            background: var(--bg-light);
+            border-radius: 10px 10px 0 0;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        .chart-fill {
+            width: 100%;
+            border-radius: 10px 10px 0 0;
+            transition: height 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+            height: 0%;
+        }
+
+        .chart-fill.tech { background: linear-gradient(180deg, var(--tech), #153a5f); }
+        .chart-fill.finance { background: linear-gradient(180deg, var(--finance), #234539); }
+        .chart-fill.management { background: linear-gradient(180deg, var(--management), #442d1f); }
+
+        .chart-label {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            text-align: center;
+        }
+
+        .consultant-comment {
+            background: linear-gradient(135deg, rgba(40, 63, 85, 0.03), rgba(30, 58, 95, 0.05));
+            padding: 40px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .consultant-comment h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .consultant-comment h3::before {
+            content: '💼';
+            font-size: 1.6rem;
+        }
+
+        .consultant-comment-text {
+            font-size: 1.05rem;
+            line-height: 1.9;
+            color: var(--text-dark);
+            text-align: justify;
+            word-break: keep-all;
+        }
+
+        .contact-info {
+            background: var(--primary);
+            color: white;
+            padding: 30px;
+            border-radius: 16px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .contact-info p {
+            font-size: 1.05rem;
+            line-height: 1.7;
+            margin-bottom: 12px;
+        }
+
+        .contact-info .phone {
+            font-size: 1.4rem;
+            font-weight: 700;
+            font-family: 'Montserrat', 'Noto Sans KR', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        .btn-restart {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            font-size: 1.05rem;
+            margin-bottom: 20px;
+        }
+
+        .btn-restart:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px var(--shadow);
+        }
+
+        .copyright {
+            text-align: center;
+            color: var(--text-gray);
+            font-size: 0.9rem;
+            padding: 20px;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 20px 12px;
+            }
+
+            .header, .question-section, .result-section {
+                padding: 30px 24px;
+            }
+
+            .header h1 {
+                font-size: 1.6rem;
+            }
+
+            .question-title {
+                font-size: 1.25rem;
+            }
+
+            .button-container {
+                flex-direction: column;
+            }
+
+            .option-score {
+                position: static;
+                margin-top: 12px;
+                margin-left: auto;
+            }
+
+            .chart-bars {
+                height: 250px;
+                gap: 20px;
+            }
+
+            .chart-track {
+                max-width: 80px;
+                height: 200px;
+            }
+
+            .chart-label {
+                font-size: 0.95rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>중소제조기업 성장 로드맵 자가진단</h1>
+            <p>귀사의 경영자원 역량을 진단하여, 기술·자금·경영 측면의 맞춤형 성장 전략을 제시합니다.</p>
+            <p class="sub-desc">5개 질문으로 귀사의 현재 수준을 파악하고, 우선 투자 영역을 확인하세요.</p>
+            <div class="resource-legend">
+                <div class="legend-item">
+                    <div class="legend-dot tech"></div>
+                    <span>기술 역량</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot finance"></div>
+                    <span>자금 역량</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot management"></div>
+                    <span>경영 역량</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="progress-bar">
+                <div class="progress-track">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-text" id="progressText">질문 1 / 5</div>
+            </div>
+
+            <!-- Question 1 -->
+            <div class="question-section active" data-question="1">
+                <div class="question-header">
+                    <span class="question-number">질문 1/5</span>
+                    <h2 class="question-title">디지털 전환 및 스마트 제조</h2>
+                    <p class="question-subtitle">귀사의 생산 현장 디지털화 및 데이터 활용 수준은 어느 정도입니까?</p>
+                    <div class="resource-tags">
+                        <span class="resource-tag tech">기술 역량</span>
+                        <span class="resource-tag finance">자금 역량</span>
+                    </div>
+                </div>
+                <div class="options">
+                    <div class="option" data-score="1">
+                        <label class="option-label">
+                            <div class="option-radio"></div>
+                            <div class="option-content">
+                                <div class="option-title">1단계: 수작업 중심</div>
+                                <div class="option-desc">대부분의 공정이 수작업으로 이루어지며, 생산 데이터의 기록과 관리가 종이 문서 중심입니다.</div>
+                            </div>
+                        </label>
+                        <div class="option-score">1</div>
+                    </div>
+                    <div class="option" data-score="2">
+                        <label class="option-label">
+                            <div class="option-radio"></div>
+                            <div class="option-content">
+                                <div class="option-title">2단계: 부분 자동화</div>
+                                <div class="option-desc">일부 공정이 자동화되어 있으나, 데이터는 개별 시스템에 분산 관리되고 통합되지 않습니다.</div>
+                            </div>
+                        </label>
+                        <div class="option-score">2</div>
+                    </div>
+                    <div class="option" data-score="3">
+                        <label class="option-label">
+                            <div class="option-radio"></div>
+                            <div class="option-content">
+                                <div class="option-title">3단계: 시스템 통합 진행</div>
+                                <div class="option-desc">MES/ERP 등 생산관리 시스템이 구축되어 있으며, 실시간 데이터 수집 체계를 구축 중입니다.</div>
+                            </div>
+                        </label>
+                        <div class="option-score">3</div>
+                    </div>
+                    <div class="option" data-score="4">
+                        <label class="option-label">
+                            <div class="option-radio"></div>
+                            <div class="option-content">
+                                <div class="option-title">4단계: 데이터 기반 운영</div>
+                                <div class="option-desc">생산 전 과정의 데이터가 실시간으로 수집·분석되며, 의사결정에 활용되고 있습니다.</div>
+                            </div>
+                        </label>
+                        <div class="option-score">4</div>
+                    </div>
+                    <div class="option" data-score="5">
+                        <label class="option-label">
+                            <div class="option-radio"></div>
+                            <div class="option-content">
+                                <div class="option-title">5단계: 스마트 팩토리 완성</div>
+                                <div class="option-desc">AI/IoT 기반 자율 생산 체계가 구축되어 있으며, 예측 정비와 최적화가 자동으로 이루어집니다.</div>
+                            </div>
+                        </label>
+                        <div class="option-score">5</div>
+                    </div>
+                </div>
+                <div class="button-container">
+                    <button class="btn-prev" onclick="prevQuestion()" style="visibility: hidden;">이전</button>
+                    <button class="btn-next" onclick="nextQuestion()" disabled>다음</button>
+                </div>
+            </div>
+
+            <!-- Question 2 -->
+            <div class="question-section" data-question="2">
+                <div class="question-header">
+                    <span class="question-number">질문 2/5</span>
+                    <h2 class="question-title">인력 및 조직 역량</h2>
+                    <p class="question-subtitle">귀사의 핵심 인재 확보 및 조직 학습 체계는 어떠합니까?</p>
+                    <div class="resource-tags">
+                        <span class="resource-tag management">경영 역량</span>
+                    </div>
+                </div>
+                <div class="options">
+                    <div class="option" data-score="1">
+                        <label class="option-label">
+                            <div class="option-radio"></div>
+                            <div class="option-content">
+                                <div class="option-title">1단계: 인력난 심각</div>
+                                <div class="option-desc">숙련 인력 확보가 어렵고, 체계적인 교육 훈련 프로그램이 없어 기술 전수가 미흡합니다.</div>
+                            </div>
+                        </label>
+                        <div class="option-score">1</div>
+                    </div>
+                    <div class="option" data-score="2">
+                        <label class="option-label">
+                            <div class="option-radio"></div>
+                            <div class="option-content">
+                                <div class="option-title">2단계: 기본 교육 실시</div>
+                                <div class="option-desc">신규 입사자 대상 OJT가 이루어지나, 지속적인 역량 개발 체계는 부족합니다.</div>
+                            </div>
+                        </label>
+                        <div class="option-score">2</div>
+                    </div>
+                    <div class="option" data-score="3">
+                        <label class="option-label">
+                            <div class="option-radio"></div>
+                            <div class="option-content">
+                                <div class="option-title">3단계: 체계적 교육 운영</div>
+                                <div class="option-desc">직무별 교육 프로그램이 운영되고 있으며, 사내 기술 전수 체계가 마련되어 있습니다.</div>
+                            </div>
+                        </label>
+                        <div class="option-score">3</div>
+                    </div>
+                    <div class="option" data-score="4">
+                        <label class="option-label">
+                            <div class="option-radio"></div>
+                            <div class="option-content">
+                                <div class="option-title">4단계: 학습조직 구축</div>
+                                <div class="option-desc">다기능 인력 양성 프로그램이 운영되며, 지식 공유와 협업 문화가 자리잡고 있습니다.</div>
+                            </div>
+                        </label>
+                        <div class="option-score">4</div>
+                    </div>
+                    <div class="option" data-score="5">
+                        <label class="option-label">
+                            <div class="option-radio"></div>
+                            <div class="option-content">
+                                <div class="option-title">5단계: 혁신 인재 생태계</div>
+                                <div class="option-desc">산학 협력, 인재 육성 프로그램을 통해 우수 인력을 지속적으로 확보하고, 조직 전체가 학습하는 문화가 정착되어 있습니다.</div>
+                            </div>
+                        </label>
+                        <div class="option-score">5</div>
+                    </div>
+                </div>
+                <div class="button-container">
+                    <button class="btn-prev" onclick="prevQuestion()">이전</button>
+                    <button class="btn-next" onclick="nextQuestion()" disabled>다음</button>
+                </div>
+            </div>
+
+            <!-- Question 3 -->
+            <div class="question-section" data-question="3">
+                <div class="question-header">
+                    <span class="question-number">질문 3/5</span>
+                    <h2 class="question-title">시장 다각화 및 글로벌화</h2>
+                    <p class="question-subtitle">귀사의 시장 확대 및 해외 진출 현황은 어떠합니까?</p>
+                    <div class="resource-tags">
+                        <span class="resource-tag finance">자금 역량</span>
+                        <span class="resource-tag management">경영 역량</span>
+                    </div>
+                </div>
+                <div class="options">
+                    <div class="option" data-score="1">
+                        <label class="option-label">
+                            <div class="option-radio"></div>
+                            <div class="option-content">
+                                <div class="option-title">1단계: 내수 단일시장</div>
+                                <div class="option-desc">특정 소수 거래처에 의존하며, 신규 시장 개척 노력이 거의 없습니다.</div>
+                            </div>
+                        </label>
+                        <div class="option-score">1</div>
+                    </div>
+                    <div class="option" data-score="2">
+                        <label class="option-label">
+                            <div class="option-radio"></div>
+                            <div class="option-content">
+                                <div class="option-title">2단계: 내수 확대 모색</div>
+                                <div class="option-desc">국내 신규 거래처 발굴을 위한 영업 활동을 전개하고 있으나, 성과는 제한적입니다.</div>
+                            </div>
+                        </label>
+                        <div class="option-score">2</div>
+                    </div>
+                    <div class="option" data-score="3">
+                        <label class="option-label">
+                            <div class="option-radio"></div>
+                            <div class="option-content">
+                                <div class="option-title">3단계: 수출 시작</div>
+                                <div class="option-desc">해외 전시회 참가 등을 통해 수출을 시작했으며, 1-2개 해외 거래처를 확보했습니다.</div>
+                            </div>
+                        </label>
+                        <div class="option-score">3</div>
+                    </div>
+                    <div class="option" data-score="4">
+                        <label class="option-label">
+                            <div class="option-radio"></div>
+                            <div class="option-content">
+                                <div class="option-title">4단계: 다지역 진출</div>
+                                <div class="option-desc">여러 국가에 수출하고 있으며, 해외 판매 법인이나 파트너사를 통한 안정적 채널을 구축했습니다.</div>
+                            </div>
+                        </label>
+                        <div class="option-score">4</div>
+                    </div>
+                    <div class="option" data-score="5">
+                        <label class="option-label">
+                            <div class="option-radio"></div>
+                            <div class="option-content">
+                                <div class="option-title">5단계: 글로벌 기업</div>
+                                <div class="option-desc">해외 생산 거점을 운영하거나 현지 법인을 설립하여, 글로벌 공급망을 구축하고 있습니다.</div>
+                            </div>
+                        </label>
+                        <div class="option-score">5</div>
+                    </div>
+                </div>
+                <div class="button-container">
+                    <button class="btn-prev" onclick="prevQuestion()">이전</button>
+                    <button class="btn-next" onclick="nextQuestion()" disabled>다음</button>
+                </div>
+            </div>
+
+            <!-- Question 4 -->
+            <div class="question-section" data-question="4">
+                <div class="question-header">
+                    <span class="question-number">질문 4/5</span>
+                    <h2 class="question-title">재무건전성 및 자금관리</h2>
+                    <p class="question-subtitle">귀사의 재무 안정성과 투자 여력은 어느 정도입니까?</p>
+                    <div class="resource-tags">
+                        <span class="resource-tag finance">자금 역량</span>
+                    </div>
+                </div>
+                <div class="options">
+                    <div class="option" data-score="1">
+                        <label class="option-label">
+                            <div class="option-radio"></div>
+                            <div class="option-content">
+                                <div class="option-title">1단계: 자금 압박 심각</div>
+                                <div class="option-desc">현금흐름이 불안정하고 단기 자금 조달에도 어려움이 있어, 신규 투자가 거의 불가능한 상황입니다.</div>
+                            </div>
+                        </label>
+                        <div class="option-score">1</div>
+                    </div>
+                    <div class="option" data-score="2">
+                        <label class="option-label">
+                            <div class="option-radio"></div>
+                            <div class="option-content">
+                                <div class="option-title">2단계: 최소 운영 수준</div>
+                                <div class="option-desc">운영자금은 확보되나 투자 여력이 부족하며, 정부지원금이나 융자에 대한 정보와 활용이 제한적입니다.</div>
+                            </div>
+                        </label>
+                        <div class="option-score">2</div>
+                    </div>
+                    <div class="option" data-score="3">
+                        <label class="option-label">
+                            <div class="option-radio"></div>
+                            <div class="option-content">
+                                <div class="option-title">3단계: 안정적 운영</div>
+                                <div class="option-desc">재무제표를 정기적으로 관리하고 있으며, 정부지원금 및 저금리 융자를 활용하여 소규모 투자가 가능합니다.</div>
+                            </div>
+                        </label>
+                        <div class="option-score">3</div>
+                    </div>
+                    <div class="option" data-score="4">
+                        <label class="option-label">
+                            <div class="option-radio"></div>
+                            <div class="option-content">
+                                <div class="option-title">4단계: 전략적 투자 가능</div>
+                                <div class="option-desc">건전한 재무구조를 유지하며 중장기 투자 계획을 수립하고 있고, 다양한 자금조달 채널을 확보하고 있습니다.</div>
+                            </div>
+                        </label>
+                        <div class="option-score">4</div>
+                    </div>
+                    <div class="option" data-score="5">
+                        <label class="option-label">
+                            <div class="option-radio"></div>
+                            <div class="option-content">
+                                <div class="option-title">5단계: 재무 우수 기업</div>
+                                <div class="option-desc">우수한 재무지표를 바탕으로 대규모 투자가 가능하며, 외부 투자 유치나 M&A 등 공격적 성장 전략을 추진할 수 있습니다.</div>
+                            </div>
+                        </label>
+                        <div class="option-score">5</div>
+                    </div>
+                </div>
+                <div class="button-container">
+                    <button class="btn-prev" onclick="prevQuestion()">이전</button>
+                    <button class="btn-next" onclick="nextQuestion()" disabled>다음</button>
+                </div>
+            </div>
+
+            <!-- Question 5 -->
+            <div class="question-section" data-question="5">
+                <div class="question-header">
+                    <span class="question-number">질문 5/5</span>
+                    <h2 class="question-title">혁신 R&D 및 기술 고도화</h2>
+                    <p class="question-subtitle">귀사의 연구개발 역량과 기술 혁신 활동은 어느 정도입니까?</p>
+                    <div class="resource-tags">
+                        <span class="resource-tag tech">기술 역량</span>
+                        <span class="resource-tag finance">자금 역량</span>
+                    </div>
+                </div>
+                <div class="options">
+                    <div class="option" data-score="1">
+                        <label class="option-label">
+                            <div class="option-radio"></div>
+                            <div class="option-content">
+                                <div class="option-title">1단계: R&D 부재</div>
+                                <div class="option-desc">별도의 연구개발 조직이나 투자 없이, 기존 제품·공정을 유지하고 있습니다.</div>
+                            </div>
+                        </label>
+                        <div class="option-score">1</div>
+                    </div>
+                    <div class="option" data-score="2">
+                        <label class="option-label">
+                            <div class="option-radio"></div>
+                            <div class="option-content">
+                                <div class="option-title">2단계: 문제 해결형</div>
+                                <div class="option-desc">생산 현장의 문제 발생 시 개선하는 수준이며, 계획적인 R&D 활동은 없습니다.</div>
+                            </div>
+                        </label>
+                        <div class="option-score">2</div>
+                    </div>
+                    <div class="option" data-score="3">
+                        <label class="option-label">
+                            <div class="option-radio"></div>
+                            <div class="option-content">
+                                <div class="option-title">3단계: R&D 조직 운영</div>
+                                <div class="option-desc">전담 R&D 인력이 있으며, 신제품 개발이나 공정 개선 프로젝트를 정기적으로 추진합니다.</div>
+                            </div>
+                        </label>
+                        <div class="option-score">3</div>
+                    </div>
+                    <div class="option" data-score="4">
+                        <label class="option-label">
+                            <div class="option-radio"></div>
+                            <div class="option-content">
+                                <div class="option-title">4단계: 전략적 R&D</div>
+                                <div class="option-desc">중장기 기술 로드맵을 보유하고 있으며, 산학연 협력이나 정부 R&D 과제를 적극 수행합니다.</div>
+                            </div>
+                        </label>
+                        <div class="option-score">4</div>
+                    </div>
+                    <div class="option" data-score="5">
+                        <label class="option-label">
+                            <div class="option-radio"></div>
+                            <div class="option-content">
+                                <div class="option-title">5단계: 혁신 선도</div>
+                                <div class="option-desc">독자 핵심기술을 보유하고 특허 포트폴리오를 구축했으며, 오픈 이노베이션을 통해 지속적으로 신기술을 확보합니다.</div>
+                            </div>
+                        </label>
+                        <div class="option-score">5</div>
+                    </div>
+                </div>
+                <div class="button-container">
+                    <button class="btn-prev" onclick="prevQuestion()">이전</button>
+                    <button class="btn-result" onclick="showResults()" disabled>결과 확인</button>
+                </div>
+            </div>
+
+            <!-- Result Section -->
+            <div class="result-section">
+                <div class="result-header">
+                    <h2>진단 결과</h2>
+                    <p>귀사의 경영자원 역량을 3대 영역으로 분석했습니다.</p>
+                </div>
+
+                <div class="result-chart">
+                    <h3 class="chart-title">영역별 진단결과</h3>
+                    <div class="chart-bars">
+                        <div class="chart-bar">
+                            <div class="chart-track">
+                                <div class="chart-fill tech" id="techBar"></div>
+                            </div>
+                            <div class="chart-label">기술</div>
+                        </div>
+                        <div class="chart-bar">
+                            <div class="chart-track">
+                                <div class="chart-fill finance" id="financeBar"></div>
+                            </div>
+                            <div class="chart-label">자금</div>
+                        </div>
+                        <div class="chart-bar">
+                            <div class="chart-track">
+                                <div class="chart-fill management" id="managementBar"></div>
+                            </div>
+                            <div class="chart-label">경영</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="consultant-comment">
+                    <h3>컨설턴트 코멘트</h3>
+                    <div class="consultant-comment-text" id="consultantComment"></div>
+                </div>
+
+                <div class="contact-info">
+                    <p>해당 결과는 간이 자가진단이므로</p>
+                    <p>자세한 내용은 컨설턴트와 상담해주세요.</p>
+                    <p class="phone">☎ 02-6357-2025</p>
+                </div>
+
+                <button class="btn-restart" onclick="restart()">다시 진단하기</button>
+
+                <div class="copyright">
+                    © 코리아경영자문. All rights reserved.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const answers = {};
+        let currentQuestion = 1;
+        const totalQuestions = 5;
+
+        const questionResources = {
+            1: ['tech', 'finance'],
+            2: ['management'],
+            3: ['finance', 'management'],
+            4: ['finance'],
+            5: ['tech', 'finance']
+        };
+
+        document.querySelectorAll('.option').forEach(option => {
+            option.addEventListener('click', function() {
+                const questionSection = this.closest('.question-section');
+                const questionNum = parseInt(questionSection.dataset.question);
+                const score = parseInt(this.dataset.score);
+                
+                questionSection.querySelectorAll('.option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                
+                this.classList.add('selected');
+                answers[questionNum] = score;
+                
+                const button = questionSection.querySelector('.btn-next, .btn-result');
+                button.disabled = false;
+            });
+        });
+
+        function updateProgress() {
+            const progress = (currentQuestion / totalQuestions) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('progressText').textContent = `질문 ${currentQuestion} / ${totalQuestions}`;
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < totalQuestions) {
+                document.querySelector(`[data-question="${currentQuestion}"]`).classList.remove('active');
+                currentQuestion++;
+                document.querySelector(`[data-question="${currentQuestion}"]`).classList.add('active');
+                updateProgress();
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestion > 1) {
+                document.querySelector(`[data-question="${currentQuestion}"]`).classList.remove('active');
+                currentQuestion--;
+                document.querySelector(`[data-question="${currentQuestion}"]`).classList.add('active');
+                updateProgress();
+            }
+        }
+
+        function calculateScores() {
+            const scores = {
+                tech: 0,
+                finance: 0,
+                management: 0
+            };
+
+            for (let q = 1; q <= totalQuestions; q++) {
+                const score = answers[q] || 0;
+                const resources = questionResources[q];
+                
+                resources.forEach(resource => {
+                    scores[resource] += score;
+                });
+            }
+
+            return scores;
+        }
+
+        function generateConsultantComment(scores) {
+            const techPercent = (scores.tech / 10) * 100;
+            const financePercent = (scores.finance / 20) * 100;
+            const managementPercent = (scores.management / 10) * 100;
+
+            let comment = '귀사의 진단 결과를 종합적으로 분석한 결과, ';
+
+            // 강점 영역 파악
+            const maxScore = Math.max(techPercent, financePercent, managementPercent);
+            let strengths = [];
+            let weaknesses = [];
+
+            if (techPercent === maxScore) strengths.push('기술 역량');
+            if (financePercent === maxScore) strengths.push('자금 역량');
+            if (managementPercent === maxScore) strengths.push('경영 역량');
+
+            if (techPercent < 50) weaknesses.push('기술');
+            if (financePercent < 50) weaknesses.push('자금');
+            if (managementPercent < 50) weaknesses.push('경영');
+
+            // 전체적인 수준 평가
+            const avgPercent = (techPercent + financePercent + managementPercent) / 3;
+            
+            if (avgPercent >= 70) {
+                comment += '귀사는 전반적으로 우수한 수준의 경영자원 역량을 보유하고 있습니다. ';
+            } else if (avgPercent >= 50) {
+                comment += '귀사는 중간 수준의 경영자원 역량을 갖추고 있으며, 일부 영역의 보완이 필요합니다. ';
+            } else {
+                comment += '귀사는 경영자원 역량 전반에 걸쳐 체계적인 개선이 필요한 단계입니다. ';
+            }
+
+            // 영역별 구체적 코멘트
+            if (techPercent < 40) {
+                comment += '기술 역량 측면에서는 디지털 전환의 기초부터 차근차근 구축하시되, 정부의 스마트공장 지원사업을 적극 활용하시기 바랍니다. R&D 조직 구성과 함께 생산 자동화 설비 도입을 단계적으로 추진하시면 생산성 향상에 크게 기여할 것입니다. ';
+            } else if (techPercent < 70) {
+                comment += '기술 역량은 중급 수준으로, AI/IoT 기반 생산 최적화 시스템 도입과 산학연 협력을 통한 기술 고도화를 추진하실 단계입니다. 데이터 기반 의사결정 체계를 구축하고 예지 정비 시스템으로 한 단계 도약하시기 바랍니다. ';
+            } else {
+                comment += '기술 역량은 우수한 수준으로, 독자 핵심기술 개발 및 특허 포트폴리오 강화를 통해 기술 리더십을 확보하실 수 있습니다. 오픈 이노베이션 플랫폼 구축과 스마트 팩토리 고도화를 통해 자율 생산 체계를 완성하시기 바랍니다. ';
+            }
+
+            if (financePercent < 40) {
+                comment += '자금 역량 강화가 가장 시급합니다. 재무제표 관리 체계를 우선 구축하시고, 정부 지원사업 및 저금리 융자 프로그램을 적극 발굴하여 활용하시기 바랍니다. 현금흐름 관리를 철저히 하시면서 단계적 투자 계획을 수립하시고, 기술보증기금 등을 활용한 설비투자 자금 확보를 검토하시기 바랍니다. ';
+            } else if (financePercent < 70) {
+                comment += '자금 역량은 중급 수준으로, 안정적인 재무구조를 바탕으로 전략적 투자를 확대하실 단계입니다. R&D 투자를 위한 정책자금을 적극 활용하시고, 해외 마케팅 확대를 위한 수출금융 프로그램도 검토하시기 바랍니다. 중장기 투자 계획을 구체화하여 지속 성장 기반을 다지시기 바랍니다. ';
+            } else {
+                comment += '자금 역량이 매우 우수하므로, 공격적 성장 전략을 추진하실 수 있습니다. 해외 생산 거점 설립이나 신기술 확보를 위한 M&A를 검토하시고, 우수한 재무지표를 바탕으로 외부 투자 유치나 협력사 육성 펀드 조성 등 생태계 확장 전략을 추진하시기 바랍니다. ';
+            }
+
+            if (managementPercent < 40) {
+                comment += '경영 역량 측면에서는 체계적인 인재 육성 프로그램 수립이 시급합니다. 국내 거래처 다변화를 위한 영업 조직 강화와 함께 산학 협력을 통한 우수 인력 확보 채널을 구축하시기 바랍니다. 직무별 교육 프로그램을 운영하시면서 기술 전수 체계를 마련하시는 것이 중요합니다. ';
+            } else if (managementPercent < 70) {
+                comment += '경영 역량은 중급 수준으로, 다기능 인력 양성 및 지식 공유 체계 고도화가 필요합니다. 해외 판로 확대를 위한 현지 파트너십 구축을 병행하시면서, 학습조직 문화를 정착시키고 협업 체계를 강화하시기 바랍니다. ';
+            } else {
+                comment += '경영 역량이 우수하므로, 글로벌 인재 육성 및 현지 경영 역량 강화로 해외 법인 설립을 준비하실 수 있습니다. 혁신 제안 제도를 활성화하고 오픈 이노베이션 네트워크를 확장하여 지속 성장 동력을 확보하시기 바랍니다. ';
+            }
+
+            // 종합 제안
+            if (weaknesses.length > 0) {
+                comment += `특히 ${weaknesses.join(', ')} 영역의 집중적인 개선을 통해 균형 잡힌 성장을 추진하시기를 권장드립니다. `;
+            }
+
+            comment += '보다 구체적이고 체계적인 로드맵 수립을 위해서는 전문 컨설턴트와의 심층 상담을 통해 귀사의 상황에 최적화된 맞춤형 전략을 수립하시기 바랍니다.';
+
+            return comment;
+        }
+
+        function showResults() {
+            const scores = calculateScores();
+            
+            document.querySelector(`[data-question="${currentQuestion}"]`).classList.remove('active');
+            document.querySelector('.result-section').classList.add('active');
+            document.querySelector('.progress-bar').style.display = 'none';
+
+            const techPercent = Math.round((scores.tech / 10) * 100);
+            const financePercent = Math.round((scores.finance / 20) * 100);
+            const managementPercent = Math.round((scores.management / 10) * 100);
+
+            setTimeout(() => {
+                document.getElementById('techBar').style.height = techPercent + '%';
+                document.getElementById('financeBar').style.height = financePercent + '%';
+                document.getElementById('managementBar').style.height = managementPercent + '%';
+            }, 100);
+
+            const consultantComment = generateConsultantComment(scores);
+            document.getElementById('consultantComment').textContent = consultantComment;
+        }
+
+        function restart() {
+            Object.keys(answers).forEach(key => delete answers[key]);
+            currentQuestion = 1;
+            
+            document.querySelectorAll('.option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            document.querySelectorAll('.btn-next, .btn-result').forEach(button => {
+                button.disabled = true;
+            });
+            
+            document.querySelector('.result-section').classList.remove('active');
+            document.querySelector('[data-question="1"]').classList.add('active');
+            document.querySelector('.progress-bar').style.display = 'block';
+            
+            updateProgress();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        updateProgress();
+    </script>
+</body>
+</html>
