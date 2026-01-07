@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>희망리턴패키지 자가진단 | 코리아경영자문</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: #f8f9fc;
+            color: #1a1a2e;
+            line-height: 1.7;
+        }
+
+        .top-line {
+            height: 6px;
+            background: linear-gradient(to right, #1e3a5f, #2874a6);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 50px 40px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px 24px;
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .header h1 {
+            font-family: 'Montserrat', 'Noto Sans KR', sans-serif;
+            font-weight: 800;
+            font-size: 2.2em;
+            color: #1e3a5f;
+            margin-bottom: 16px;
+        }
+
+        .header p {
+            font-size: 1.05em;
+            color: #64748b;
+            line-height: 1.6;
+        }
+
+        .survey-card {
+            background: white;
+            border-radius: 24px;
+            padding: 50px;
+            box-shadow: 0 4px 20px rgba(30, 58, 95, 0.08);
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .survey-card {
+                padding: 30px 24px;
+                border-radius: 16px;
+            }
+        }
+
+        .question-container {
+            display: none;
+        }
+
+        .question-container.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .question-number {
+            font-size: 0.9em;
+            color: #2874a6;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .question-text {
+            font-size: 1.2em;
+            font-weight: 500;
+            color: #1e3a5f;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            background: #f8f9fc;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 18px 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.05em;
+        }
+
+        .option:hover {
+            background: #eef2f7;
+            border-color: #2874a6;
+        }
+
+        .option.selected {
+            background: #eef7ff;
+            border-color: #2874a6;
+            color: #1e3a5f;
+            font-weight: 500;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 10px;
+            margin-top: 40px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(to right, #1e3a5f, #2874a6);
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 10px;
+        }
+
+        .result-card {
+            display: none;
+            background: white;
+            border-radius: 24px;
+            padding: 60px 50px;
+            box-shadow: 0 4px 20px rgba(30, 58, 95, 0.08);
+        }
+
+        .result-card.active {
+            display: block;
+            animation: fadeIn 0.6s ease-in;
+        }
+
+        @media (max-width: 768px) {
+            .result-card {
+                padding: 40px 24px;
+                border-radius: 16px;
+            }
+        }
+
+        .result-track {
+            background: linear-gradient(135deg, #1e3a5f, #2874a6);
+            color: white;
+            padding: 24px 32px;
+            border-radius: 16px;
+            margin-bottom: 40px;
+        }
+
+        .result-track-label {
+            font-size: 0.95em;
+            opacity: 0.9;
+            margin-bottom: 8px;
+        }
+
+        .result-track-name {
+            font-family: 'Montserrat', 'Noto Sans KR', sans-serif;
+            font-weight: 800;
+            font-size: 2em;
+        }
+
+        .result-section {
+            margin-bottom: 40px;
+        }
+
+        .result-section-title {
+            font-weight: 700;
+            font-size: 1.3em;
+            color: #1e3a5f;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .result-description {
+            font-size: 1.1em;
+            line-height: 1.9;
+            color: #1a1a2e;
+            margin-bottom: 24px;
+        }
+
+        .roadmap-container {
+            background: #f8f9fc;
+            border-radius: 16px;
+            padding: 32px;
+            margin-top: 24px;
+        }
+
+        .roadmap-step {
+            display: flex;
+            margin-bottom: 28px;
+            position: relative;
+        }
+
+        .roadmap-step:last-child {
+            margin-bottom: 0;
+        }
+
+        .roadmap-step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            left: 19px;
+            top: 48px;
+            width: 2px;
+            height: calc(100% - 28px);
+            background: #cbd5e1;
+        }
+
+        .roadmap-number {
+            flex-shrink: 0;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #1e3a5f, #2874a6);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1em;
+            margin-right: 20px;
+            z-index: 1;
+        }
+
+        .roadmap-content {
+            flex: 1;
+            padding-top: 4px;
+        }
+
+        .roadmap-title {
+            font-weight: 700;
+            font-size: 1.15em;
+            color: #1e3a5f;
+            margin-bottom: 8px;
+        }
+
+        .roadmap-desc {
+            color: #64748b;
+            line-height: 1.7;
+            font-size: 0.98em;
+        }
+
+        .key-points {
+            background: #fff8f0;
+            border-left: 4px solid #f59e0b;
+            padding: 24px 28px;
+            border-radius: 8px;
+            margin-top: 24px;
+        }
+
+        .key-points-title {
+            font-weight: 700;
+            color: #f59e0b;
+            margin-bottom: 12px;
+            font-size: 1.05em;
+        }
+
+        .key-points ul {
+            margin-left: 20px;
+            color: #64748b;
+        }
+
+        .key-points li {
+            margin-bottom: 8px;
+            line-height: 1.7;
+        }
+
+        .result-footer {
+            border-top: 2px solid #e5e7eb;
+            padding-top: 30px;
+            margin-top: 40px;
+            font-size: 1.05em;
+            color: #64748b;
+            text-align: center;
+            line-height: 1.7;
+        }
+
+        .notice-box {
+            background: #f8f9fc;
+            border-left: 4px solid #2874a6;
+            padding: 24px 28px;
+            margin-top: 40px;
+            border-radius: 8px;
+            font-size: 0.95em;
+            color: #64748b;
+            line-height: 1.8;
+        }
+
+        .copyright {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid #e5e7eb;
+            color: #64748b;
+            font-size: 0.9em;
+        }
+
+        .restart-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #1e3a5f, #2874a6);
+            color: white;
+            padding: 14px 32px;
+            border-radius: 10px;
+            border: none;
+            font-size: 1.05em;
+            font-weight: 500;
+            cursor: pointer;
+            margin-top: 30px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        .restart-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40, 116, 166, 0.3);
+        }
+
+        .btn-container {
+            text-align: center;
+        }
+
+        .support-info {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 24px;
+            margin-top: 24px;
+        }
+
+        .support-info-title {
+            font-weight: 700;
+            color: #1e3a5f;
+            margin-bottom: 12px;
+            font-size: 1.05em;
+        }
+
+        .support-info-list {
+            color: #64748b;
+            line-height: 1.8;
+            font-size: 0.95em;
+        }
+
+        .support-info-list li {
+            margin-bottom: 6px;
+            list-style-type: disc;
+            margin-left: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-line"></div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>희망리턴패키지 자가진단</h1>
+            <p>나에게 맞는 지원 경로를 찾고, 구체적인 준비 과정을 확인하세요.</p>
+        </div>
+
+        <div class="survey-card" id="surveyCard">
+            <!-- Question 1 -->
+            <div class="question-container active" data-question="1">
+                <div class="question-number">문항 1 / 12</div>
+                <div class="question-text">현재 사업을 계속 운영할 의지가 있습니까?</div>
+                <div class="options">
+                    <div class="option" data-category="continue" data-score="5">그렇다. 사업을 유지하며 개선하고 싶다</div>
+                    <div class="option" data-category="pivot" data-score="3">업종이나 방식을 바꿔서 다시 시작하고 싶다</div>
+                    <div class="option" data-category="close" data-score="1">정리하고 다른 일을 찾아보고 싶다</div>
+                    <div class="option" data-category="unclear" data-score="2">아직 방향을 정하지 못했다</div>
+                </div>
+            </div>
+
+            <!-- Question 2 -->
+            <div class="question-container" data-question="2">
+                <div class="question-number">문항 2 / 12</div>
+                <div class="question-text">현재 매출과 수익 상황은 어떻습니까?</div>
+                <div class="options">
+                    <div class="option" data-category="continue" data-score="4">어렵지만 개선 여지가 있다</div>
+                    <div class="option" data-category="pivot" data-score="3">이 구조로는 한계가 명확하다</div>
+                    <div class="option" data-category="close" data-score="1">지속 가능하지 않다</div>
+                    <div class="option" data-category="unclear" data-score="2">판단하기 어렵다</div>
+                </div>
+            </div>
+
+            <!-- Question 3 -->
+            <div class="question-container" data-question="3">
+                <div class="question-number">문항 3 / 12</div>
+                <div class="question-text">현재 사업의 주요 문제점을 파악하고 계십니까?</div>
+                <div class="options">
+                    <div class="option" data-category="continue" data-score="5">문제를 알고 있고 해결 방법도 구상 중이다</div>
+                    <div class="option" data-category="pivot" data-score="3">문제는 알지만 이 업종에서는 해결이 어렵다</div>
+                    <div class="option" data-category="unclear" data-score="2">문제 자체를 정리하지 못했다</div>
+                    <div class="option" data-category="close" data-score="1">문제보다는 정리가 우선이다</div>
+                </div>
+            </div>
+
+            <!-- Question 4 -->
+            <div class="question-container" data-question="4">
+                <div class="question-number">문항 4 / 12</div>
+                <div class="question-text">향후 6개월~1년간 투입할 수 있는 자원(시간, 비용, 체력)은?</div>
+                <div class="options">
+                    <div class="option" data-category="continue" data-score="5">충분히 집중할 수 있다</div>
+                    <div class="option" data-category="pivot" data-score="4">새로운 방식이라면 투입할 의향이 있다</div>
+                    <div class="option" data-category="unclear" data-score="2">애매하다</div>
+                    <div class="option" data-category="close" data-score="1">더 이상 투입하기 어렵다</div>
+                </div>
+            </div>
+
+            <!-- Question 5 -->
+            <div class="question-container" data-question="5">
+                <div class="question-number">문항 5 / 12</div>
+                <div class="question-text">현재 업종에 대한 애착이나 전문성은 어느 정도입니까?</div>
+                <div class="options">
+                    <div class="option" data-category="continue" data-score="5">이 업종에서 계속 하고 싶다</div>
+                    <div class="option" data-category="pivot" data-score="4">다른 업종도 시도해보고 싶다</div>
+                    <div class="option" data-category="close" data-score="1">업종 자체를 바꾸고 싶다</div>
+                    <div class="option" data-category="unclear" data-score="2">잘 모르겠다</div>
+                </div>
+            </div>
+
+            <!-- Question 6 -->
+            <div class="question-container" data-question="6">
+                <div class="question-number">문항 6 / 12</div>
+                <div class="question-text">사업 개선을 위해 필요한 것은 무엇이라고 생각하십니까?</div>
+                <div class="options">
+                    <div class="option" data-category="continue" data-score="5">현재 사업의 전략 수정과 실행</div>
+                    <div class="option" data-category="pivot" data-score="4">완전히 다른 아이템이나 업종</div>
+                    <div class="option" data-category="close" data-score="1">사업보다는 안정적인 일</div>
+                    <div class="option" data-category="unclear" data-score="2">판단이 서지 않는다</div>
+                </div>
+            </div>
+
+            <!-- Question 7 -->
+            <div class="question-container" data-question="7">
+                <div class="question-number">문항 7 / 12</div>
+                <div class="question-text">재정 상황(부채, 운영자금 등)은 어떻습니까?</div>
+                <div class="options">
+                    <div class="option" data-category="continue" data-score="4">관리 가능한 수준이다</div>
+                    <div class="option" data-category="pivot" data-score="3">새로 시작하면 관리할 수 있다</div>
+                    <div class="option" data-category="close" data-score="1">정리가 시급하다</div>
+                    <div class="option" data-category="unclear" data-score="2">정확히 파악하지 못했다</div>
+                </div>
+            </div>
+
+            <!-- Question 8 -->
+            <div class="question-container" data-question="8">
+                <div class="question-number">문항 8 / 12</div>
+                <div class="question-text">폐업 후 재창업 또는 취업에 대한 생각은?</div>
+                <div class="options">
+                    <div class="option" data-category="pivot" data-score="5">새로운 업종으로 재창업하고 싶다</div>
+                    <div class="option" data-category="close" data-score="5">안정적인 취업을 원한다</div>
+                    <div class="option" data-category="continue" data-score="2">현재 사업을 유지하고 싶다</div>
+                    <div class="option" data-category="unclear" data-score="1">아직 생각해보지 않았다</div>
+                </div>
+            </div>
+
+            <!-- Question 9 -->
+            <div class="question-container" data-question="9">
+                <div class="question-number">문항 9 / 12</div>
+                <div class="question-text">경영 개선을 위한 교육이나 컨설팅을 받을 의향이 있습니까?</div>
+                <div class="options">
+                    <div class="option" data-category="continue" data-score="5">적극적으로 받고 싶다</div>
+                    <div class="option" data-category="pivot" data-score="4">새로운 사업을 위해서라면 받겠다</div>
+                    <div class="option" data-category="unclear" data-score="2">시간을 내기 어렵다</div>
+                    <div class="option" data-category="close" data-score="1">교육보다는 정리가 우선이다</div>
+                </div>
+            </div>
+
+            <!-- Question 10 -->
+            <div class="question-container" data-question="10">
+                <div class="question-number">문항 10 / 12</div>
+                <div class="question-text">사업 전환 또는 재창업을 고려할 때, 준비 상태는?</div>
+                <div class="options">
+                    <div class="option" data-category="pivot" data-score="5">아이템이나 방향이 어느 정도 있다</div>
+                    <div class="option" data-category="continue" data-score="2">현재 사업에 집중하고 싶다</div>
+                    <div class="option" data-category="unclear" data-score="3">막연하게만 생각 중이다</div>
+                    <div class="option" data-category="close" data-score="1">창업보다는 취업을 원한다</div>
+                </div>
+            </div>
+
+            <!-- Question 11 -->
+            <div class="question-container" data-question="11">
+                <div class="question-number">문항 11 / 12</div>
+                <div class="question-text">현재 상황에서 가장 시급한 것은 무엇입니까?</div>
+                <div class="options">
+                    <div class="option" data-category="continue" data-score="5">매출 회복과 수익 개선</div>
+                    <div class="option" data-category="pivot" data-score="4">새로운 기회 탐색</div>
+                    <div class="option" data-category="close" data-score="5">부담 없는 사업 정리</div>
+                    <div class="option" data-category="unclear" data-score="2">판단 기준 마련</div>
+                </div>
+            </div>
+
+            <!-- Question 12 -->
+            <div class="question-container" data-question="12">
+                <div class="question-number">문항 12 / 12</div>
+                <div class="question-text">향후 3년 후 자신의 모습을 그려본다면?</div>
+                <div class="options">
+                    <div class="option" data-category="continue" data-score="5">이 사업이 안정화되어 있다</div>
+                    <div class="option" data-category="pivot" data-score="5">새로운 사업으로 성장하고 있다</div>
+                    <div class="option" data-category="close" data-score="5">안정적인 직장에서 일하고 있다</div>
+                    <div class="option" data-category="unclear" data-score="1">그림이 그려지지 않는다</div>
+                </div>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <!-- Result Card -->
+        <div class="result-card" id="resultCard">
+            <div class="result-track" id="resultTrack">
+                <div class="result-track-label">추천 트랙</div>
+                <div class="result-track-name" id="trackName"></div>
+            </div>
+
+            <div class="result-section">
+                <div class="result-section-title">현재 상태 진단</div>
+                <div class="result-description" id="statusDescription"></div>
+            </div>
+
+            <div class="result-section">
+                <div class="result-section-title">이 트랙이 필요한 이유</div>
+                <div class="result-description" id="whyDescription"></div>
+            </div>
+
+            <div class="result-section">
+                <div class="result-section-title">준비 로드맵</div>
+                <div class="roadmap-container" id="roadmapContainer"></div>
+            </div>
+
+            <div class="key-points" id="keyPoints"></div>
+
+            <div class="support-info" id="supportInfo"></div>
+
+            <div class="btn-container">
+                <button class="restart-btn" onclick="restartDiagnosis()">처음부터 다시 진단하기</button>
+            </div>
+
+            <div class="notice-box">
+                본 진단은 희망리턴패키지를 준비하시는 사업주분들께서 사업 수행전 준비를 도울 수 있도록 제작된 간이 진단입니다. 더 상세한 분석이나 전문가 상담이 필요하시면 하단의 <strong>상담문의</strong>를 이용해주시기 바랍니다.<br><br>
+                <strong>코리아경영자문은 희망리턴패키지와 관련된 컨설팅에 대해 어떠한 수수료(현금 결제, 보험 가입 유도 등)도 요구하지 않습니다.</strong>
+            </div>
+        </div>
+
+        <div class="copyright">
+            © 코리아경영자문
+        </div>
+    </div>
+
+    <script>
+        let currentQuestion = 1;
+        let answers = {};
+        let categoryScores = {
+            continue: 0,  // 경영개선
+            pivot: 0,     // 재기지원(재창업)
+            close: 0,     // 폐업지원
+            unclear: 0    // 미정
+        };
+        const totalQuestions = 12;
+
+        // 트랙별 결과 데이터
+        const trackData = {
+            continue: {
+                name: '경영개선 지원',
+                status: `현재 사업을 유지하면서 개선할 의지와 가능성이 있는 상태로 보입니다.
+경영 방식의 조정과 전략적 접근을 통해 정상화 가능성이 있습니다.`,
+                why: `지금 필요한 것은 포기가 아니라 정확한 진단과 실행 가능한 개선 전략입니다.
+희망리턴패키지 경영개선 트랙은 전문가 진단을 통해 문제점을 파악하고,
+실질적인 개선 방안과 사업화 자금을 지원합니다.`,
+                roadmap: [
+                    { title: '경영진단 신청', desc: '희망리턴패키지 홈페이지에서 경영진단 신청 (선착순 접수)' },
+                    { title: '전문가 경영진단', desc: '전문가가 사업장 방문하여 경영상태 진단 및 개선방안 도출' },
+                    { title: '경영개선 교육', desc: '피보팅 전략, 소비트렌드, 상권분석, 재무관리 등 맞춤 교육 (30시간 내외)' },
+                    { title: '사업화 전략 수립', desc: '교육 내용을 바탕으로 구체적인 이행 전략 도출' },
+                    { title: '사업화 자금 지원', desc: '경영개선 실행을 위한 사업화 자금 최대 2천만원 지원 (국비 50%)' },
+                    { title: '멘토링 및 모니터링', desc: '실행 과정 모니터링 및 멘토링을 통한 성공적 경영 정상화' }
+                ],
+                keyPoints: {
+                    title: '경영개선 트랙 핵심 체크포인트',
+                    items: [
+                        '사업 운영 기간이 있고 개선 의지가 명확한가',
+                        '경영진단을 통해 문제점을 파악할 준비가 되어 있는가',
+                        '교육과 멘토링에 시간을 투자할 수 있는가',
+                        '사업화 자금을 활용한 실행 계획이 가능한가'
+                    ]
+                },
+                support: {
+                    title: '지원 내용',
+                    items: [
+                        '전문가 경영진단',
+                        '맞춤형 경영개선 교육 (30시간)',
+                        '사업화 자금 최대 2천만원 (자부담 포함 최대 4천만원)',
+                        '멘토링 및 사후관리'
+                    ]
+                }
+            },
+            pivot: {
+                name: '재기지원 (재창업)',
+                status: `현재 업종이나 방식에서는 한계를 느끼지만,
+새로운 형태의 사업으로 재도전할 의지가 있는 상태입니다.`,
+                why: `기존 사업 경험을 바탕으로 새로운 업종에서 재기할 수 있는 기회입니다.
+희망리턴패키지 재기지원 트랙은 재창업 진단부터 사업화 자금까지
+체계적인 재창업 준비를 지원합니다.`,
+                roadmap: [
+                    { title: '재창업 방향 설정', desc: '기존 업종과 다른 새로운 업종/업태 탐색 및 결정' },
+                    { title: '재창업진단 신청', desc: '희망리턴패키지 재기사업화(재창업) 프로그램 신청' },
+                    { title: '재창업진단', desc: '전문가를 통한 재창업 아이템 타당성 검토 및 보완점 도출' },
+                    { title: '재기 실전교육', desc: '새로운 업종에 필요한 실전 역량 교육 및 사업계획 구체화' },
+                    { title: '멘토링', desc: '업종 전문가와의 1:1 멘토링을 통한 사업 구체화' },
+                    { title: '사업화 자금 지원', desc: '재창업 실행을 위한 사업화 자금 최대 2천만원 지원' },
+                    { title: '재창업 실행', desc: '새로운 업종으로 사업자등록 및 본격 운영 시작' }
+                ],
+                keyPoints: {
+                    title: '재기지원 트랙 핵심 체크포인트',
+                    items: [
+                        '기존 업종과 다른 새로운 업종(업태 변경 필수)으로 전환 의지가 있는가',
+                        '폐업 후 재창업일이 1년 미만이거나 재창업 예정인가',
+                        '재창업 아이템이나 방향에 대한 구상이 있는가',
+                        '재창업 교육과 멘토링에 적극 참여할 수 있는가'
+                    ]
+                },
+                support: {
+                    title: '지원 내용',
+                    items: [
+                        '재창업진단 (아이템 타당성 검토)',
+                        '재기 실전교육 및 특화 프로그램',
+                        '1:1 전문가 멘토링',
+                        '사업화 자금 최대 2천만원 지원'
+                    ]
+                }
+            },
+            close: {
+                name: '폐업지원 (재취업)',
+                status: `현재 사업을 정리하고 새로운 방향을 모색하는 것이
+더 현실적인 선택으로 보이는 상태입니다.`,
+                why: `안전하고 체계적인 사업 정리를 통해 새로운 시작을 준비할 수 있습니다.
+희망리턴패키지 폐업지원 트랙은 사업정리부터 재취업까지
+전 과정을 원스톱으로 지원합니다.`,
+                roadmap: [
+                    { title: '사업정리 컨설팅 신청', desc: '폐업 예정자 대상 사업정리 상담 및 컨설팅 신청' },
+                    { title: '사업정리 컨설팅', desc: '폐업 과정에서 필요한 법률, 세무, 채권채무 등 종합 상담' },
+                    { title: '재기교육', desc: '심리 안정 및 재기 준비를 위한 교육 프로그램 참여' },
+                    { title: '폐업신고', desc: '사업자등록 폐업 신고 완료' },
+                    { title: '점포철거 지원', desc: '폐업 점포 원상복구 비용 최대 300만원 지원 (해당 시)' },
+                    { title: '취업성공패키지 연계', desc: '고용노동부 취업성공패키지 추천서 발급 및 참여' },
+                    { title: '취업 및 전직장려수당', desc: '재취업 성공 시 전직장려수당 최대 100만원 지급' }
+                ],
+                keyPoints: {
+                    title: '폐업지원 트랙 핵심 체크포인트',
+                    items: [
+                        '사업 정리 의사가 명확하거나 폐업을 고려 중인가',
+                        '폐업 과정에서 법률, 세무 등 전문 상담이 필요한가',
+                        '안정적인 재취업을 희망하는가',
+                        '취업성공패키지 등 재취업 지원 프로그램에 참여할 의향이 있는가'
+                    ]
+                },
+                support: {
+                    title: '지원 내용',
+                    items: [
+                        '사업정리 컨설팅 (법률, 세무, 채권채무 등)',
+                        '재기교육 및 심리 안정 프로그램',
+                        '점포철거비용 최대 300만원',
+                        '취업성공패키지 추천 및 연계',
+                        '전직장려수당 최대 100만원 (취업 성공 시)'
+                    ]
+                }
+            },
+            unclear: {
+                name: '방향 설정 단계',
+                status: `현재 어떤 방향으로 나아가야 할지 판단이 서지 않는 상태입니다.
+이는 자연스러운 과정이며, 지금 필요한 것은 차분한 정리입니다.`,
+                why: `방향을 정하기 전에 먼저 현재 상태를 객관적으로 파악하는 것이 중요합니다.
+희망리턴패키지의 경영진단이나 사업정리 컨설팅을 통해
+판단의 기준을 마련할 수 있습니다.`,
+                roadmap: [
+                    { title: '현황 파악', desc: '현재 사업의 재무 상태, 시장 상황, 개인 여건 등을 객관적으로 정리' },
+                    { title: '경영진단 또는 사업정리 컨설팅', desc: '전문가 진단을 통해 현 상태의 개선 가능성과 한계 파악' },
+                    { title: '선택지 검토', desc: '경영개선 / 재창업 / 폐업-재취업 중 본인에게 맞는 방향 탐색' },
+                    { title: '결정 및 실행', desc: '판단 기준이 명확해지면 해당 트랙으로 진입' }
+                ],
+                keyPoints: {
+                    title: '방향 설정을 위한 체크포인트',
+                    items: [
+                        '현재 사업의 재무 상태를 정확히 파악하고 있는가',
+                        '향후 6개월~1년간 투입 가능한 자원(시간, 비용, 체력)은 어느 정도인가',
+                        '이 업종에 대한 애착과 전문성은 어느 정도인가',
+                        '객관적인 판단을 위해 전문가 상담을 받을 의향이 있는가'
+                    ]
+                },
+                support: {
+                    title: '추천 첫 단계',
+                    items: [
+                        '희망리턴패키지 경영진단 신청 (사업 지속 가능성 판단)',
+                        '또는 사업정리 컨설팅 신청 (폐업 고려 시)',
+                        '전문가 상담을 통한 객관적 상태 진단',
+                        '진단 결과를 바탕으로 적합한 트랙 선택'
+                    ]
+                }
+            }
+        };
+
+        // 선택지 클릭 이벤트
+        document.addEventListener('DOMContentLoaded', function() {
+            const allOptions = document.querySelectorAll('.option');
+            
+            allOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    const questionContainer = this.closest('.question-container');
+                    const questionNum = parseInt(questionContainer.dataset.question);
+                    const category = this.dataset.category;
+                    const score = parseInt(this.dataset.score);
+                    
+                    // 같은 질문의 다른 선택지 선택 해제
+                    questionContainer.querySelectorAll('.option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    
+                    // 현재 선택지 선택
+                    this.classList.add('selected');
+                    
+                    // 답변 저장
+                    answers[questionNum] = { category, score };
+                    
+                    // 카테고리별 점수 누적
+                    categoryScores[category] += score;
+                    
+                    // 0.5초 후 다음 질문으로
+                    setTimeout(() => {
+                        nextQuestion();
+                    }, 500);
+                });
+            });
+        });
+
+        function nextQuestion() {
+            if (currentQuestion < totalQuestions) {
+                // 현재 질문 숨기기
+                document.querySelector(`.question-container[data-question="${currentQuestion}"]`).classList.remove('active');
+                
+                // 다음 질문 보이기
+                currentQuestion++;
+                document.querySelector(`.question-container[data-question="${currentQuestion}"]`).classList.add('active');
+                
+                // 진행바 업데이트
+                updateProgress();
+            } else {
+                // 마지막 질문이면 결과 계산
+                calculateResult();
+            }
+        }
+
+        function updateProgress() {
+            const progress = (currentQuestion / totalQuestions) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function calculateResult() {
+            // 가장 높은 점수의 카테고리 찾기
+            let maxScore = 0;
+            let recommendedTrack = 'unclear';
+            
+            for (let category in categoryScores) {
+                if (categoryScores[category] > maxScore) {
+                    maxScore = categoryScores[category];
+                    recommendedTrack = category;
+                }
+            }
+
+            // 결과 표시
+            showResult(recommendedTrack);
+        }
+
+        function showResult(track) {
+            const data = trackData[track];
+            
+            // 트랙 이름
+            document.getElementById('trackName').textContent = data.name;
+            
+            // 현재 상태
+            document.getElementById('statusDescription').textContent = data.status;
+            
+            // 필요한 이유
+            document.getElementById('whyDescription').textContent = data.why;
+            
+            // 로드맵 생성
+            const roadmapContainer = document.getElementById('roadmapContainer');
+            roadmapContainer.innerHTML = '';
+            data.roadmap.forEach((step, index) => {
+                const stepDiv = document.createElement('div');
+                stepDiv.className = 'roadmap-step';
+                stepDiv.innerHTML = `
+                    <div class="roadmap-number">${index + 1}</div>
+                    <div class="roadmap-content">
+                        <div class="roadmap-title">${step.title}</div>
+                        <div class="roadmap-desc">${step.desc}</div>
+                    </div>
+                `;
+                roadmapContainer.appendChild(stepDiv);
+            });
+            
+            // 핵심 포인트
+            const keyPointsDiv = document.getElementById('keyPoints');
+            keyPointsDiv.innerHTML = `
+                <div class="key-points-title">${data.keyPoints.title}</div>
+                <ul>
+                    ${data.keyPoints.items.map(item => `<li>${item}</li>`).join('')}
+                </ul>
+            `;
+            
+            // 지원 내용
+            const supportInfoDiv = document.getElementById('supportInfo');
+            supportInfoDiv.innerHTML = `
+                <div class="support-info-title">${data.support.title}</div>
+                <ul class="support-info-list">
+                    ${data.support.items.map(item => `<li>${item}</li>`).join('')}
+                </ul>
+            `;
+            
+            // 설문 카드 숨기기
+            document.getElementById('surveyCard').style.display = 'none';
+            
+            // 결과 카드 보이기
+            document.getElementById('resultCard').classList.add('active');
+
+            // 페이지 최상단으로 스크롤
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function restartDiagnosis() {
+            // 초기화
+            currentQuestion = 1;
+            answers = {};
+            categoryScores = {
+                continue: 0,
+                pivot: 0,
+                close: 0,
+                unclear: 0
+            };
+            
+            // 모든 선택 해제
+            document.querySelectorAll('.option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            // 첫 번째 질문만 활성화
+            document.querySelectorAll('.question-container').forEach((container, index) => {
+                if (index === 0) {
+                    container.classList.add('active');
+                } else {
+                    container.classList.remove('active');
+                }
+            });
+            
+            // 진행바 초기화
+            document.getElementById('progressFill').style.width = '8.33%';
+            
+            // 결과 카드 숨기고 설문 카드 보이기
+            document.getElementById('resultCard').classList.remove('active');
+            document.getElementById('surveyCard').style.display = 'block';
+            
+            // 페이지 최상단으로 스크롤
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // 초기 진행바 설정
+        updateProgress();
+    </script>
+</body>
+</html>
