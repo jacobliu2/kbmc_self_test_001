@@ -1,0 +1,2775 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>코리아경영자문 재무분석 진단</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: #f8f9fc;
+            color: #1a1a2e;
+            line-height: 1.6;
+        }
+
+        /* 로그인 화면 */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1e3a5f 0%, #152a45 100%);
+        }
+
+        .login-box {
+            background: white;
+            border-radius: 24px;
+            padding: 50px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 450px;
+        }
+
+        .login-title {
+            font-family: 'Montserrat', 'Noto Sans KR', sans-serif;
+            font-weight: 800;
+            font-size: 2rem;
+            color: #1e3a5f;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: 'Noto Sans KR', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .login-input:focus {
+            outline: none;
+            border-color: #2874a6;
+            box-shadow: 0 0 0 3px rgba(40, 116, 166, 0.1);
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #2874a6 0%, #1e3a5f 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        .login-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(40, 116, 166, 0.3);
+        }
+
+        .error-message {
+            color: #991b1b;
+            background: #fee2e2;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 600;
+            display: none;
+        }
+
+        /* 관리자 패널 */
+        .admin-panel {
+            display: none;
+            padding: 30px;
+            background: white;
+            max-width: 1200px;
+            margin: 30px auto;
+            border-radius: 24px;
+            box-shadow: 0 10px 40px rgba(30, 58, 95, 0.1);
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #2874a6;
+        }
+
+        .admin-title {
+            font-family: 'Montserrat', 'Noto Sans KR', sans-serif;
+            font-weight: 800;
+            font-size: 1.8rem;
+            color: #1e3a5f;
+        }
+
+        .logout-button {
+            padding: 10px 20px;
+            background: #fee2e2;
+            color: #991b1b;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        .admin-section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: #1e3a5f;
+            margin-bottom: 15px;
+        }
+
+        .account-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .account-input {
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        .add-button {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #2874a6 0%, #1e3a5f 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        .accounts-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .accounts-table th {
+            background: linear-gradient(135deg, #1e3a5f 0%, #152a45 100%);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 700;
+        }
+
+        .accounts-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .delete-button {
+            padding: 6px 12px;
+            background: #fee2e2;
+            color: #991b1b;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        /* 기업 정보 입력 화면 */
+        .company-info-container {
+            display: none;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 40px;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 10px 40px rgba(30, 58, 95, 0.1);
+        }
+
+        .company-info-title {
+            font-family: 'Montserrat', 'Noto Sans KR', sans-serif;
+            font-weight: 800;
+            font-size: 2rem;
+            color: #1e3a5f;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .company-info-subtitle {
+            text-align: center;
+            color: #64748b;
+            margin-bottom: 40px;
+        }
+
+        .company-form-group {
+            margin-bottom: 25px;
+        }
+
+        .company-label {
+            display: block;
+            font-weight: 700;
+            color: #1e3a5f;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        .company-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: 'Noto Sans KR', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .company-input:focus {
+            outline: none;
+            border-color: #2874a6;
+            box-shadow: 0 0 0 3px rgba(40, 116, 166, 0.1);
+        }
+
+        .company-select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: 'Noto Sans KR', sans-serif;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .company-select:focus {
+            outline: none;
+            border-color: #2874a6;
+            box-shadow: 0 0 0 3px rgba(40, 116, 166, 0.1);
+        }
+
+        .company-submit-button {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #2874a6 0%, #1e3a5f 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Noto Sans KR', sans-serif;
+            margin-top: 10px;
+        }
+
+        .company-submit-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(40, 116, 166, 0.3);
+        }
+
+        .selected-company-info {
+            background: linear-gradient(135deg, #e8eef5 0%, #d8e4f0 100%);
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .company-badge {
+            font-weight: 700;
+            color: #1e3a5f;
+            font-size: 1.1rem;
+        }
+
+        .industry-badge {
+            background: #2874a6;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        /* 메인 앱 */
+        .app-container {
+            display: none;
+        }
+
+        .header-accent {
+            height: 6px;
+            background: linear-gradient(90deg, #1e3a5f 0%, #2874a6 100%);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3a5f 0%, #152a45 100%);
+            padding: 30px 50px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-family: 'Montserrat', 'Noto Sans KR', sans-serif;
+            font-weight: 800;
+            font-size: 2rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        .main-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            height: calc(100vh - 150px);
+            gap: 0;
+        }
+
+        .left-panel {
+            background: white;
+            padding: 30px;
+            border-right: 3px solid #2874a6;
+            overflow-y: auto;
+        }
+
+        .right-panel {
+            background: #f8f9fc;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .panel-title {
+            font-family: 'Montserrat', 'Noto Sans KR', sans-serif;
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: #1e3a5f;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #2874a6;
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 10;
+        }
+
+        .right-panel .panel-title {
+            background: #f8f9fc;
+        }
+
+        .input-mode-tabs {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .mode-tab {
+            flex: 1;
+            padding: 15px 20px;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Noto Sans KR', sans-serif;
+            color: #64748b;
+            text-align: center;
+        }
+
+        .mode-tab.active {
+            background: linear-gradient(135deg, #2874a6 0%, #1e3a5f 100%);
+            color: white;
+            border-color: #2874a6;
+        }
+
+        .input-content {
+            display: none;
+        }
+
+        .input-content.active {
+            display: block;
+        }
+
+        .upload-section {
+            background: linear-gradient(135deg, #f8f9fc 0%, #e8eef5 100%);
+            border: 3px dashed #2874a6;
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upload-section:hover {
+            border-color: #1e3a5f;
+            background: linear-gradient(135deg, #e8eef5 0%, #d8e4f0 100%);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: #2874a6;
+            margin-bottom: 15px;
+        }
+
+        .upload-text {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #1e3a5f;
+            margin-bottom: 8px;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .selected-file {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            border: 2px solid #2874a6;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .selected-file.show {
+            display: block;
+        }
+
+        .section-header {
+            background: linear-gradient(135deg, #2874a6 0%, #1e3a5f 100%);
+            color: white;
+            padding: 12px 15px;
+            font-weight: 700;
+            font-size: 1rem;
+            border-radius: 8px;
+            margin: 20px 0 15px 0;
+        }
+
+        .input-table {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .input-table th {
+            background: #e8eef5;
+            color: #1e3a5f;
+            padding: 10px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+            border: 1px solid #d0dae8;
+        }
+
+        .input-table td {
+            padding: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .item-label {
+            background: #f8f9fc;
+            color: #1e3a5f;
+            font-weight: 600;
+            padding-left: 15px;
+            font-size: 0.9rem;
+        }
+
+        .year-input {
+            width: 100%;
+            padding: 8px;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            text-align: right;
+            font-size: 0.9rem;
+            font-family: 'Noto Sans KR', sans-serif;
+            transition: all 0.2s ease;
+        }
+
+        .year-input:focus {
+            outline: none;
+            border-color: #2874a6;
+            box-shadow: 0 0 0 3px rgba(40, 116, 166, 0.1);
+        }
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        .results-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(30, 58, 95, 0.08);
+        }
+
+        .results-card h3 {
+            font-weight: 700;
+            color: #1e3a5f;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .metric-card {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .metric-card:hover {
+            box-shadow: 0 4px 12px rgba(40, 116, 166, 0.15);
+            border-color: #2874a6;
+        }
+
+        .metric-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e8eef5;
+        }
+
+        .metric-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #1e3a5f;
+        }
+
+        .metric-standard {
+            background: #e8eef5;
+            color: #2874a6;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .metric-years {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .year-column {
+            text-align: center;
+        }
+
+        .year-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #64748b;
+            margin-bottom: 8px;
+        }
+
+        .year-value-large {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #1e3a5f;
+            margin-bottom: 8px;
+        }
+
+        .year-judgment {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .judgment-excellent {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .judgment-good {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .judgment-poor {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .consultant-comment {
+            background: linear-gradient(135deg, #f8f9fc 0%, #e8eef5 100%);
+            border-radius: 12px;
+            padding: 30px;
+            border: 2px solid #2874a6;
+        }
+
+        .consultant-comment h3 {
+            font-family: 'Montserrat', 'Noto Sans KR', sans-serif;
+            font-weight: 800;
+            font-size: 1.3rem;
+            color: #1e3a5f;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .comment-section {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .comment-section h4 {
+            font-weight: 700;
+            color: #2874a6;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        .comment-section ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .comment-section li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+            color: #64748b;
+            line-height: 1.6;
+        }
+
+        .comment-section li:before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: #2874a6;
+            font-weight: 700;
+        }
+
+        .footer {
+            background: #1e3a5f;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 1200px) {
+            .main-container {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+
+            .left-panel {
+                border-right: none;
+                border-bottom: 3px solid #2874a6;
+            }
+
+            
+        }
+    
+        /* 기업정보 입력 화면 */
+        .company-info-container {
+            display: none;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f8f9fc 0%, #e8eef5 100%);
+            padding: 50px 20px;
+        }
+
+        .company-info-box {
+            max-width: 700px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 24px;
+            padding: 50px;
+            box-shadow: 0 10px 40px rgba(30, 58, 95, 0.1);
+        }
+
+        .company-info-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .company-info-title {
+            font-family: 'Montserrat', 'Noto Sans KR', sans-serif;
+            font-weight: 800;
+            font-size: 2rem;
+            color: #1e3a5f;
+            margin-bottom: 10px;
+        }
+
+        .company-info-subtitle {
+            color: #64748b;
+            font-size: 1rem;
+        }
+
+        .company-form-group {
+            margin-bottom: 30px;
+        }
+
+        .company-label {
+            display: block;
+            font-weight: 700;
+            color: #1e3a5f;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        .company-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: 'Noto Sans KR', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .company-input:focus {
+            outline: none;
+            border-color: #2874a6;
+            box-shadow: 0 0 0 3px rgba(40, 116, 166, 0.1);
+        }
+
+        .company-select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: 'Noto Sans KR', sans-serif;
+            transition: all 0.3s ease;
+            background: white;
+            cursor: pointer;
+        }
+
+        .company-select:focus {
+            outline: none;
+            border-color: #2874a6;
+            box-shadow: 0 0 0 3px rgba(40, 116, 166, 0.1);
+        }
+
+        .company-submit-button {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #2874a6 0%, #1e3a5f 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Noto Sans KR', sans-serif;
+            margin-top: 10px;
+        }
+
+        .company-submit-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(40, 116, 166, 0.3);
+        }
+
+        .selected-company-info {
+            background: linear-gradient(135deg, #e8eef5 0%, #d8e4f0 100%);
+            padding: 20px 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border: 2px solid #2874a6;
+        }
+
+        .company-name-display {
+            font-weight: 800;
+            font-size: 1.3rem;
+            color: #1e3a5f;
+            margin-bottom: 8px;
+        }
+
+        .industry-info-display {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .industry-code-badge {
+            background: #2874a6;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+
+        .industry-name-display {
+            color: #64748b;
+            font-size: 0.95rem;
+        }
+
+    
+        .upload-section-top {
+            background: linear-gradient(135deg, #f8f9fc 0%, #e8eef5 100%);
+            border: 3px dashed #2874a6;
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upload-section-top:hover {
+            border-color: #1e3a5f;
+            background: linear-gradient(135deg, #e8eef5 0%, #d8e4f0 100%);
+        }
+
+        .selected-file-top {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            border: 2px solid #2874a6;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .selected-file-top.show {
+            display: block;
+        }
+    
+        
+
+        
+
+        
+
+        .overall-judgment-large.excellent {
+            color: #10b981;
+            text-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .overall-judgment-large.good {
+            color: #3b82f6;
+            text-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+        }
+
+        .overall-judgment-large.poor {
+            color: #ef4444;
+            text-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+        }
+
+        
+        
+        /* 업종별 기준값 스타일 */
+        .metric-standards {
+            display: flex;
+            gap: 12px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .standard-item {
+            font-size: 13px;
+            padding: 4px 12px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 4px;
+            border-left: 3px solid #3498db;
+        }
+        
+        /* 인쇄 스타일 */
+        @media print {
+            .left-panel {
+                display: none !important;
+            }
+            
+            .header {
+                display: none !important;
+            }
+            
+            .header-accent {
+                display: none !important;
+            }
+            
+            .right-panel {
+                width: 100% !important;
+                max-width: 100% !important;
+                margin: 0 !important;
+                padding: 20px !important;
+            }
+            
+            .footer {
+                display: none !important;
+            }
+            
+            button {
+                display: none !important;
+            }
+            
+            /* 평가 기준 선택 버튼 숨기고 인쇄용 텍스트 표시 */
+            #evaluationModeButtons {
+                display: none !important;
+            }
+            
+            #evaluationModePrint {
+                display: block !important;
+            }
+            
+            #evaluationModeSection {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                background: rgba(255,255,255,0.15) !important;
+            }
+            
+            .panel-title {
+                font-size: 28px !important;
+                margin-bottom: 25px !important;
+                text-align: center;
+                color: #1e3a5f;
+                border-bottom: 3px solid #667eea;
+                padding-bottom: 15px;
+            }
+            
+            #diagnosisInfoBox {
+                page-break-inside: avoid;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+                margin-bottom: 30px !important;
+            }
+            
+            .metric-card {
+                page-break-inside: avoid;
+                margin-bottom: 20px !important;
+            }
+            
+            .consultant-comment {
+                page-break-before: always;
+            }
+            
+            @page {
+                margin: 2cm;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 로그인 화면 -->
+    <div id="loginContainer" class="login-container">
+        <div class="login-box">
+            <h1 class="login-title">코리아경영자문<br>재무분석 진단</h1>
+            <div id="loginError" class="error-message"></div>
+            <input type="text" id="username" class="login-input" placeholder="아이디" autocomplete="off">
+            <input type="password" id="password" class="login-input" placeholder="비밀번호" autocomplete="off">
+            <button class="login-button" onclick="login()">로그인</button>
+        </div>
+    </div>
+
+
+    <!-- 관리자 패널 -->
+    <div id="adminPanel" class="admin-panel">
+        <div class="admin-header">
+            <h1 class="admin-title">👤 관리자 패널</h1>
+            <button class="logout-button" onclick="logout()">로그아웃</button>
+        </div>
+
+        <div class="admin-section">
+            <h2 class="section-title">새 계정 추가</h2>
+            <div class="account-form">
+                <input type="text" id="newUsername" class="account-input" placeholder="아이디">
+                <input type="password" id="newPassword" class="account-input" placeholder="비밀번호">
+                <button class="add-button" onclick="addAccount()">계정 추가</button>
+            </div>
+        </div>
+
+        <div class="admin-section">
+            <h2 class="section-title">계정 목록</h2>
+            <table class="accounts-table">
+                <thead>
+                    <tr>
+                        <th>아이디</th>
+                        <th>조회수</th>
+                        <th>마지막 접속</th>
+                        <th>관리</th>
+                    </tr>
+                </thead>
+                <tbody id="accountsTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 메인 애플리케이션 -->
+    <div id="appContainer" class="app-container">
+        <div class="header-accent"></div>
+        <div class="header">
+            <h1>코리아경영자문 재무분석 진단</h1>
+            <div class="user-info">
+                <div class="user-badge" id="currentUser"></div>
+                <button class="logout-button" onclick="logout()">로그아웃</button>
+            </div>
+        </div>
+
+        <div class="main-container">
+            <!-- 왼쪽 패널: 입력 영역 -->
+            <div class="left-panel">
+                <div class="panel-title">📝 재무 데이터 입력</div>
+                <!-- 선택된 기업 정보 -->
+                <div class="upload-section-top" id="uploadArea">
+                    <div class="upload-icon">📊</div>
+                    <div class="upload-text">재무분석 엑셀 파일을 업로드하세요</div>
+                    <div style="color: #64748b; font-size: 0.9rem; margin-bottom: 15px;">드래그 앤 드롭 또는 클릭하여 선택</div>
+                    <input type="file" id="fileInput" class="file-input" accept=".xlsx,.xls">
+                    <div id="selectedFile" class="selected-file-top">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <div style="font-weight: 700; color: #1e3a5f; margin-bottom: 5px;" id="fileName"></div>
+                                <div style="color: #64748b; font-size: 0.9rem;" id="fileSize"></div>
+                            </div>
+                            <button onclick="removeFile()" style="background: #fee2e2; color: #991b1b; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; font-family: 'Noto Sans KR', sans-serif;">제거</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin: 30px 0; text-align: center; color: #64748b; font-weight: 600;">
+                    업로드된 데이터를 아래에서 직접 수정할 수 있습니다
+                </div>
+
+                <!-- 직접 입력 영역 -->
+                <div id="manualMode" class="input-content active">
+                    <div class="section-header">재무상태표 (23개 항목)</div>
+                    <table class="input-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 50%;">항목</th>
+                                <th>2022년</th>
+                                <th>2023년</th>
+                                <th>2024년</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td class="item-label">자산(*)</td><td><input type="number" class="year-input" id="asset_2022" oninput="calculate()"></td><td><input type="number" class="year-input" id="asset_2023" oninput="calculate()"></td><td><input type="number" class="year-input" id="asset_2024" oninput="calculate()"></td></tr>
+                            <tr><td class="item-label">유동자산(*)</td><td><input type="number" class="year-input" id="current_asset_2022" oninput="calculate()"></td><td><input type="number" class="year-input" id="current_asset_2023" oninput="calculate()"></td><td><input type="number" class="year-input" id="current_asset_2024" oninput="calculate()"></td></tr>
+                            <tr><td class="item-label">당좌자산(*)</td><td><input type="number" class="year-input" id="quick_asset_2022" oninput="calculate()"></td><td><input type="number" class="year-input" id="quick_asset_2023" oninput="calculate()"></td><td><input type="number" class="year-input" id="quick_asset_2024" oninput="calculate()"></td></tr>
+                            <tr><td class="item-label">현금 및 현금성자산(*)</td><td><input type="number" class="year-input" id="cash_2022" oninput="calculate()"></td><td><input type="number" class="year-input" id="cash_2023" oninput="calculate()"></td><td><input type="number" class="year-input" id="cash_2024" oninput="calculate()"></td></tr>
+                            <tr><td class="item-label">가지급금</td><td><input type="number" class="year-input" id="provisional_payment_2022" oninput="calculate()"></td><td><input type="number" class="year-input" id="provisional_payment_2023" oninput="calculate()"></td><td><input type="number" class="year-input" id="provisional_payment_2024" oninput="calculate()"></td></tr>
+                            <tr><td class="item-label">매출채권(*)</td><td><input type="number" class="year-input" id="receivable_2022" oninput="calculate()"></td><td><input type="number" class="year-input" id="receivable_2023" oninput="calculate()"></td><td><input type="number" class="year-input" id="receivable_2024" oninput="calculate()"></td></tr>
+                            <tr><td class="item-label">단기대여금(*)</td><td><input type="number" class="year-input" id="short_loan_2022" oninput="calculate()"></td><td><input type="number" class="year-input" id="short_loan_2023" oninput="calculate()"></td><td><input type="number" class="year-input" id="short_loan_2024" oninput="calculate()"></td></tr>
+                            <tr><td class="item-label">미수금(*)</td><td><input type="number" class="year-input" id="accrued_income_2022" oninput="calculate()"></td><td><input type="number" class="year-input" id="accrued_income_2023" oninput="calculate()"></td><td><input type="number" class="year-input" id="accrued_income_2024" oninput="calculate()"></td></tr>
+                            <tr><td class="item-label">재고자산(*)</td><td><input type="number" class="year-input" id="inventory_2022" oninput="calculate()"></td><td><input type="number" class="year-input" id="inventory_2023" oninput="calculate()"></td><td><input type="number" class="year-input" id="inventory_2024" oninput="calculate()"></td></tr>
+                            <tr><td class="item-label">장기대여금</td><td><input type="number" class="year-input" id="long_loan_2022" oninput="calculate()"></td><td><input type="number" class="year-input" id="long_loan_2023" oninput="calculate()"></td><td><input type="number" class="year-input" id="long_loan_2024" oninput="calculate()"></td></tr>
+                            <tr><td class="item-label">유형자산(*)</td><td><input type="number" class="year-input" id="tangible_asset_2022" oninput="calculate()"></td><td><input type="number" class="year-input" id="tangible_asset_2023" oninput="calculate()"></td><td><input type="number" class="year-input" id="tangible_asset_2024" oninput="calculate()"></td></tr>
+                            <tr><td class="item-label">무형자산(*)</td><td><input type="number" class="year-input" id="intangible_asset_2022" oninput="calculate()"></td><td><input type="number" class="year-input" id="intangible_asset_2023" oninput="calculate()"></td><td><input type="number" class="year-input" id="intangible_asset_2024" oninput="calculate()"></td></tr>
+                            <tr><td class="item-label">비유동자산(*)</td><td><input type="number" class="year-input" id="noncurrent_asset_2022" oninput="calculate()"></td><td><input type="number" class="year-input" id="noncurrent_asset_2023" oninput="calculate()"></td><td><input type="number" class="year-input" id="noncurrent_asset_2024" oninput="calculate()"></td></tr>
+                            <tr><td class="item-label">부채(*)</td><td><input type="number" class="year-input" id="liability_2022" oninput="calculate()"></td><td><input type="number" class="year-input" id="liability_2023" oninput="calculate()"></td><td><input type="number" class="year-input" id="liability_2024" oninput="calculate()"></td></tr>
+                            <tr><td class="item-label">유동부채(*)</td><td><input type="number" class="year-input" id="current_liability_2022" oninput="calculate()"></td><td><input type="number" class="year-input" id="current_liability_2023" oninput="calculate()"></td><td><input type="number" class="year-input" id="current_liability_2024" oninput="calculate()"></td></tr>
+                            <tr><td class="item-label">매입채무(*)</td><td><input type="number" class="year-input" id="payable_2022" oninput="calculate()"></td><td><input type="number" class="year-input" id="payable_2023" oninput="calculate()"></td><td><input type="number" class="year-input" id="payable_2024" oninput="calculate()"></td></tr>
+                            <tr><td class="item-label">가수금</td><td><input type="number" class="year-input" id="provisional_receipt_2022" oninput="calculate()"></td><td><input type="number" class="year-input" id="provisional_receipt_2023" oninput="calculate()"></td><td><input type="number" class="year-input" id="provisional_receipt_2024" oninput="calculate()"></td></tr>
+                            <tr><td class="item-label">단기차입금(*)</td><td><input type="number" class="year-input" id="short_borrowing_2022" oninput="calculate()"></td><td><input type="number" class="year-input" id="short_borrowing_2023" oninput="calculate()"></td><td><input type="number" class="year-input" id="short_borrowing_2024" oninput="calculate()"></td></tr>
+                            <tr><td class="item-label">장기차입금(*)</td><td><input type="number" class="year-input" id="long_borrowing_2022" oninput="calculate()"></td><td><input type="number" class="year-input" id="long_borrowing_2023" oninput="calculate()"></td><td><input type="number" class="year-input" id="long_borrowing_2024" oninput="calculate()"></td></tr>
+                            <tr><td class="item-label">자본(*)</td><td><input type="number" class="year-input" id="equity_2022" oninput="calculate()"></td><td><input type="number" class="year-input" id="equity_2023" oninput="calculate()"></td><td><input type="number" class="year-input" id="equity_2024" oninput="calculate()"></td></tr>
+                            <tr><td class="item-label">자본금(*)</td><td><input type="number" class="year-input" id="capital_2022" oninput="calculate()"></td><td><input type="number" class="year-input" id="capital_2023" oninput="calculate()"></td><td><input type="number" class="year-input" id="capital_2024" oninput="calculate()"></td></tr>
+                            <tr><td class="item-label">미처분이익잉여금(결손금)</td><td><input type="number" class="year-input" id="retained_earnings_2022" oninput="calculate()"></td><td><input type="number" class="year-input" id="retained_earnings_2023" oninput="calculate()"></td><td><input type="number" class="year-input" id="retained_earnings_2024" oninput="calculate()"></td></tr>
+                            <tr><td class="item-label">*당기순이익</td><td><input type="number" class="year-input" id="net_income_bs_2022" oninput="calculate()"></td><td><input type="number" class="year-input" id="net_income_bs_2023" oninput="calculate()"></td><td><input type="number" class="year-input" id="net_income_bs_2024" oninput="calculate()"></td></tr>
+                        </tbody>
+                    </table>
+
+                    <div class="section-header">손익계산서 (8개 항목)</div>
+                    <table class="input-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 50%;">항목</th>
+                                <th>2022년</th>
+                                <th>2023년</th>
+                                <th>2024년</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td class="item-label">매출액(*)</td><td><input type="number" class="year-input" id="revenue_2022" oninput="calculate()"></td><td><input type="number" class="year-input" id="revenue_2023" oninput="calculate()"></td><td><input type="number" class="year-input" id="revenue_2024" oninput="calculate()"></td></tr>
+                            <tr><td class="item-label">매출총이익(손실)</td><td><input type="number" class="year-input" id="gross_profit_2022" oninput="calculate()"></td><td><input type="number" class="year-input" id="gross_profit_2023" oninput="calculate()"></td><td><input type="number" class="year-input" id="gross_profit_2024" oninput="calculate()"></td></tr>
+                            <tr><td class="item-label">판매비와관리비(*)</td><td><input type="number" class="year-input" id="operating_expense_2022" oninput="calculate()"></td><td><input type="number" class="year-input" id="operating_expense_2023" oninput="calculate()"></td><td><input type="number" class="year-input" id="operating_expense_2024" oninput="calculate()"></td></tr>
+                            <tr><td class="item-label">영업이익(손실)</td><td><input type="number" class="year-input" id="operating_income_2022" oninput="calculate()"></td><td><input type="number" class="year-input" id="operating_income_2023" oninput="calculate()"></td><td><input type="number" class="year-input" id="operating_income_2024" oninput="calculate()"></td></tr>
+                            <tr><td class="item-label">이자비용</td><td><input type="number" class="year-input" id="interest_expense_2022" oninput="calculate()"></td><td><input type="number" class="year-input" id="interest_expense_2023" oninput="calculate()"></td><td><input type="number" class="year-input" id="interest_expense_2024" oninput="calculate()"></td></tr>
+                            <tr><td class="item-label">법인세비용차감전순손익</td><td><input type="number" class="year-input" id="pretax_income_2022" oninput="calculate()"></td><td><input type="number" class="year-input" id="pretax_income_2023" oninput="calculate()"></td><td><input type="number" class="year-input" id="pretax_income_2024" oninput="calculate()"></td></tr>
+                            <tr><td class="item-label">법인세비용</td><td><input type="number" class="year-input" id="tax_expense_2022" oninput="calculate()"></td><td><input type="number" class="year-input" id="tax_expense_2023" oninput="calculate()"></td><td><input type="number" class="year-input" id="tax_expense_2024" oninput="calculate()"></td></tr>
+                            <tr><td class="item-label">당기순이익(손실)</td><td><input type="number" class="year-input" id="net_income_2022" oninput="calculate()"></td><td><input type="number" class="year-input" id="net_income_2023" oninput="calculate()"></td><td><input type="number" class="year-input" id="net_income_2024" oninput="calculate()"></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 오른쪽 패널: 결과 영역 -->
+            <div class="right-panel">
+                <div class="panel-title">
+                    📊 재무분석 진단 리포트
+                    <button onclick="window.print()" style="float: right; padding: 8px 16px; background: #27ae60; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px;">📄 PDF 인쇄</button>
+                </div>
+
+                <!-- 기업 진단 정보 박스 -->
+                <div id="diagnosisInfoBox" style="display: none; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 24px 28px; border-radius: 12px; margin-bottom: 28px; box-shadow: 0 6px 20px rgba(102, 126, 234, 0.25);">
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; color: white; margin-bottom: 20px;">
+                        <div style="background: rgba(255,255,255,0.12); padding: 16px 20px; border-radius: 10px; border-left: 4px solid rgba(255,255,255,0.5);">
+                            <div style="font-size: 13px; opacity: 0.85; margin-bottom: 8px; font-weight: 500;">기업명</div>
+                            <div id="diagCompanyName" style="font-size: 19px; font-weight: 700; letter-spacing: -0.3px;">-</div>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.12); padding: 16px 20px; border-radius: 10px; border-left: 4px solid rgba(255,255,255,0.5);">
+                            <div style="font-size: 13px; opacity: 0.85; margin-bottom: 8px; font-weight: 500;">업종</div>
+                            <div id="diagIndustry" style="font-size: 19px; font-weight: 700; letter-spacing: -0.3px;">-</div>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.12); padding: 16px 20px; border-radius: 10px; border-left: 4px solid rgba(255,255,255,0.5);">
+                            <div style="font-size: 13px; opacity: 0.85; margin-bottom: 8px; font-weight: 500;">진단 컨설턴트</div>
+                            <div id="diagConsultant" style="font-size: 19px; font-weight: 700; letter-spacing: -0.3px;">-</div>
+                        </div>
+                    </div>
+                    
+                    <!-- 평가 기준 선택 버튼 -->
+                    <div id="evaluationModeSection" style="background: rgba(255,255,255,0.15); padding: 18px 22px; border-radius: 10px;">
+                        <div style="font-size: 13px; opacity: 0.9; margin-bottom: 12px; font-weight: 600; color: white;">📊 평가 기준 선택</div>
+                        <div id="evaluationModeButtons" style="display: flex; gap: 12px;">
+                            <button id="btnBankMode" onclick="switchEvaluationMode('bank')" style="flex: 1; padding: 12px 18px; background: white; color: #667eea; border: none; border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.2s; box-shadow: 0 3px 8px rgba(0,0,0,0.15);">
+                                🏦 은행기준
+                            </button>
+                            <button id="btnIndustryMode" onclick="switchEvaluationMode('industry')" style="flex: 1; padding: 12px 18px; background: rgba(255,255,255,0.25); color: white; border: 2px solid rgba(255,255,255,0.4); border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; transition: all 0.2s;">
+                                🏭 업종기준
+                            </button>
+                            <button id="btnTotalMode" onclick="switchEvaluationMode('total')" style="flex: 1; padding: 12px 18px; background: rgba(255,255,255,0.25); color: white; border: 2px solid rgba(255,255,255,0.4); border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; transition: all 0.2s;">
+                                📊 통합기준
+                            </button>
+                        </div>
+                        <!-- 인쇄용 텍스트 (평소에는 숨김) -->
+                        <div id="evaluationModePrint" style="display: none; font-size: 16px; font-weight: 700; color: white; text-align: center; padding: 12px;">
+                            현재 적용된 평가 기준: <span id="currentModeName">🏦 은행기준</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="results-card">
+                    <h3>📈 재무지표 3개년 비교 분석</h3>
+                    <div id="metricsResults"></div>
+                </div>
+
+                <div class="consultant-comment" id="consultantSection" style="display: none;">
+                    <h3>💼 컨설턴트 제안</h3>
+                    <div id="consultantComment"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div style="margin-bottom: 10px; font-weight: 500;">☎ 02-6357-2025</div>
+            <div style="opacity: 0.8;">© 코리아경영자문</div>
+        </div>
+    </div>
+
+    <script>
+        // 계정 데이터 저장소 (localStorage 사용)
+        function initializeAccounts() {
+            // 기존 localStorage 완전 초기화
+            localStorage.removeItem('accounts');
+            
+            const accounts = {};
+            
+            // 관리자 계정
+            accounts['admin'] = {
+                password: 'admin1234',
+                isAdmin: true,
+                viewCount: 0,
+                lastLogin: null
+            };
+
+            // 실명 계정 목록 (비밀번호 모두 1234로 통일 - 총 48명)
+            const userList = [
+                '조치범', '정혜윤', '강정환', '김봉필', '김연한', '김용희', 
+                '김종빈', '박문수', '서갑기', '양은모', '양환기', '유동관', 
+                '임석중', '정우성', '차만희', '추정한', '형주영', '정명구', 
+                '김철희', '남상만', '문범모', '문성희', '박성훈', '안대승', 
+                '조영오', '조재완', '최회수', '신상국', '김관형', '김두한', 
+                '박상혁', '배한두', '서도겸', '신인균', '유인수', '이동혁', 
+                '이은정', '이현준', '이희용', '최종길', '김재근', '박상욱', 
+                '박승규', '양은현', '이성원', '전용준', '홍기열', '유영준'
+            ];
+
+            userList.forEach(username => {
+                accounts[username] = {
+                    password: '1234',  // 모든 계정 비밀번호 1234
+                    isAdmin: false,
+                    viewCount: 0,
+                    lastLogin: null
+                };
+            });
+
+            localStorage.setItem('accounts', JSON.stringify(accounts));
+            console.log('계정 초기화 완료:', Object.keys(accounts).length, '개 (비밀번호: 1234)');
+            return accounts;
+        }
+
+        let currentUser = null;
+        // 업종 데이터
+        const INDUSTRIES = [
+  {"code": "A01", "name": "농업"},
+  {"code": "A03", "name": "어업"},
+  {"code": "B", "name": "광업"},
+  {"code": "C", "name": "제조업"},
+  {"code": "C10", "name": "식료품"},
+  {"code": "C11", "name": "음료"},
+  {"code": "C13", "name": "섬유제품(의복제외)"},
+  {"code": "C14", "name": "의복, 의복액세서리 및 모피제품"},
+  {"code": "C15", "name": "가죽, 가방 및 신발"},
+  {"code": "C16", "name": "목재 및 나무제품(가구 제외)"},
+  {"code": "C17", "name": "펄프, 종이 및 종이제품"},
+  {"code": "C18", "name": "인쇄 및 기록매체 복제업"},
+  {"code": "C19", "name": "코크스, 연탄 및 석유정제품"},
+  {"code": "C20", "name": "화학물질 및 화학제품(의약품 제외)"},
+  {"code": "C21", "name": "의료용 물질 및 의약품"},
+  {"code": "C22", "name": "고무제품 및 플라스틱제품"},
+  {"code": "C23", "name": "비금속 광물제품"},
+  {"code": "C24", "name": "1차 금속"},
+  {"code": "C25", "name": "금속가공제품(기계 및 가구 제외)"},
+  {"code": "C26", "name": "전자부품, 컴퓨터, 영상, 음향 및 통신장비"},
+  {"code": "C27", "name": "의료, 정밀, 광학기기 및 시계"},
+  {"code": "C28", "name": "전기장비"},
+  {"code": "C29", "name": "기타 기계 및 장비"},
+  {"code": "C30", "name": "자동차 및 트레일러"},
+  {"code": "C31", "name": "기타 운송장비"},
+  {"code": "C32", "name": "가구"},
+  {"code": "C33", "name": "기타 제품 제조업"},
+  {"code": "C34", "name": "산업용기계 및 장비수리업"},
+  {"code": "D35", "name": "전기, 가스, 증기 및 공기조절 공급업"},
+  {"code": "E", "name": "하수·폐기물 처리, 원료재생 및 환경복원업"},
+  {"code": "F", "name": "건설업"},
+  {"code": "G", "name": "도매 및 소매업"},
+  {"code": "H", "name": "운수 및 창고업"},
+  {"code": "I", "name": "숙박 및 음식점업"},
+  {"code": "J", "name": "정보통신업"},
+  {"code": "L", "name": "부동산업"},
+  {"code": "M", "name": "전문, 과학 및 기술 서비스업"},
+  {"code": "N", "name": "사업시설관리 및 사업지원 및 임대서비스업"},
+  {"code": "P", "name": "교육 서비스업"},
+  {"code": "R", "name": "예술, 스포츠 및 여가관련 서비스업"},
+  {"code": "비제조업", "name": "비제조업"},
+  {"code": "전산업", "name": "전산업"},
+  {"code": "전체", "name": "전체"}
+];
+
+        // 업종명 → 코드 매핑 (기준표.xlsx 업종코드분류 시트 기반)
+        const INDUSTRY_CODE_MAP = {
+          "농업": "A01",
+          "어업": "A03",
+          "광업": "B",
+          "제조업": "C",
+          "식료품": "C10",
+          "음료": "C11",
+          "섬유제품(의복제외)": "C13",
+          "의복, 의복액세서리 및 모피제품": "C14",
+          "가죽, 가방 및 신발": "C15",
+          "목재 및 나무제품(가구 제외)": "C16",
+          "펄프, 종이 및 종이제품": "C17",
+          "인쇄 및 기록매체 복제업": "C18",
+          "코크스, 연탄 및 석유정제품": "C19",
+          "화학물질 및 화학제품(의약품 제외)": "C20",
+          "의료용 물질 및 의약품": "C21",
+          "고무제품 및 플라스틱제품": "C22",
+          "비금속 광물제품": "C23",
+          "1차 금속": "C24",
+          "금속가공제품(기계 및 가구 제외)": "C25",
+          "전자부품, 컴퓨터, 영상, 음향 및 통신장비": "C26",
+          "의료, 정밀, 광학기기 및 시계": "C27",
+          "전기장비": "C28",
+          "기타 기계 및 장비": "C29",
+          "자동차 및 트레일러": "C30",
+          "기타 운송장비": "C31",
+          "가구": "C32",
+          "기타 제품 제조업": "C33",
+          "산업용기계 및 장비수리업": "C34",
+          "전기, 가스, 증기 및 공기조절 공급업": "D35",
+          "하수·폐기물 처리, 원료재생 및 환경복원업": "E",
+          "하수 · 폐기물 처리, 원료재생 및 환경복원업": "E",
+          "건설업": "F",
+          "도매 및 소매업": "G",
+          "도소매업": "G",
+          "운수 및 창고업": "H",
+          "숙박 및 음식점업": "I",
+          "정보통신업": "J",
+          "부동산업": "L",
+          "전문, 과학 및 기술 서비스업": "M",
+          "사업시설관리 및 사업지원 및 임대서비스업": "N",
+          "교육 서비스업": "P",
+          "예술, 스포츠 및 여가관련 서비스업": "R"
+        };
+
+        // 은행기준 (기준표.xlsx 은행기준 시트)
+        const BANK_STANDARDS = {
+          "유동비율": {
+            "제조업": 2.0,
+            "도소매업": 2.0,
+            "서비스업": 2.0,
+            "건설업(소)": 3.2
+          },
+          "당좌비율": {
+            "제조업": 1.5,
+            "도소매업": 1.5,
+            "서비스업": 1.5,
+            "건설업(소)": 2.4
+          },
+          "부채비율": {
+            "제조업": 1.5,
+            "도소매업": 1.5,
+            "서비스업": 1.5,
+            "건설업(소)": 0.6
+          },
+          "매출채권회전율": {
+            "제조업": 6.0,
+            "도소매업": 8.0,
+            "서비스업": 8.0,
+            "건설업(소)": 7.0
+          },
+          "영업이익율": {
+            "제조업": 0.05,
+            "도소매업": 0.03,
+            "서비스업": 0.07,
+            "건설업(소)": 0.04
+          },
+          "이자보상배수": {
+            "제조업": 2.0,
+            "도소매업": 2.0,
+            "서비스업": 2.0,
+            "건설업(소)": 2.0
+          }
+        };
+
+        // 은행기준 업종 매핑 (업종코드 → 은행기준 업종)
+        const INDUSTRY_TO_BANK_CATEGORY = {
+          // 제조업
+          "C": "제조업", "C10": "제조업", "C11": "제조업", "C13": "제조업", "C14": "제조업",
+          "C15": "제조업", "C16": "제조업", "C17": "제조업", "C18": "제조업", "C19": "제조업",
+          "C20": "제조업", "C21": "제조업", "C22": "제조업", "C23": "제조업", "C24": "제조업",
+          "C25": "제조업", "C26": "제조업", "C27": "제조업", "C28": "제조업", "C29": "제조업",
+          "C30": "제조업", "C31": "제조업", "C32": "제조업", "C33": "제조업", "C34": "제조업",
+          // 도소매업
+          "G": "도소매업",
+          // 서비스업
+          "H": "서비스업", "I": "서비스업", "J": "서비스업", "L": "서비스업",
+          "M": "서비스업", "N": "서비스업", "P": "서비스업", "R": "서비스업",
+          "E": "서비스업", "D35": "서비스업",
+          // 건설업
+          "F": "건설업(소)",
+          // 기타
+          "A01": "서비스업", "A03": "서비스업", "B": "서비스업"
+        };
+
+        const INDUSTRY_STANDARDS = {"A01": {"code": "A01", "name": "농업", "부채비율": 184.4431714561452, "영업이익율": 2.2589772325244417, "유동비율": 105.5676046491233, "당좌비율": 71.89563814798939, "현금보유율": 9.043167768544352, "매출채권회전율": 10.06783839249102, "이자보상배수": 1.047332646391566, "자본잠식률": -84.34179433346077}, "A03": {"code": "A03", "name": "어업", "부채비율": 225.03118193747378, "영업이익율": 3.618618601041183, "유동비율": 125.60557197611779, "당좌비율": 78.60614924557206, "현금보유율": 9.255801484627515, "매출채권회전율": 12.43099960708413, "이자보상배수": 2.318991710116658, "자본잠식률": -143.8832068624216}, "B": {"code": "B", "name": "광업", "부채비율": 188.62607164555249, "영업이익율": 5.29320879928891, "유동비율": 123.4318389555429, "당좌비율": 103.08371058635551, "현금보유율": 13.571278986974189, "매출채권회전율": 6.29280378128743, "이자보상배수": 1.410723587924491, "자본잠식률": -134.7715120108693}, "C": {"code": "C", "name": "제조업", "부채비율": 117.3851862123823, "영업이익율": 4.103939017641511, "유동비율": 150.3220571856613, "당좌비율": 111.8106454627436, "현금보유율": 9.274682134584458, "매출채권회전율": 6.317516654220463, "이자보상배수": 3.116267293770054, "자본잠식률": -484.0863219797149}, "C10": {"code": "C10", "name": "식료품", "부채비율": 156.9390869777844, "영업이익율": 3.000423204802978, "유동비율": 143.5895930206542, "당좌비율": 99.21753141797389, "현금보유율": 5.499339224171439, "매출채권회전율": 8.820987934841469, "이자보상배수": 2.826306528103276, "자본잠식률": -310.81811170262796}, "C11": {"code": "C11", "name": "음료", "부채비율": 143.26707087152352, "영업이익율": 4.366079256877908, "유동비율": 103.31336957002739, "당좌비율": 75.97870615606384, "현금보유율": 11.019660192257561, "매출채권회전율": 8.21151289119507, "이자보상배수": 2.493655895787515, "자본잠식률": -191.3897429700542}, "C13": {"code": "C13", "name": "섬유제품(의복제외)", "부채비율": 125.30054938511822, "영업이익율": 2.951005059322997, "유동비율": 142.7705604018905, "당좌비율": 102.1886038328296, "현금보유율": 8.145443384561597, "매출채권회전율": 5.877658113685044, "이자보상배수": 2.222428581555256, "자본잠식률": -556.3519712961554}, "C14": {"code": "C14", "name": "의복, 의복액세서리 및 모피제품", "부채비율": 126.2035077217317, "영업이익율": 4.643709735188006, "유동비율": 165.5415664767813, "당좌비율": 100.45829773885859, "현금보유율": 6.663802366352721, "매출채권회전율": 8.319842334845974, "이자보상배수": 5.085869894609246, "자본잠식률": -710.3751067369413}, "C15": {"code": "C15", "name": "가죽, 가방 및 신발", "부채비율": 109.702747055847, "영업이익율": 4.224378845123349, "유동비율": 149.1638878804181, "당좌비율": 96.73594960601744, "현금보유율": 6.704221976526235, "매출채권회전율": 7.413056162849531, "이자보상배수": 3.614990204851622, "자본잠식률": -623.2818653080295}, "C16": {"code": "C16", "name": "목재 및 나무제품(가구 제외)", "부채비율": 165.284446362311, "영업이익율": 3.79157164876402, "유동비율": 136.4720145756435, "당좌비율": 96.69104706470975, "현금보유율": 7.255623687759158, "매출채권회전율": 6.256270734219733, "이자보상배수": 2.278789219481621, "자본잠식률": -400.58997364044603}, "C17": {"code": "C17", "name": "펄프, 종이 및 종이제품", "부채비율": 114.7393369700704, "영업이익율": 3.226331156471359, "유동비율": 141.78187971044142, "당좌비율": 107.80227210652168, "현금보유율": 7.229042673143512, "매출채권회전율": 6.412524313160723, "이자보상배수": 2.738451991365182, "자본잠식률": -553.8476055383611}, "C18": {"code": "C18", "name": "인쇄 및 기록매체 복제업", "부채비율": 119.3519079064568, "영업이익율": 3.8002624046218654, "유동비율": 145.4439060423835, "당좌비율": 124.86053201226159, "현금보유율": 9.602297487882778, "매출채권회전율": 5.757819797587472, "이자보상배수": 2.740090635922364, "자본잠식률": -571.6065108283004}, "C19": {"code": "C19", "name": "코크스, 연탄 및 석유정제품", "부채비율": 111.32927697085711, "영업이익율": 6.1942910649553475, "유동비율": 161.2087763795901, "당좌비율": 120.3818657474, "현금보유율": 7.7298990756791435, "매출채권회전율": 6.389873210410667, "이자보상배수": 5.454839559116729, "자본잠식률": -485.63619799574866}, "C20": {"code": "C20", "name": "화학물질 및 화학제품(의약품 제외)", "부채비율": 98.3286053148754, "영업이익율": 4.888609372669231, "유동비율": 158.12195736720972, "당좌비율": 117.5545473080315, "현금보유율": 10.60895350089229, "매출채권회전율": 6.198174053016959, "이자보상배수": 3.606751688361959, "자본잠식률": -385.1212931685942}, "C21": {"code": "C21", "name": "의료용 물질 및 의약품", "부채비율": 72.36742401908346, "영업이익율": 2.057524287619698, "유동비율": 172.2285387973127, "당좌비율": 134.1599442729205, "현금보유율": 20.67423627758962, "매출채권회전율": 5.091224456095707, "이자보상배수": 0.8208350685148829, "자본잠식률": -364.95590147412827}, "C22": {"code": "C22", "name": "고무제품 및 플라스틱제품", "부채비율": 117.5472275957983, "영업이익율": 3.9788993892578226, "유동비율": 144.2377785160981, "당좌비율": 111.1181814922657, "현금보유율": 8.02467668419024, "매출채권회전율": 6.16603233402604, "이자보상배수": 3.053948754479489, "자본잠식률": -564.2942778997469}, "C23": {"code": "C23", "name": "비금속 광물제품", "부채비율": 96.06538525103501, "영업이익율": 4.707931887688268, "유동비율": 156.8079237183427, "당좌비율": 127.16347606421789, "현금보유율": 10.65198672417186, "매출채권회전율": 6.18800526112472, "이자보상배수": 3.7058101713719, "자본잠식률": -508.88888888888886}, "C24": {"code": "C24", "name": "1차 금속", "부채비율": 127.8990217538923, "영업이익율": 3.566822731223191, "유동비율": 141.1155797123173, "당좌비율": 97.22248037846038, "현금보유율": 5.575681140156306, "매출채권회전율": 7.081535146412791, "이자보상배수": 3.372392635645316, "자본잠식률": -543.3222005062723}, "C25": {"code": "C25", "name": "금속가공제품(기계 및 가구 제외)", "부채비율": 130.7598083933355, "영업이익율": 4.667010262878215, "유동비율": 148.9556261814489, "당좌비율": 112.99630295418659, "현금보유율": 8.343404642165659, "매출채권회전율": 5.763643963631612, "이자보상배수": 3.471621969534435, "자본잠식률": -556.0888951989856}, "C26": {"code": "C26", "name": "전자부품, 컴퓨터, 영상, 음향 및 통신장비", "부채비율": 96.39297495369996, "영업이익율": 4.361515386923711, "유동비율": 163.379597290228, "당좌비율": 125.43005466512169, "현금보유율": 13.23794540037607, "매출채권회전율": 6.191460557879541, "이자보상배수": 3.381731993730871, "자본잠식률": -472.7679322723488}, "C27": {"code": "C27", "name": "의료, 정밀, 광학기기 및 시계", "부채비율": 94.35052824359006, "영업이익율": 6.273828933238739, "유동비율": 172.1186248763827, "당좌비율": 130.2124037031189, "현금보유율": 16.94433118368265, "매출채권회전율": 5.133832486026052, "이자보상배수": 3.423806915054298, "자본잠식률": -513.9583624156454}, "C28": {"code": "C28", "name": "전기장비", "부채비율": 106.307946954542, "영업이익율": 3.647741129929739, "유동비율": 167.4888435383423, "당좌비율": 124.79625881917372, "현금보유율": 10.69974189488994, "매출채권회전율": 5.645311962658176, "이자보상배수": 3.011820210861209, "자본잠식률": -498.0876712897717}, "C29": {"code": "C29", "name": "기타 기계 및 장비", "부채비율": 114.4836089992009, "영업이익율": 5.6160589216488, "유동비율": 161.28344619645048, "당좌비율": 122.11315842020281, "현금보유율": 11.42602405945777, "매출채권회전율": 5.304359121112621, "이자보상배수": 3.970887062091799, "자본잠식률": -604.3206523649337}, "C30": {"code": "C30", "name": "자동차 및 트레일러", "부채비율": 153.5217090988699, "영업이익율": 2.754830237234179, "유동비율": 112.04185238368889, "당좌비율": 85.0396996478261, "현금보유율": 6.098666947524839, "매출채권회전율": 7.160742301703337, "이자보상배수": 1.968883991576187, "자본잠식률": -444.25499609101485}, "C31": {"code": "C31", "name": "기타 운송장비", "부채비율": 156.9826691616131, "영업이익율": 2.258353729947184, "유동비율": 107.6542543352319, "당좌비율": 79.18330701968931, "현금보유율": 9.609718750002306, "매출채권회전율": 6.567308027889373, "이자보상배수": 1.041351707332015, "자본잠식률": -336.6393613898577}, "C32": {"code": "C32", "name": "가구", "부채비율": 174.37075768841171, "영업이익율": 1.7706594385975278, "유동비율": 133.1616280799853, "당좌비율": 88.67523866534258, "현금보유율": 6.142275276657271, "매출채권회전율": 7.81148823986238, "이자보상배수": 1.33945887355651, "자본잠식률": -539.9768580109028}, "C33": {"code": "C33", "name": "기타 제품 제조업", "부채비율": 122.3053897709665, "영업이익율": 4.3967801833112174, "유동비율": 169.9676038854275, "당좌비율": 122.93197342491831, "현금보유율": 10.209387247262471, "매출채권회전율": 7.034374625705071, "이자보상배수": 3.354075390175453, "자본잠식률": -438.37136356586154}, "C34": {"code": "C34", "name": "산업용기계 및 장비수리업", "부채비율": 200.3279224427668, "영업이익율": 5.053669957735446, "유동비율": 128.5005999255265, "당좌비율": 113.34799817953629, "현금보유율": 15.970836597143908, "매출채권회전율": 6.747496689357154, "이자보상배수": 5.75927015891701, "자본잠식률": -210.6453199625534}, "D35": {"code": "D35", "name": "전기, 가스, 증기 및 공기조절 공급업", "부채비율": 413.83262725469336, "영업이익율": 23.22779693481902, "유동비율": 99.30581618966987, "당좌비율": 95.48267099038338, "현금보유율": 39.20290936856815, "매출채권회전율": 9.456647015350244, "이자보상배수": 2.004429351422433, "자본잠식률": -32.808678811950934}, "E": {"code": "E", "name": "하수 · 폐기물 처리, 원료재생 및 환경복원업", "부채비율": 111.2146893053596, "영업이익율": 6.989877342766645, "유동비율": 168.1408373917907, "당좌비율": 154.526336156398, "현금보유율": 11.59462178274286, "매출채권회전율": 11.52401637596716, "이자보상배수": 3.876647210554616, "자본잠식률": -323.4634994088255}, "F": {"code": "F", "name": "건설업", "부채비율": 113.3381120381528, "영업이익율": 3.126827817106049, "유동비율": 228.65252033707182, "당좌비율": 164.4625194517351, "현금보유율": 12.25454964286993, "매출채권회전율": 6.346652507687629, "이자보상배수": 2.971927082114834, "자본잠식률": -184.8931593751087}, "G": {"code": "G", "name": "도매 및 소매업", "부채비율": 137.1457625864936, "영업이익율": 2.660585514821079, "유동비율": 157.2781473345182, "당좌비율": 117.25671694955719, "현금보유율": 6.184731162328659, "매출채권회전율": 8.536766030106959, "이자보상배수": 4.547037568065791, "자본잠식률": -424.0969306116881}, "H": {"code": "H", "name": "운수 및 창고업", "부채비율": 167.1509724213903, "영업이익율": 2.589566331416683, "유동비율": 117.2364856394418, "당좌비율": 113.407176223235, "현금보유율": 7.914642019605049, "매출채권회전율": 11.65291427136869, "이자보상배수": 2.218492775463015, "자본잠식률": -263.59259405523517}, "I": {"code": "I", "name": "숙박 및 음식점업", "부채비율": 371.0557792000372, "영업이익율": 2.230679632689547, "유동비율": 52.241634782108406, "당좌비율": 43.5563114268611, "현금보유율": 10.92672708523629, "매출채권회전율": 25.31397550358674, "이자보상배수": 0.6324914293710208, "자본잠식률": -93.25799626400013}, "J": {"code": "J", "name": "정보통신업", "부채비율": 124.3198962195365, "영업이익율": -2.320574805729054, "유동비율": 146.12675591636798, "당좌비율": 136.85103974752292, "현금보유율": 23.46551906479816, "매출채권회전율": 7.712175193012884, "이자보상배수": -1.646978320109967, "자본잠식률": -224.3232276436561}, "L": {"code": "L", "name": "부동산업", "부채비율": 474.49812858377845, "영업이익율": 7.60230485436568, "유동비율": 134.1422956947097, "당좌비율": 55.213752583516815, "현금보유율": 28.78973058425403, "매출채권회전율": 6.736546870565089, "이자보상배수": 0.7045223322760182, "자본잠식률": -44.04777788423148}, "M": {"code": "M", "name": "전문, 과학 및 기술 서비스업", "부채비율": 136.4660400475486, "영업이익율": 5.198264635710034, "유동비율": 134.92661393664528, "당좌비율": 124.2474389516276, "현금보유율": 20.79015810311088, "매출채권회전율": 8.631390793898861, "이자보상배수": 2.860274055831316, "자본잠식률": -253.6366187704565}, "N": {"code": "N", "name": "사업시설관리 및 사업지원 및 임대서비스업", "부채비율": 216.3728020808092, "영업이익율": 1.771410508965197, "유동비율": 118.41612152698899, "당좌비율": 109.76394794083899, "현금보유율": 10.17139695324264, "매출채권회전율": 12.89135764106071, "이자보상배수": 1.312669760332937, "자본잠식률": -49.417793765090764}, "P": {"code": "P", "name": "교육 서비스업", "부채비율": 168.09429067160931, "영업이익율": 1.3968618735585672, "유동비율": 97.32966924974174, "당좌비율": 92.54087338777526, "현금보유율": 15.02433489788718, "매출채권회전율": 33.43762227589721, "이자보상배수": 1.099899248946693, "자본잠식률": -177.8798622699685}, "R": {"code": "R", "name": "예술, 스포츠 및 여가관련 서비스업", "부채비율": 197.5492944023949, "영업이익율": 14.19548554442338, "유동비율": 51.730785514296315, "당좌비율": 48.0069572917087, "현금보유율": 19.61395756098299, "매출채권회전율": 32.31736989130943, "이자보상배수": 2.480800251916856, "자본잠식률": -126.88847256003571}, "비제조업": {"code": "", "name": "비제조업", "부채비율": 203.63674473262222, "영업이익율": 3.1806387763623842, "유동비율": 145.7709510524622, "당좌비율": 97.09353407971281, "현금보유율": 11.65630386619346, "매출채권회전율": 8.257360242379491, "이자보상배수": 1.745267952582528, "자본잠식률": -166.7114566440411}, "전산업": {"code": "", "name": "전산업", "부채비율": 171.2716434858539, "영업이익율": 3.4911236449944947, "유동비율": 146.99875212755168, "당좌비율": 101.063927844328, "현금보유율": 10.85541864420818, "매출채권회전율": 7.484532848405358, "이자보상배수": 2.112696477993626, "자본잠식률": -235.0202411779938}, "전체": {"code": "", "name": "전체", "부채비율": 171.0905008634964, "영업이익율": 3.4911835839529464, "유동비율": 147.1026089055733, "당좌비율": 101.0984516584234, "현금보유율": 10.8505356691741, "매출채권회전율": 7.478235334570072, "이자보상배수": 2.114146753534157, "자본잠식률": -235.346766049986}};
+        
+        let companyInfo = null;
+        let evaluationMode = 'bank'; // 'bank', 'industry', 'total'
+        let currentFinancialData = null; // 현재 재무 데이터 저장
+
+        // 업종 드롭다운 초기화
+        function initializeIndustryDropdown() {
+            const select = document.getElementById('industryCode');
+            INDUSTRIES.forEach(industry => {
+                const option = document.createElement('option');
+                option.value = industry.code;
+                option.textContent = `${industry.code} - ${industry.name}`;
+                select.appendChild(option);
+            });
+        }
+
+        // 기업정보 제출
+        function submitCompanyInfo() {
+            const companyName = document.getElementById('companyName').value.trim();
+            const industryCode = document.getElementById('industryCode').value;
+
+            if (!companyName) {
+                alert('기업명을 입력하세요.');
+                return;
+            }
+
+            if (!industryCode) {
+                alert('업종을 선택하세요.');
+                return;
+            }
+
+            const industry = INDUSTRIES.find(i => i.code === industryCode);
+            
+            companyInfo = {
+                name: companyName,
+                industryCode: industry.code,
+                industryName: industry.name
+            };
+
+            // 로컬스토리지에 저장
+            localStorage.setItem('currentCompanyInfo', JSON.stringify(companyInfo));
+
+            // 기업정보 화면 숨기고 메인 앱 표시
+            document.getElementById('companyInfoContainer').style.display = 'none';
+            showAppContainer();
+        }
+
+        // 기업정보 표시
+        function displayCompanyInfo() {
+            if (companyInfo) {
+                document.getElementById('displayCompanyName').textContent = companyInfo.name;
+                document.getElementById('displayIndustryCode').textContent = companyInfo.industryCode;
+                document.getElementById('displayIndustry').textContent = companyInfo.industryName;
+            }
+        }
+
+        // 기존 showAppContainer 함수 수정
+        function showAppContainerOriginal() {
+            document.getElementById('appContainer').style.display = 'block';
+            document.getElementById('currentUser').textContent = currentUser;
+        }
+
+        function showAppContainer() {
+            // 메인 앱 표시
+            document.getElementById('appContainer').style.display = 'block';
+            document.getElementById('currentUser').textContent = currentUser;
+        }
+
+        let accounts = initializeAccounts();
+
+        // 로그인 처리
+        function login() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value; // trim 제거 - 공백도 비밀번호일 수 있음
+            const errorDiv = document.getElementById('loginError');
+
+            console.log('=== 로그인 디버깅 ===');
+            console.log('입력 아이디:', username);
+            console.log('입력 비밀번호:', password);
+            console.log('입력 비밀번호 길이:', password.length);
+            console.log('전체 계정 수:', Object.keys(accounts).length);
+
+            if (!username || !password) {
+                errorDiv.textContent = '아이디와 비밀번호를 입력하세요.';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            const account = accounts[username];
+            
+            if (!account) {
+                console.log('❌ 계정 없음:', username);
+                console.log('존재하는 계정 목록:', Object.keys(accounts).join(', '));
+                errorDiv.textContent = '존재하지 않는 계정입니다.';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            console.log('✓ 계정 존재:', username);
+            console.log('저장된 비밀번호:', account.password);
+            console.log('저장된 비밀번호 길이:', account.password.length);
+            console.log('비밀번호 일치:', account.password === password);
+            
+            // 문자 비교
+            if (account.password !== password) {
+                console.log('❌ 비밀번호 불일치');
+                console.log('입력:', [...password].map(c => c.charCodeAt(0)));
+                console.log('저장:', [...account.password].map(c => c.charCodeAt(0)));
+                errorDiv.textContent = '비밀번호가 잘못되었습니다.';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            // 로그인 성공
+            console.log('✓ 로그인 성공:', username);
+            currentUser = username;
+            account.viewCount++;
+            account.lastLogin = new Date().toISOString();
+            localStorage.setItem('accounts', JSON.stringify(accounts));
+
+            document.getElementById('loginContainer').style.display = 'none';
+            errorDiv.style.display = 'none';
+
+            if (account.isAdmin) {
+                showAdminPanel();
+            } else {
+                // 기업정보 입력 화면 없이 바로 앱 화면으로
+                showAppContainer();
+            }
+        }
+
+        // 로그아웃
+        function logout() {
+            currentUser = null;
+            companyInfo = null;
+            localStorage.removeItem('currentCompanyInfo');
+            document.getElementById('loginContainer').style.display = 'flex';
+            document.getElementById('adminPanel').style.display = 'none';
+            document.getElementById('appContainer').style.display = 'none';
+            document.getElementById('diagnosisInfoBox').style.display = 'none';
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            document.getElementById('loginError').style.display = 'none';
+        }
+
+        // 관리자 패널 표시
+        function showAdminPanel() {
+            document.getElementById('adminPanel').style.display = 'block';
+            updateAccountsTable();
+        }
+
+        // 앱 컨테이너 표시
+        function showAppContainer() {
+            document.getElementById('appContainer').style.display = 'block';
+            document.getElementById('currentUser').textContent = currentUser;
+        }
+
+        // 계정 테이블 업데이트
+        function updateAccountsTable() {
+            const tbody = document.getElementById('accountsTableBody');
+            const sortedAccounts = Object.entries(accounts)
+                .filter(([username]) => username !== 'admin')
+                .sort((a, b) => a[0].localeCompare(b[0]));
+
+            let html = '';
+            sortedAccounts.forEach(([username, data]) => {
+                const lastLogin = data.lastLogin ? new Date(data.lastLogin).toLocaleString('ko-KR') : '접속 기록 없음';
+                html += `
+                    <tr>
+                        <td style="font-weight: 600;">${username}</td>
+                        <td>${data.viewCount}회</td>
+                        <td style="font-size: 0.9rem;">${lastLogin}</td>
+                        <td><button class="delete-button" onclick="deleteAccount('${username}')">삭제</button></td>
+                    </tr>
+                `;
+            });
+
+            tbody.innerHTML = html;
+        }
+
+        // 계정 추가
+        function addAccount() {
+            const username = document.getElementById('newUsername').value.trim();
+            const password = document.getElementById('newPassword').value;
+
+            if (!username || !password) {
+                alert('아이디와 비밀번호를 입력하세요.');
+                return;
+            }
+
+            if (accounts[username]) {
+                alert('이미 존재하는 아이디입니다.');
+                return;
+            }
+
+            accounts[username] = {
+                password: password,
+                isAdmin: false,
+                viewCount: 0,
+                lastLogin: null
+            };
+
+            localStorage.setItem('accounts', JSON.stringify(accounts));
+            document.getElementById('newUsername').value = '';
+            document.getElementById('newPassword').value = '';
+            updateAccountsTable();
+            alert('계정이 추가되었습니다.');
+        }
+
+        // 계정 삭제
+        function deleteAccount(username) {
+            if (confirm(`정말로 '${username}' 계정을 삭제하시겠습니까?`)) {
+                delete accounts[username];
+                localStorage.setItem('accounts', JSON.stringify(accounts));
+                updateAccountsTable();
+                alert('계정이 삭제되었습니다.');
+            }
+        }
+
+        // Enter 키로 로그인 및 파일 업로드 이벤트 리스너
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('password').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') login();
+            });
+
+            // 파일 업로드 이벤트
+            const uploadArea = document.getElementById('uploadArea');
+            const fileInput = document.getElementById('fileInput');
+
+            uploadArea.addEventListener('click', () => fileInput.click());
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.style.borderColor = '#1e3a5f';
+            });
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.style.borderColor = '#2874a6';
+            });
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.style.borderColor = '#2874a6';
+                if (e.dataTransfer.files.length > 0) handleFile(e.dataTransfer.files[0]);
+            });
+
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files.length > 0) handleFile(e.target.files[0]);
+            });
+        });
+
+        // 이하 기존 재무분석 기능 코드
+
+        function handleFile(file) {
+            if (!file.name.match(/\.(xlsx|xls)$/i)) {
+                alert('엑셀 파일만 업로드 가능합니다.');
+                return;
+            }
+
+            document.getElementById('fileName').textContent = file.name;
+            document.getElementById('fileSize').textContent = formatFileSize(file.size);
+            document.getElementById('selectedFile').classList.add('show');
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, {type: 'array'});
+                    extractFinancialData(workbook);
+                } catch (error) {
+                    alert('파일 읽기 오류: ' + error.message);
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        function extractFinancialData(workbook) {
+            try {
+                const sheet = workbook.Sheets['재무지표(분석)(변형)'];
+                if (!sheet) {
+                    alert('재무지표(분석)(변형) 시트를 찾을 수 없습니다.');
+                    return;
+                }
+
+                console.log('엑셀 시트 로드 성공');
+
+                // 기업명 추출 (D3)
+                const companyNameCell = sheet['D3'];
+                const companyName = companyNameCell ? companyNameCell.v : '(기업명 없음)';
+                
+                // 업종명 추출 (K5 - 업종명이 직접 입력되어 있음)
+                const industryNameCell = sheet['K5'];
+                const industryNameFromExcel = industryNameCell ? String(industryNameCell.v).trim() : null;
+                
+                console.log('기업명:', companyName);
+                console.log('업종명 (K5):', industryNameFromExcel);
+                
+                // 업종명으로 업종코드 찾기
+                let industryName = '전체';
+                let finalIndustryCode = '전체';
+                
+                if (industryNameFromExcel) {
+                    // 1차: INDUSTRY_CODE_MAP에서 직접 매칭 (가장 정확)
+                    if (INDUSTRY_CODE_MAP[industryNameFromExcel]) {
+                        finalIndustryCode = INDUSTRY_CODE_MAP[industryNameFromExcel];
+                        // INDUSTRIES 배열에서 정확한 이름 찾기
+                        const industry = INDUSTRIES.find(ind => ind.code === finalIndustryCode);
+                        if (industry) {
+                            industryName = industry.name;
+                        } else {
+                            industryName = industryNameFromExcel;
+                        }
+                    } 
+                    // 2차: INDUSTRIES 배열에서 부분 매칭
+                    else {
+                        const industry = INDUSTRIES.find(ind => 
+                            ind.name === industryNameFromExcel || 
+                            ind.name.includes(industryNameFromExcel) || 
+                            industryNameFromExcel.includes(ind.name)
+                        );
+                        if (industry) {
+                            finalIndustryCode = industry.code;
+                            industryName = industry.name;
+                        } else {
+                            // 3차: INDUSTRY_STANDARDS에서 찾기
+                            industryName = industryNameFromExcel;
+                            for (const [code, data] of Object.entries(INDUSTRY_STANDARDS)) {
+                                if (data.name === industryNameFromExcel || 
+                                    data.name.includes(industryNameFromExcel) || 
+                                    industryNameFromExcel.includes(data.name)) {
+                                    finalIndustryCode = code;
+                                    industryName = data.name;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    
+                    console.log('최종 업종코드:', finalIndustryCode);
+                    console.log('최종 업종명:', industryName);
+                }
+                
+                // companyInfo 전역 변수에 저장
+                companyInfo = {
+                    name: companyName,
+                    industryCode: finalIndustryCode,
+                    industryName: industryName
+                };
+                
+                // localStorage에 저장
+                localStorage.setItem('currentCompanyInfo', JSON.stringify(companyInfo));
+                
+                // 우측 패널 진단 정보 박스 표시
+                document.getElementById('diagCompanyName').textContent = companyName;
+                document.getElementById('diagIndustry').textContent = `${finalIndustryCode} - ${industryName}`;
+                document.getElementById('diagConsultant').textContent = currentUser || '미지정';
+                document.getElementById('diagnosisInfoBox').style.display = 'block';
+                
+                console.log('기업정보 설정 완료:', companyInfo);
+
+                // 셀 참조 함수 (1-based 행/열 번호)
+                function getCell(row, col) {
+                    const colLetter = String.fromCharCode(64 + col); // 1->A, 2->B, ...
+                    const cellRef = colLetter + row;
+                    const cell = sheet[cellRef];
+                    
+                    if (!cell || cell.v === null || cell.v === undefined || cell.v === '') {
+                        return 0;
+                    }
+                    
+                    const value = parseFloat(cell.v);
+                    return isNaN(value) ? 0 : value;
+                }
+
+                // 데이터 매핑
+                const mapping = {
+                    // 재무상태표
+                    'asset': 8, 'current_asset': 9, 'quick_asset': 10, 'cash': 11,
+                    'provisional_payment': 12, 'receivable': 13, 'short_loan': 14,
+                    'accrued_income': 15, 'inventory': 16, 'long_loan': 17,
+                    'tangible_asset': 18, 'intangible_asset': 19, 'noncurrent_asset': 20,
+                    'liability': 21, 'current_liability': 22, 'payable': 23,
+                    'provisional_receipt': 24, 'short_borrowing': 25, 'long_borrowing': 26,
+                    'equity': 27, 'capital': 28, 'retained_earnings': 29, 'net_income_bs': 30,
+                    // 손익계산서
+                    'revenue': 35, 'gross_profit': 36, 'operating_expense': 37,
+                    'operating_income': 38, 'interest_expense': 39, 'pretax_income': 40,
+                    'tax_expense': 41, 'net_income': 42
+                };
+
+                // 년도별 열 (E=5, F=6, G=7)
+                const yearCols = {2022: 5, 2023: 6, 2024: 7};
+
+                // 데이터 추출 및 입력 필드 채우기
+                for (const [year, col] of Object.entries(yearCols)) {
+                    for (const [field, row] of Object.entries(mapping)) {
+                        const value = getCell(row, col);
+                        const inputId = `${field}_${year}`;
+                        const inputElement = document.getElementById(inputId);
+                        
+                        if (inputElement) {
+                            inputElement.value = value || '';
+                        }
+                    }
+                }
+
+                console.log('데이터 추출 및 입력 완료');
+
+                // 계산 실행
+                calculate();
+
+                // 파일명 표시
+                document.getElementById('selectedFile').classList.add('show');
+
+            } catch (error) {
+                console.error('extractFinancialData 오류:', error);
+                alert('데이터 추출 오류: ' + error.message);
+            }
+        }
+
+
+
+        function removeFile() {
+            fileInput.value = '';
+            document.getElementById('selectedFile').classList.remove('show');
+            
+            // 모든 입력 필드 초기화
+            const years = [2022, 2023, 2024];
+            const allInputs = document.querySelectorAll('.year-input');
+            allInputs.forEach(input => {
+                input.value = '';
+            });
+            
+            calculate();
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+        }
+
+        function getValue(id) {
+            const element = document.getElementById(id);
+            if (!element) return 0;
+            const val = element.value;
+            if (!val || val === '' || val === null || val === undefined) return 0;
+            const parsed = parseFloat(val);
+            return isNaN(parsed) ? 0 : parsed;
+        }
+
+        function calculate() {
+            const years = [2022, 2023, 2024];
+            const results = {};
+
+            years.forEach(year => {
+                const currentAsset = getValue(`current_asset_${year}`);
+                const quickAsset = getValue(`quick_asset_${year}`);
+                const cash = getValue(`cash_${year}`);
+                const receivable = getValue(`receivable_${year}`);
+                const currentLiability = getValue(`current_liability_${year}`);
+                const liability = getValue(`liability_${year}`);
+                const equity = getValue(`equity_${year}`);
+                const revenue = getValue(`revenue_${year}`);
+                const operatingIncome = getValue(`operating_income_${year}`);
+                const interestExpense = getValue(`interest_expense_${year}`);
+
+                // 안전한 계산 (0으로 나누기 방지)
+                const safeDiv = (a, b) => (b !== 0 && !isNaN(b)) ? a / b : 0;
+                
+                results[year] = {
+                    유동비율: safeDiv(currentAsset, currentLiability) * 100,
+                    당좌비율: safeDiv(quickAsset, currentLiability) * 100,
+                    부채비율: safeDiv(liability, equity) * 100,
+                    매출채권회전율: safeDiv(revenue, receivable),
+                    영업이익율: safeDiv(operatingIncome, revenue) * 100,
+                    이자보상배수: safeDiv(operatingIncome, (interestExpense || 1)),
+                    현금보유율: safeDiv(cash, revenue) * 100,
+                    자본잠식률: equity < 0 ? Math.abs(safeDiv(equity, (liability + equity)) * 100) : 0
+                };
+            });
+
+            displayResults(results);
+            generateConsultantComment(results);
+        }
+
+        function displayResults(results) {
+            // 현재 재무 데이터 저장
+            currentFinancialData = results;
+            
+            // 현재 선택된 업종
+            const industryCode = companyInfo?.industryCode || '전체';
+            
+            const standards = {
+                유동비율: { higher: true, unit: '%' },
+                당좌비율: { higher: true, unit: '%' },
+                부채비율: { higher: false, unit: '%' },
+                매출채권회전율: { higher: true, unit: '회' },
+                영업이익율: { higher: true, unit: '%' },
+                이자보상배수: { higher: true, unit: '배' },
+                현금보유율: { higher: true, unit: '%' },
+                자본잠식률: { higher: false, unit: '%' }
+            };
+
+            let html = '';
+            
+            for (const [metric, standard] of Object.entries(standards)) {
+                const val2022 = isNaN(results[2022][metric]) ? 0 : (results[2022][metric] || 0);
+                const val2023 = isNaN(results[2023][metric]) ? 0 : (results[2023][metric] || 0);
+                const val2024 = isNaN(results[2024][metric]) ? 0 : (results[2024][metric] || 0);
+
+                // 현재 평가 모드에 따른 기준값
+                const standardValue = getStandardValue(metric, industryCode, evaluationMode);
+                
+                const judgment2022 = getJudgmentText(val2022, standardValue, standard.higher);
+                const judgment2023 = getJudgmentText(val2023, standardValue, standard.higher);
+                const judgment2024 = getJudgmentText(val2024, standardValue, standard.higher);
+
+                // 모드별 라벨
+                const modeLabels = {
+                    'bank': '🏦 은행기준',
+                    'industry': '🏭 업종기준',
+                    'total': '📊 통합기준'
+                };
+
+                html += `
+                    <div class="metric-card">
+                        <div class="metric-header">
+                            <div class="metric-title">${metric}</div>
+                            <div class="metric-standards">
+                                <div class="standard-item"><span class="standard-label">${modeLabels[evaluationMode]}:</span> ${standardValue.toFixed(1)}${standard.unit}</div>
+                            </div>
+                        </div>
+                        <div class="metric-years">
+                            <div class="year-column">
+                                <div class="year-label">2022년</div>
+                                <div class="year-value-large">${val2022.toFixed(metric === '매출채권회전율' ? 1 : 2)}${standard.unit}</div>
+                                <div class="year-judgment judgment-${judgment2022.class}">${judgment2022.text}</div>
+                            </div>
+                            <div class="year-column">
+                                <div class="year-label">2023년</div>
+                                <div class="year-value-large">${val2023.toFixed(metric === '매출채권회전율' ? 1 : 2)}${standard.unit}</div>
+                                <div class="year-judgment judgment-${judgment2023.class}">${judgment2023.text}</div>
+                            </div>
+                            <div class="year-column">
+                                <div class="year-label">2024년</div>
+                                <div class="year-value-large">${val2024.toFixed(metric === '매출채권회전율' ? 1 : 2)}${standard.unit}</div>
+                                <div class="year-judgment judgment-${judgment2024.class}">${judgment2024.text}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            document.getElementById('metricsResults').innerHTML = html;
+
+            [2022, 2023, 2024].forEach(year => {
+                const score = calculateScore(results[year], standards);
+                const grade = getGrade(score);
+            });
+
+        }
+
+        function getJudgmentText(value, standard, higherIsBetter) {
+            let judgment;
+            if (higherIsBetter) {
+                if (value >= standard * 1.2) judgment = { text: '우수', class: 'excellent' };
+                else if (value >= standard * 0.8) judgment = { text: '양호', class: 'good' };
+                else judgment = { text: '미달', class: 'poor' };
+            } else {
+                if (value <= standard * 0.8) judgment = { text: '우수', class: 'excellent' };
+                else if (value <= standard * 1.2) judgment = { text: '양호', class: 'good' };
+                else judgment = { text: '미달', class: 'poor' };
+            }
+            return judgment;
+        }
+
+        // 평가 기준값 가져오기
+        function getStandardValue(metric, industryCode, mode) {
+            mode = mode || evaluationMode;
+            
+            if (mode === 'bank') {
+                // 은행기준
+                const bankCategory = INDUSTRY_TO_BANK_CATEGORY[industryCode] || '제조업';
+                const bankValue = BANK_STANDARDS[metric]?.[bankCategory];
+                if (bankValue !== undefined) {
+                    // 비율을 퍼센트로 변환
+                    if (metric === '유동비율' || metric === '당좌비율' || metric === '부채비율') {
+                        return bankValue * 100;
+                    } else if (metric === '영업이익율') {
+                        return bankValue * 100;
+                    }
+                    return bankValue;
+                }
+            } else if (mode === 'industry') {
+                // 업종기준 (이미 퍼센트로 저장되어 있음)
+                const industryStd = INDUSTRY_STANDARDS[industryCode];
+                if (industryStd) {
+                    const value = industryStd[metric];
+                    if (value !== undefined) {
+                        // INDUSTRY_STANDARDS는 이미 퍼센트 단위이므로 변환 불필요
+                        return value;
+                    }
+                }
+            } else if (mode === 'total') {
+                // 통합기준 (전체 평균 - 이미 퍼센트로 저장되어 있음)
+                const totalStd = INDUSTRY_STANDARDS['전체'];
+                if (totalStd) {
+                    const value = totalStd[metric];
+                    if (value !== undefined) {
+                        // INDUSTRY_STANDARDS는 이미 퍼센트 단위이므로 변환 불필요
+                        return value;
+                    }
+                }
+            }
+            
+            // 기본값
+            return 100;
+        }
+
+        // 평가 모드 전환
+        function switchEvaluationMode(mode) {
+            evaluationMode = mode;
+            
+            // 버튼 스타일 업데이트
+            const buttons = {
+                'bank': document.getElementById('btnBankMode'),
+                'industry': document.getElementById('btnIndustryMode'),
+                'total': document.getElementById('btnTotalMode')
+            };
+            
+            // 모드별 이름
+            const modeNames = {
+                'bank': '🏦 은행기준',
+                'industry': '🏭 업종기준',
+                'total': '📊 통합기준'
+            };
+            
+            // 모든 버튼 비활성 스타일
+            Object.values(buttons).forEach(btn => {
+                btn.style.background = 'rgba(255,255,255,0.25)';
+                btn.style.color = 'white';
+                btn.style.border = '2px solid rgba(255,255,255,0.4)';
+                btn.style.boxShadow = 'none';
+            });
+            
+            // 선택된 버튼 활성 스타일
+            buttons[mode].style.background = 'white';
+            buttons[mode].style.color = '#667eea';
+            buttons[mode].style.border = 'none';
+            buttons[mode].style.boxShadow = '0 3px 8px rgba(0,0,0,0.15)';
+            
+            // 인쇄용 텍스트 업데이트
+            document.getElementById('currentModeName').textContent = modeNames[mode];
+            
+            // 재무 데이터 재계산
+            if (currentFinancialData) {
+                displayResults(currentFinancialData);
+                // 컨설턴트 제안도 재생성 (평가 모드에 따라 다른 내용)
+                generateConsultantComment(currentFinancialData);
+            }
+        }
+        
+        // 재무지표 다시 표시 (평가 모드 전환 시 사용)
+        function displayFinancialMetrics(results) {
+            displayResults(results);
+        }
+
+        function calculateScore(yearData, standards) {
+            let total = 0;
+            let count = 0;
+
+            for (const [metric, standard] of Object.entries(standards)) {
+                const value = isNaN(yearData[metric]) ? 0 : (yearData[metric] || 0);
+                if (standard.higher) {
+                    const diff = ((value - standard.value) / standard.value) * 100;
+                    total += Math.max(0, Math.min(100, 50 + diff * 0.5));
+                } else {
+                    const diff = ((standard.value - value) / standard.value) * 100;
+                    total += Math.max(0, Math.min(100, 50 + diff * 0.5));
+                }
+                count++;
+            }
+
+            return Math.round(total / count);
+        }
+
+        function getGrade(score) {
+            if (score >= 80) return '우수';
+            if (score >= 60) return '양호';
+            if (score >= 40) return '보통';
+            return '개선필요';
+        }
+
+        function generateConsultantComment(results) {
+            const latest = results[2024];
+            const prev = results[2023];
+            const prev2 = results[2022];
+            const industryCode = companyInfo?.industryCode || '전체';
+            const industryName = companyInfo?.industryName || '전체';
+
+            const hasData = latest.유동비율 > 0 || latest.부채비율 > 0 || latest.영업이익율 !== 0;
+            
+            if (!hasData) {
+                document.getElementById('consultantSection').style.display = 'none';
+                return;
+            }
+
+            document.getElementById('consultantSection').style.display = 'block';
+
+            // 평가 모드별 우수/양호 카운트
+            const evaluationResults = {};
+            ['bank', 'industry', 'total'].forEach(mode => {
+                evaluationResults[mode] = {
+                    excellent: 0,
+                    good: 0,
+                    poor: 0
+                };
+                
+                const metrics = ['유동비율', '당좌비율', '부채비율', '매출채권회전율', '영업이익율', '이자보상배수', '현금보유율'];
+                metrics.forEach(metric => {
+                    const standardValue = getStandardValue(metric, industryCode, mode);
+                    const higherIsBetter = metric !== '부채비율' && metric !== '자본잠식률';
+                    const judgment = getJudgmentText(latest[metric], standardValue, higherIsBetter);
+                    
+                    if (judgment.class === 'excellent') evaluationResults[mode].excellent++;
+                    else if (judgment.class === 'good') evaluationResults[mode].good++;
+                    else evaluationResults[mode].poor++;
+                });
+            });
+
+            // 현재 평가 모드의 결과
+            const currentResults = evaluationResults[evaluationMode];
+            
+            // ===========================================
+            // 1. 종합 진단 의견
+            // ===========================================
+            let comprehensiveAnalysis = '<div class="comment-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-left: 5px solid #0284c7; padding: 25px;">';
+            comprehensiveAnalysis += '<h4 style="color: #0369a1; font-size: 18px; margin-bottom: 18px;">📋 종합 진단 의견</h4>';
+            
+            comprehensiveAnalysis += `<div style="background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">`;
+            comprehensiveAnalysis += `<p style="font-size: 15px; line-height: 1.8; color: #1e293b; margin-bottom: 15px;"><strong>${companyInfo.name}</strong>의 2024년 재무상태를 <strong style="color: #0284c7;">${industryName}</strong> 업종 특성을 고려하여 종합 분석한 결과입니다.</p>`;
+            
+            // 평가 모드별 결과 요약
+            const modeNames = { 'bank': '은행기준', 'industry': '업종기준', 'total': '통합기준' };
+            comprehensiveAnalysis += `<div style="background: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 15px;">`;
+            comprehensiveAnalysis += `<p style="font-weight: 600; color: #334155; margin-bottom: 12px;">📊 현재 적용 기준: <span style="color: #0284c7;">${modeNames[evaluationMode]}</span></p>`;
+            comprehensiveAnalysis += `<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; text-align: center;">`;
+            comprehensiveAnalysis += `<div style="background: white; padding: 12px; border-radius: 6px;"><div style="font-size: 13px; color: #64748b; margin-bottom: 4px;">우수</div><div style="font-size: 22px; font-weight: 700; color: #16a34a;">${currentResults.excellent}개</div></div>`;
+            comprehensiveAnalysis += `<div style="background: white; padding: 12px; border-radius: 6px;"><div style="font-size: 13px; color: #64748b; margin-bottom: 4px;">양호</div><div style="font-size: 22px; font-weight: 700; color: #eab308;">${currentResults.good}개</div></div>`;
+            comprehensiveAnalysis += `<div style="background: white; padding: 12px; border-radius: 6px;"><div style="font-size: 13px; color: #64748b; margin-bottom: 4px;">미달</div><div style="font-size: 22px; font-weight: 700; color: #dc2626;">${currentResults.poor}개</div></div>`;
+            comprehensiveAnalysis += `</div></div>`;
+            
+            // 종합 평가
+            let overallGrade = '';
+            let overallComment = '';
+            const totalScore = currentResults.excellent * 3 + currentResults.good * 2 + currentResults.poor * 0;
+            
+            // 평가 모드별 맞춤형 코멘트
+            let modeSpecificComment = '';
+            if (evaluationMode === 'bank') {
+                if (totalScore >= 18) {
+                    modeSpecificComment = ' 은행 대출 심사 시 최상위 등급으로 평가받을 수 있으며, 시중은행 우대금리 적용이 가능합니다.';
+                } else if (totalScore >= 12) {
+                    modeSpecificComment = ' 은행 대출 승인 가능성이 높으나, 일부 지표 개선 시 더 유리한 조건을 받을 수 있습니다.';
+                } else if (totalScore >= 7) {
+                    modeSpecificComment = ' 은행 대출 시 담보나 보증이 필요할 수 있으며, 정책자금 병행을 권장합니다.';
+                } else {
+                    modeSpecificComment = ' 은행 대출이 어려울 수 있으므로 정책자금 및 보증부 대출을 우선 검토하시기 바랍니다.';
+                }
+            } else if (evaluationMode === 'industry') {
+                if (totalScore >= 18) {
+                    modeSpecificComment = ` ${industryName} 업종 내에서 상위권 재무구조를 보유하고 있어 정책자금 우대 대상입니다.`;
+                } else if (totalScore >= 12) {
+                    modeSpecificComment = ` ${industryName} 업종 평균보다 양호한 수준이며, 중진공·신보 등 정책자금 신청 시 유리합니다.`;
+                } else if (totalScore >= 7) {
+                    modeSpecificComment = ` ${industryName} 업종 평균 수준이나, 정책자금 지원 대상으로 적합합니다.`;
+                } else {
+                    modeSpecificComment = ` ${industryName} 업종 평균 대비 낮은 수준으로, 재무개선 후 정책자금 신청을 권장합니다.`;
+                }
+            } else { // total
+                if (totalScore >= 18) {
+                    modeSpecificComment = ' 전산업 평균 대비 매우 우수한 재무상태로, 금융기관 및 정책자금 모두 유리한 조건을 받을 수 있습니다.';
+                } else if (totalScore >= 12) {
+                    modeSpecificComment = ' 전산업 평균보다 양호한 수준으로, 안정적인 자금조달이 가능합니다.';
+                } else if (totalScore >= 7) {
+                    modeSpecificComment = ' 전산업 평균 수준이며, 체계적인 재무관리로 상위 등급 진입이 가능합니다.';
+                } else {
+                    modeSpecificComment = ' 전산업 평균 대비 낮은 수준으로, 즉각적인 재무구조 개선이 필요합니다.';
+                }
+            }
+            
+            if (totalScore >= 18) {
+                overallGrade = '매우 우수';
+                overallComment = '대부분의 재무지표가 우수한 수준을 유지하고 있습니다. 현재의 안정적인 재무구조를 바탕으로 성장 투자를 적극 검토할 시점입니다.' + modeSpecificComment;
+            } else if (totalScore >= 12) {
+                overallGrade = '양호';
+                overallComment = '전반적인 재무상태가 양호하나, 일부 개선이 필요한 지표가 있습니다. 취약 부문을 집중 관리하면 우수한 등급으로 발전 가능합니다.' + modeSpecificComment;
+            } else if (totalScore >= 7) {
+                overallGrade = '보통';
+                overallComment = '재무지표가 평균 수준이나 개선 여지가 많습니다. 체계적인 재무관리 시스템을 구축하고 단계적 개선이 필요합니다.' + modeSpecificComment;
+            } else {
+                overallGrade = '주의 필요';
+                overallComment = '다수의 재무지표가 기준에 미달하고 있어 즉각적인 개선 조치가 필요합니다. 전문가 컨설팅을 통한 재무구조 개선을 권장합니다.' + modeSpecificComment;
+            }
+            
+            comprehensiveAnalysis += `<div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); padding: 18px; border-radius: 8px; border: 2px solid #f59e0b;">`;
+            comprehensiveAnalysis += `<p style="font-size: 16px; font-weight: 700; color: #92400e; margin-bottom: 8px;">💎 종합 등급: ${overallGrade}</p>`;
+            comprehensiveAnalysis += `<p style="font-size: 14px; line-height: 1.7; color: #78350f;">${overallComment}</p>`;
+            comprehensiveAnalysis += `</div>`;
+            
+            comprehensiveAnalysis += `</div></div>`;
+
+            // ===========================================
+            // 2. 평가 모드별 자금 추천
+            // ===========================================
+            let fundingRecommendation = '<div class="comment-section" style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-left: 5px solid #16a34a; padding: 25px;">';
+            fundingRecommendation += '<h4 style="color: #15803d; font-size: 18px; margin-bottom: 18px;">💰 평가 기준별 자금조달 추천</h4>';
+            
+            // 은행기준 평가
+            const bankScore = evaluationResults.bank.excellent + evaluationResults.bank.good;
+            fundingRecommendation += `<div style="background: white; padding: 20px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">`;
+            fundingRecommendation += `<h5 style="color: #0891b2; font-size: 16px; margin-bottom: 12px;">🏦 은행기준 평가 (우수 ${evaluationResults.bank.excellent}개 + 양호 ${evaluationResults.bank.good}개 = 총 ${bankScore}개)</h5>`;
+            
+            if (bankScore >= 5) {
+                fundingRecommendation += `<p style="line-height: 1.8; color: #334155; margin-bottom: 12px;">✅ <strong>시중은행 대출 적극 추천</strong></p>`;
+                fundingRecommendation += `<ul style="margin-left: 20px; line-height: 1.8; color: #475569;">`;
+                fundingRecommendation += `<li><strong>우대금리 대상:</strong> 신한은행, 하나은행, KB국민은행 등 시중은행의 우대금리 적용 가능</li>`;
+                fundingRecommendation += `<li><strong>추천 상품:</strong> 기업신용대출(3~5년), 운전자금대출, 시설자금대출</li>`;
+                fundingRecommendation += `<li><strong>금리 수준:</strong> 연 4.5~6.0% (우대금리 최대 1.5%p 할인 가능)</li>`;
+                fundingRecommendation += `<li><strong>한도:</strong> 매출액의 50~100%, 최대 30억원</li>`;
+                fundingRecommendation += `<li><strong>담보:</strong> 무담보 또는 부동산 담보 선택 가능</li>`;
+                fundingRecommendation += `</ul>`;
+            } else if (bankScore >= 3) {
+                fundingRecommendation += `<p style="line-height: 1.8; color: #334155; margin-bottom: 12px;">⚠️ <strong>시중은행 대출 가능 (일부 보완 필요)</strong></p>`;
+                fundingRecommendation += `<ul style="margin-left: 20px; line-height: 1.8; color: #475569;">`;
+                fundingRecommendation += `<li><strong>대출 가능:</strong> 일부 재무지표 보완 시 시중은행 대출 승인 가능성 있음</li>`;
+                fundingRecommendation += `<li><strong>추천 상품:</strong> IBK기업은행, Sh수협은행 등 중소기업 특화 상품</li>`;
+                fundingRecommendation += `<li><strong>금리 수준:</strong> 연 5.5~7.5%</li>`;
+                fundingRecommendation += `<li><strong>보완 사항:</strong> 미달 지표 개선 계획서 제출, 사업계획서 보완</li>`;
+                fundingRecommendation += `</ul>`;
+            } else {
+                fundingRecommendation += `<p style="line-height: 1.8; color: #334155; margin-bottom: 12px;">❌ <strong>시중은행 대출 어려움 (정책자금 우선 검토)</strong></p>`;
+                fundingRecommendation += `<ul style="margin-left: 20px; line-height: 1.8; color: #475569;">`;
+                fundingRecommendation += `<li>은행기준 미달 지표가 많아 시중은행 대출 승인이 어려울 수 있습니다</li>`;
+                fundingRecommendation += `<li>정책자금 및 보증부 대출을 우선 검토하시기 바랍니다</li>`;
+                fundingRecommendation += `</ul>`;
+            }
+            fundingRecommendation += `</div>`;
+            
+            // 업종기준 평가
+            const industryScore = evaluationResults.industry.excellent + evaluationResults.industry.good;
+            fundingRecommendation += `<div style="background: white; padding: 20px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">`;
+            fundingRecommendation += `<h5 style="color: #0891b2; font-size: 16px; margin-bottom: 12px;">🏭 업종기준 평가 (우수 ${evaluationResults.industry.excellent}개 + 양호 ${evaluationResults.industry.good}개 = 총 ${industryScore}개)</h5>`;
+            
+            if (industryScore >= 5) {
+                fundingRecommendation += `<p style="line-height: 1.8; color: #334155; margin-bottom: 12px;">✅ <strong>정책자금 우대 대상 (중진공/신보/기보 적극 추천)</strong></p>`;
+                fundingRecommendation += `<ul style="margin-left: 20px; line-height: 1.8; color: #475569;">`;
+                fundingRecommendation += `<li><strong>중소벤처기업진흥공단 (중진공)</strong>`;
+                fundingRecommendation += `<ul style="margin-left: 20px; margin-top: 8px;">`;
+                fundingRecommendation += `<li>정책자금 직접대출: 연 2.0~3.5% (최저금리)</li>`;
+                fundingRecommendation += `<li>성장기반자금, 혁신성장촉진자금, 일자리창출촉진자금</li>`;
+                fundingRecommendation += `<li>대출한도: 업체당 최대 50억원 (운전 30억 + 시설 20억)</li>`;
+                fundingRecommendation += `<li>상환기간: 최대 10년 (거치 3년)</li>`;
+                fundingRecommendation += `</ul></li>`;
+                fundingRecommendation += `<li><strong>신용보증기금 (신보)</strong>`;
+                fundingRecommendation += `<ul style="margin-left: 20px; margin-top: 8px;">`;
+                fundingRecommendation += `<li>신용보증서 발급: 보증비율 85~100%</li>`;
+                fundingRecommendation += `<li>일반보증, 특별보증 (업종별 우대)</li>`;
+                fundingRecommendation += `<li>보증한도: 최대 30억원</li>`;
+                fundingRecommendation += `<li>보증료율: 0.5~1.5% (업종 우수 시 최저 요율)</li>`;
+                fundingRecommendation += `</ul></li>`;
+                fundingRecommendation += `<li><strong>기술보증기금 (기보)</strong>`;
+                fundingRecommendation += `<ul style="margin-left: 20px; margin-top: 8px;">`;
+                fundingRecommendation += `<li>기술평가보증: 기술력 기반 보증</li>`;
+                fundingRecommendation += `<li>보증한도: 최대 30억원</li>`;
+                fundingRecommendation += `<li>보증료율: 0.5~1.8% (기술등급에 따라 차등)</li>`;
+                fundingRecommendation += `</ul></li>`;
+                fundingRecommendation += `</ul>`;
+            } else if (industryScore >= 3) {
+                fundingRecommendation += `<p style="line-height: 1.8; color: #334155; margin-bottom: 12px;">⚠️ <strong>정책자금 일부 가능 (보증부 대출 권장)</strong></p>`;
+                fundingRecommendation += `<ul style="margin-left: 20px; line-height: 1.8; color: #475569;">`;
+                fundingRecommendation += `<li><strong>신용보증재단</strong>: 지역 신용보증재단 통한 보증부 대출 (한도 최대 5억원)</li>`;
+                fundingRecommendation += `<li><strong>소상공인진흥공단</strong>: 소상공인 정책자금 (연 2.0~3.0%, 최대 1억원)</li>`;
+                fundingRecommendation += `<li><strong>지자체 특별자금</strong>: 각 지역별 중소기업 지원자금 신청</li>`;
+                fundingRecommendation += `</ul>`;
+            } else {
+                fundingRecommendation += `<p style="line-height: 1.8; color: #334155; margin-bottom: 12px;">❌ <strong>재무개선 후 정책자금 신청 권장</strong></p>`;
+                fundingRecommendation += `<ul style="margin-left: 20px; line-height: 1.8; color: #475569;">`;
+                fundingRecommendation += `<li>업종 평균 대비 재무지표가 낮아 정책자금 승인이 어려울 수 있습니다</li>`;
+                fundingRecommendation += `<li>3~6개월간 재무구조 개선 후 재신청을 권장합니다</li>`;
+                fundingRecommendation += `<li>긴급 자금이 필요한 경우: 소상공인진흥공단 긴급경영안정자금 검토</li>`;
+                fundingRecommendation += `</ul>`;
+            }
+            fundingRecommendation += `</div>`;
+            
+            fundingRecommendation += `</div>`;
+
+            // ===========================================
+            // 3. 상세 재무지표 분석 (31개 항목 기반)
+            // ===========================================
+            let detailedAnalysis = '<div class="comment-section" style="background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border-left: 5px solid #9333ea; padding: 25px;">';
+            detailedAnalysis += '<h4 style="color: #7e22ce; font-size: 18px; margin-bottom: 18px;">🔍 상세 재무지표 분석 (31개 계정과목 기반)</h4>';
+            
+            // 유동성 분석
+            detailedAnalysis += generateDetailedLiquidityAnalysis(latest, prev, prev2, industryCode);
+            
+            // 안정성 분석
+            detailedAnalysis += generateDetailedStabilityAnalysis(latest, prev, prev2, industryCode);
+            
+            // 수익성 분석
+            detailedAnalysis += generateDetailedProfitabilityAnalysis(latest, prev, prev2, industryCode);
+            
+            // 활동성 분석
+            detailedAnalysis += generateDetailedActivityAnalysis(latest, prev, prev2, industryCode);
+            
+            detailedAnalysis += '</div>';
+
+            // ===========================================
+            // 4. 3개년 추세 분석
+            // ===========================================
+            let trendAnalysis = generateTrendAnalysis(results, industryCode);
+
+            // ===========================================
+            // 5. 맞춤형 개선 로드맵
+            // ===========================================
+            let improvementRoadmap = generateImprovementRoadmap(latest, prev, industryCode, evaluationResults);
+
+            // ===========================================
+            // 6. 우선순위 과제
+            // ===========================================
+            let priorityTasks = generatePriorityTasks(latest, currentResults);
+
+            // HTML 조합
+            let html = '<h3 style="color: #1e293b; font-size: 22px; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 3px solid #e2e8f0;">💬 전문 컨설턴트 종합 분석 리포트</h3>';
+            html += comprehensiveAnalysis;
+            html += fundingRecommendation;
+            html += detailedAnalysis;
+            html += trendAnalysis;
+            html += improvementRoadmap;
+            html += priorityTasks;
+
+            document.getElementById('consultantSection').innerHTML = html;
+        }
+
+        // 상세 유동성 분석
+        function generateDetailedLiquidityAnalysis(latest, prev, prev2, industryCode) {
+            // 현재 평가 모드의 기준값 가져오기
+            const 유동비율기준 = getStandardValue('유동비율', industryCode, evaluationMode);
+            const 당좌비율기준 = getStandardValue('당좌비율', industryCode, evaluationMode);
+            const modeNames = { 'bank': '은행기준', 'industry': '업종기준', 'total': '통합기준' };
+            
+            let html = '<div style="background: white; padding: 20px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">';
+            html += '<h5 style="color: #0891b2; font-size: 16px; margin-bottom: 15px;">💧 유동성 분석 (단기 지급능력)</h5>';
+            
+            html += '<p style="line-height: 1.8; color: #334155; margin-bottom: 8px;">';
+            html += `<strong style="color: #0891b2;">[${modeNames[evaluationMode]}]</strong> `;
+            html += `유동비율 기준 <strong>${유동비율기준.toFixed(1)}%</strong>, `;
+            html += `당좌비율 기준 <strong>${당좌비율기준.toFixed(1)}%</strong>`;
+            html += '</p>';
+            
+            html += '<p style="line-height: 1.8; color: #334155; margin-bottom: 15px;">';
+            html += `<strong>실제값:</strong> 유동비율 <strong style="color: #0284c7;">${latest.유동비율.toFixed(2)}%</strong>, `;
+            html += `당좌비율 <strong style="color: #0284c7;">${latest.당좌비율.toFixed(2)}%</strong>, `;
+            html += `현금보유율 <strong style="color: #0284c7;">${latest.현금보유율.toFixed(2)}%</strong>`;
+            html += '</p>';
+            
+            // 유동비율 진단 - 현재 모드 기준 대비 평가
+            html += '<div style="background: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 12px;">';
+            html += '<p style="font-weight: 600; color: #475569; margin-bottom: 8px;">📊 유동비율 진단</p>';
+            
+            const 유동비율비교 = (latest.유동비율 / 유동비율기준) * 100;
+            if (유동비율비교 >= 120) {
+                html += `<p style="line-height: 1.8; color: #059669;">✅ <strong>매우 우수:</strong> ${modeNames[evaluationMode]} 대비 ${유동비율비교.toFixed(0)}% 수준으로 단기채무 상환능력이 뛰어납니다.</p>`;
+            } else if (유동비율비교 >= 100) {
+                html += `<p style="line-height: 1.8; color: #059669;">✅ <strong>우수:</strong> ${modeNames[evaluationMode]}을 충족하여 단기 지급능력이 안정적입니다.</p>`;
+            } else if (유동비율비교 >= 80) {
+                html += `<p style="line-height: 1.8; color: #d97706;">⚠️ <strong>보통:</strong> ${modeNames[evaluationMode]} 대비 ${유동비율비교.toFixed(0)}% 수준으로 개선이 필요합니다.</p>`;
+                html += '<ul style="margin-left: 20px; margin-top: 8px; line-height: 1.8; color: #78350f;"><li>개선방안: 재고자산 회전율 향상, 단기차입금 장기화 전환</li></ul>';
+            } else {
+                html += `<p style="line-height: 1.8; color: #dc2626;">❌ <strong>주의:</strong> ${modeNames[evaluationMode]} 대비 ${유동비율비교.toFixed(0)}% 수준으로 단기 지급능력이 부족합니다.</p>`;
+                html += '<ul style="margin-left: 20px; margin-top: 8px; line-height: 1.8; color: #991b1b;">';
+                html += '<li>긴급조치: 운전자금 확보, 매출채권 조기 회수</li>';
+                html += '<li>단기부채 만기 연장 또는 장기화 전환 협상</li>';
+                html += '</ul>';
+            }
+            html += '</div>';
+            
+            // 당좌비율 진단 - 현재 모드 기준 대비 평가
+            html += '<div style="background: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 12px;">';
+            html += '<p style="font-weight: 600; color: #475569; margin-bottom: 8px;">📊 당좌비율 진단</p>';
+            
+            const 당좌비율비교 = (latest.당좌비율 / 당좌비율기준) * 100;
+            if (당좌비율비교 >= 120) {
+                html += `<p style="line-height: 1.8; color: #059669;">✅ <strong>매우 우수:</strong> ${modeNames[evaluationMode]} 대비 ${당좌비율비교.toFixed(0)}% 수준으로 즉시 현금화 가능 자산이 충분합니다.</p>`;
+            } else if (당좌비율비교 >= 100) {
+                html += `<p style="line-height: 1.8; color: #059669;">✅ <strong>우수:</strong> ${modeNames[evaluationMode]}을 충족하여 당좌자산으로 유동부채 상환이 가능합니다.</p>`;
+            } else if (당좌비율비교 >= 80) {
+                html += `<p style="line-height: 1.8; color: #d97706;">⚠️ <strong>보통:</strong> ${modeNames[evaluationMode]} 대비 ${당좌비율비교.toFixed(0)}% 수준입니다. 재고자산 의존도가 높습니다.</p>`;
+            } else {
+                html += `<p style="line-height: 1.8; color: #dc2626;">❌ <strong>주의:</strong> ${modeNames[evaluationMode]} 대비 ${당좌비율비교.toFixed(0)}% 수준으로 즉시 현금화 가능한 자산이 부족합니다.</p>`;
+                html += '<ul style="margin-left: 20px; margin-top: 8px; line-height: 1.8; color: #991b1b;">';
+                html += '<li>개선방안: 매출채권 팩토링, 재고자산 감축, 현금성 자산 확보</li>';
+                html += '</ul>';
+            }
+            html += '</div>';
+            
+            // 현금보유율 진단
+            html += '<div style="background: #f8fafc; padding: 15px; border-radius: 8px;">';
+            html += '<p style="font-weight: 600; color: #475569; margin-bottom: 8px;">📊 현금보유율 진단</p>';
+            if (latest.현금보유율 >= 10) {
+                html += '<p style="line-height: 1.8; color: #059669;">✅ <strong>우수:</strong> 매출 대비 현금보유 비중이 높아 현금흐름이 안정적입니다.</p>';
+            } else if (latest.현금보유율 >= 5) {
+                html += '<p style="line-height: 1.8; color: #d97706;">⚠️ <strong>보통:</strong> 현금보유 수준이 적정하나 더 확충하는 것이 안전합니다.</p>';
+            } else {
+                html += '<p style="line-height: 1.8; color: #dc2626;">❌ <strong>주의:</strong> 현금보유율이 매우 낮아 급격한 자금경색 위험이 있습니다.</p>';
+                html += '<ul style="margin-left: 20px; margin-top: 8px; line-height: 1.8; color: #991b1b;">';
+                html += '<li>개선방안: 월별 현금흐름표 작성, 선수금 확대, 매출 대금 회수 강화</li>';
+                html += '</ul>';
+            }
+            html += '</div>';
+            
+            html += '</div>';
+            return html;
+        }
+
+        // 상세 안정성 분석
+        function generateDetailedStabilityAnalysis(latest, prev, prev2, industryCode) {
+            // 현재 평가 모드의 기준값 가져오기
+            const 부채비율기준 = getStandardValue('부채비율', industryCode, evaluationMode);
+            const modeNames = { 'bank': '은행기준', 'industry': '업종기준', 'total': '통합기준' };
+            
+            let html = '<div style="background: white; padding: 20px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">';
+            html += '<h5 style="color: #0891b2; font-size: 16px; margin-bottom: 15px;">🏛️ 재무안정성 분석 (장기 재무건전성)</h5>';
+            
+            html += '<p style="line-height: 1.8; color: #334155; margin-bottom: 8px;">';
+            html += `<strong style="color: #0891b2;">[${modeNames[evaluationMode]}]</strong> `;
+            html += `부채비율 기준 <strong>${부채비율기준.toFixed(1)}%</strong> 이하`;
+            html += '</p>';
+            
+            html += '<p style="line-height: 1.8; color: #334155; margin-bottom: 15px;">';
+            html += `<strong>실제값:</strong> 부채비율 <strong style="color: #0284c7;">${latest.부채비율.toFixed(2)}%</strong>, `;
+            html += `자본잠식률 <strong style="color: ${latest.자본잠식률 > 0 ? '#dc2626' : '#059669'};">${latest.자본잠식률.toFixed(2)}%</strong>`;
+            html += '</p>';
+            
+            html += '<div style="background: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 12px;">';
+            html += '<p style="font-weight: 600; color: #475569; margin-bottom: 8px;">📊 부채비율 진단</p>';
+            
+            const 부채비율비교 = (latest.부채비율 / 부채비율기준) * 100;
+            if (latest.부채비율 <= 부채비율기준 * 0.7) {
+                html += `<p style="line-height: 1.8; color: #059669;">✅ <strong>매우 우수:</strong> ${modeNames[evaluationMode]} 대비 ${부채비율비교.toFixed(0)}% 수준으로 재무구조가 매우 건전합니다. 추가 차입 여력이 충분합니다.</p>`;
+                html += '<ul style="margin-left: 20px; margin-top: 8px; line-height: 1.8; color: #065f46;">';
+                html += '<li>성장 투자: 시설확충, 신규사업 진출 등 공격적 투자 가능</li>';
+                html += '<li>추가 차입 시: 시중은행 우대금리 적용 유리</li>';
+                html += '</ul>';
+            } else if (latest.부채비율 <= 부채비율기준) {
+                html += `<p style="line-height: 1.8; color: #059669;">✅ <strong>우수:</strong> ${modeNames[evaluationMode]}을 충족하여 안정적인 재무구조를 유지하고 있습니다.</p>`;
+            } else if (latest.부채비율 <= 부채비율기준 * 1.3) {
+                html += `<p style="line-height: 1.8; color: #d97706;">⚠️ <strong>보통:</strong> ${modeNames[evaluationMode]} 대비 ${부채비율비교.toFixed(0)}% 수준으로 다소 높은 편입니다. 신규 차입 시 주의가 필요합니다.</p>`;
+                html += '<ul style="margin-left: 20px; margin-top: 8px; line-height: 1.8; color: #78350f;">';
+                html += '<li>개선방안: 영업이익 재투자, 불필요한 자산 매각 후 부채 상환</li>';
+                html += '<li>신규 차입보다는 내부유보금 활용 권장</li>';
+                html += '</ul>';
+            } else {
+                html += `<p style="line-height: 1.8; color: #dc2626;">❌ <strong>위험:</strong> ${modeNames[evaluationMode]} 대비 ${부채비율비교.toFixed(0)}% 수준으로 부채비율이 과도하게 높아 재무위험이 큽니다.</p>`;
+                html += '<ul style="margin-left: 20px; margin-top: 8px; line-height: 1.8; color: #991b1b;">';
+                html += '<li>긴급조치: 유상증자, 사모투자 유치, 장기부채 상환계획 수립</li>';
+                html += '<li>단기차입금 장기화 전환으로 만기 부담 완화</li>';
+                html += '<li>전문 재무컨설팅 통한 구조조정 검토</li>';
+                html += '</ul>';
+            }
+            html += '</div>';
+            
+            if (latest.자본잠식률 > 0) {
+                html += '<div style="background: #fef2f2; padding: 15px; border-radius: 8px; border: 2px solid #dc2626;">';
+                html += '<p style="font-weight: 700; color: #991b1b; margin-bottom: 8px;">⚠️ 자본잠식 경고</p>';
+                html += `<p style="line-height: 1.8; color: #7f1d1d;">현재 자본잠식률 ${latest.자본잠식률.toFixed(2)}%로 자본이 마이너스 상태입니다. 법적 조치가 필요할 수 있습니다.</p>`;
+                html += '<ul style="margin-left: 20px; margin-top: 8px; line-height: 1.8; color: #7f1d1d;">';
+                html += '<li><strong>즉시 조치:</strong> 감자 후 증자, 출자전환, 워크아웃 등 전문가 상담 필수</li>';
+                html += '<li><strong>법적 대응:</strong> 상법상 자본잠식 해소 의무 (50% 이상 시 주주총회 소집)</li>';
+                html += '<li><strong>회계법인:</strong> 외부회계감사 통한 정확한 재무상태 파악</li>';
+                html += '</ul>';
+                html += '</div>';
+            }
+            
+            html += '</div>';
+            return html;
+        }
+
+        // 상세 수익성 분석
+        function generateDetailedProfitabilityAnalysis(latest, prev, prev2, industryCode) {
+            // 현재 평가 모드의 기준값 가져오기
+            const 영업이익율기준 = getStandardValue('영업이익율', industryCode, evaluationMode);
+            const 이자보상배수기준 = getStandardValue('이자보상배수', industryCode, evaluationMode);
+            const modeNames = { 'bank': '은행기준', 'industry': '업종기준', 'total': '통합기준' };
+            
+            let html = '<div style="background: white; padding: 20px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">';
+            html += '<h5 style="color: #0891b2; font-size: 16px; margin-bottom: 15px;">💰 수익성 분석</h5>';
+            
+            html += '<p style="line-height: 1.8; color: #334155; margin-bottom: 8px;">';
+            html += `<strong style="color: #0891b2;">[${modeNames[evaluationMode]}]</strong> `;
+            html += `영업이익률 기준 <strong>${영업이익율기준.toFixed(1)}%</strong>, `;
+            html += `이자보상배수 기준 <strong>${이자보상배수기준.toFixed(1)}배</strong>`;
+            html += '</p>';
+            
+            html += '<p style="line-height: 1.8; color: #334155; margin-bottom: 15px;">';
+            html += `<strong>실제값:</strong> 영업이익률 <strong style="color: ${latest.영업이익율 >= 0 ? '#0284c7' : '#dc2626'};">${latest.영업이익율.toFixed(2)}%</strong>, `;
+            html += `이자보상배수 <strong style="color: #0284c7;">${latest.이자보상배수.toFixed(2)}배</strong>`;
+            html += '</p>';
+            
+            html += '<div style="background: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 12px;">';
+            html += '<p style="font-weight: 600; color: #475569; margin-bottom: 8px;">📊 영업이익률 진단</p>';
+            
+            if (latest.영업이익율 >= 영업이익율기준 * 1.5) {
+                html += `<p style="line-height: 1.8; color: #059669;">✅ <strong>매우 우수:</strong> ${modeNames[evaluationMode]} 대비 ${(latest.영업이익율 / 영업이익율기준 * 100).toFixed(0)}% 수준으로 영업활동으로 높은 수익을 창출하고 있습니다.</p>`;
+            } else if (latest.영업이익율 >= 영업이익율기준) {
+                html += `<p style="line-height: 1.8; color: #059669;">✅ <strong>우수:</strong> ${modeNames[evaluationMode]}을 충족하여 안정적인 영업이익을 확보하고 있습니다.</p>`;
+            } else if (latest.영업이익율 >= 0) {
+                html += `<p style="line-height: 1.8; color: #d97706;">⚠️ <strong>개선 필요:</strong> ${modeNames[evaluationMode]} 대비 ${(latest.영업이익율 / 영업이익율기준 * 100).toFixed(0)}% 수준으로 수익성 개선이 필요합니다.</p>`;
+                html += '<ul style="margin-left: 20px; margin-top: 8px; line-height: 1.8; color: #78350f;">';
+                html += '<li>개선방안: 원가절감, 판관비 효율화, 제품 가격 재조정</li>';
+                html += '<li>고부가가치 제품 개발, 마케팅 전략 재정비</li>';
+                html += '</ul>';
+            } else {
+                html += '<p style="line-height: 1.8; color: #dc2626;">❌ <strong>위험:</strong> 영업손실 발생. 사업구조 전면 재검토가 필요합니다.</p>';
+                html += '<ul style="margin-left: 20px; margin-top: 8px; line-height: 1.8; color: #991b1b;">';
+                html += '<li>긴급조치: 원가구조 재분석, 불필요한 고정비 삭감</li>';
+                html += '<li>저수익 제품 단종, 고수익 제품 집중</li>';
+                html += '<li>사업 다각화 또는 구조조정 검토</li>';
+                html += '</ul>';
+            }
+            html += '</div>';
+            
+            html += '<div style="background: #f8fafc; padding: 15px; border-radius: 8px;">';
+            html += '<p style="font-weight: 600; color: #475569; margin-bottom: 8px;">📊 이자보상배수 진단</p>';
+            
+            if (latest.이자보상배수 >= 이자보상배수기준 * 1.5) {
+                html += `<p style="line-height: 1.8; color: #059669;">✅ <strong>우수:</strong> ${modeNames[evaluationMode]} 대비 ${(latest.이자보상배수 / 이자보상배수기준 * 100).toFixed(0)}% 수준으로 영업이익으로 이자비용을 충분히 감당할 수 있습니다.</p>`;
+            } else if (latest.이자보상배수 >= 이자보상배수기준) {
+                html += `<p style="line-height: 1.8; color: #d97706;">⚠️ <strong>보통:</strong> ${modeNames[evaluationMode]}을 충족하나 이자부담이 다소 있습니다.</p>`;
+            } else if (latest.이자보상배수 >= 1) {
+                html += `<p style="line-height: 1.8; color: #dc2626;">❌ <strong>주의:</strong> ${modeNames[evaluationMode]} 대비 ${(latest.이자보상배수 / 이자보상배수기준 * 100).toFixed(0)}% 수준으로 영업이익으로 겨우 이자만 갚을 수 있는 수준입니다.</p>`;
+                html += '<ul style="margin-left: 20px; margin-top: 8px; line-height: 1.8; color: #991b1b;">';
+                html += '<li>개선방안: 고금리 부채 저금리 전환, 정책자금 활용</li>';
+                html += '<li>차입금 일부 상환으로 이자부담 경감</li>';
+                html += '</ul>';
+            } else {
+                html += '<p style="line-height: 1.8; color: #dc2626;">❌ <strong>위험:</strong> 영업이익으로 이자도 감당하지 못하는 상황입니다.</p>';
+                html += '<ul style="margin-left: 20px; margin-top: 8px; line-height: 1.8; color: #991b1b;">';
+                html += '<li>긴급조치: 차입금 구조조정, 출자전환, 채무재조정 협상</li>';
+                html += '<li>영업이익 개선이 최우선 과제</li>';
+                html += '</ul>';
+            }
+            html += '</div>';
+            
+            html += '</div>';
+            return html;
+        }
+
+        // 상세 활동성 분석
+        function generateDetailedActivityAnalysis(latest, prev, prev2, industryCode) {
+            // 현재 평가 모드의 기준값 가져오기
+            const 매출채권회전율기준 = getStandardValue('매출채권회전율', industryCode, evaluationMode);
+            const modeNames = { 'bank': '은행기준', 'industry': '업종기준', 'total': '통합기준' };
+            
+            let html = '<div style="background: white; padding: 20px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">';
+            html += '<h5 style="color: #0891b2; font-size: 16px; margin-bottom: 15px;">⚡ 운영효율성 분석</h5>';
+            
+            html += '<p style="line-height: 1.8; color: #334155; margin-bottom: 8px;">';
+            html += `<strong style="color: #0891b2;">[${modeNames[evaluationMode]}]</strong> `;
+            html += `매출채권회전율 기준 <strong>${매출채권회전율기준.toFixed(1)}회</strong>`;
+            html += '</p>';
+            
+            html += '<p style="line-height: 1.8; color: #334155; margin-bottom: 15px;">';
+            html += `<strong>실제값:</strong> 매출채권회전율 <strong style="color: #0284c7;">${latest.매출채권회전율.toFixed(2)}회</strong> (연평균 회수기간: 약 ${(365 / latest.매출채권회전율).toFixed(0)}일)`;
+            html += '</p>';
+            
+            html += '<div style="background: #f8fafc; padding: 15px; border-radius: 8px;">';
+            html += '<p style="font-weight: 600; color: #475569; margin-bottom: 8px;">📊 매출채권 회수 진단</p>';
+            
+            if (latest.매출채권회전율 >= 매출채권회전율기준 * 1.2) {
+                html += `<p style="line-height: 1.8; color: #059669;">✅ <strong>매우 우수:</strong> ${modeNames[evaluationMode]} 대비 ${(latest.매출채권회전율 / 매출채권회전율기준 * 100).toFixed(0)}% 수준으로 매출채권 회수가 매우 빠릅니다. 현금흐름이 원활합니다.</p>`;
+            } else if (latest.매출채권회전율 >= 매출채권회전율기준) {
+                html += `<p style="line-height: 1.8; color: #059669;">✅ <strong>우수:</strong> ${modeNames[evaluationMode]}을 충족하여 매출채권 회수가 양호합니다.</p>`;
+            } else if (latest.매출채권회전율 >= 매출채권회전율기준 * 0.7) {
+                html += `<p style="line-height: 1.8; color: #d97706;">⚠️ <strong>보통:</strong> ${modeNames[evaluationMode]} 대비 ${(latest.매출채권회전율 / 매출채권회전율기준 * 100).toFixed(0)}% 수준으로 매출채권 회수가 다소 느린 편입니다.</p>`;
+                html += '<ul style="margin-left: 20px; margin-top: 8px; line-height: 1.8; color: #78350f;">';
+                html += '<li>개선방안: 외상매출금 관리 강화, 조기결제 할인제도 도입</li>';
+                html += '<li>신용관리 체계 구축, 회수 담당자 지정</li>';
+                html += '</ul>';
+            } else {
+                html += `<p style="line-height: 1.8; color: #dc2626;">❌ <strong>주의:</strong> ${modeNames[evaluationMode]} 대비 ${(latest.매출채권회전율 / 매출채권회전율기준 * 100).toFixed(0)}% 수준으로 매출채권 회수가 매우 느립니다. 현금흐름 악화 요인입니다.</p>`;
+                html += '<ul style="margin-left: 20px; margin-top: 8px; line-height: 1.8; color: #991b1b;">';
+                html += '<li>긴급조치: 매출채권 팩토링, 대손충당금 적립</li>';
+                html += '<li>장기 연체채권 법적 조치, 현금 선수금 확대</li>';
+                html += '<li>거래처별 신용등급 관리 시스템 구축</li>';
+                html += '</ul>';
+            }
+            html += '</div>';
+            
+            html += '</div>';
+            return html;
+        }
+
+        // 추세 분석
+        function generateTrendAnalysis(results, industryCode) {
+            const latest = results[2024];
+            const prev = results[2023];
+            const prev2 = results[2022];
+            
+            let html = '<div class="comment-section" style="background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); border-left: 5px solid #f59e0b; padding: 25px;">';
+            html += '<h4 style="color: #92400e; font-size: 18px; margin-bottom: 18px;">📈 3개년 추세 분석 및 예측</h4>';
+            
+            // 각 지표별 추세
+            const trends = [
+                { name: '유동비율', values: [prev2.유동비율, prev.유동비율, latest.유동비율], higher: true, unit: '%' },
+                { name: '부채비율', values: [prev2.부채비율, prev.부채비율, latest.부채비율], higher: false, unit: '%' },
+                { name: '영업이익율', values: [prev2.영업이익율, prev.영업이익율, latest.영업이익율], higher: true, unit: '%' },
+                { name: '매출채권회전율', values: [prev2.매출채권회전율, prev.매출채권회전율, latest.매출채권회전율], higher: true, unit: '회' }
+            ];
+            
+            trends.forEach(trend => {
+                const trend1 = trend.values[1] - trend.values[0]; // 2023 vs 2022
+                const trend2 = trend.values[2] - trend.values[1]; // 2024 vs 2023
+                
+                html += '<div style="background: white; padding: 18px; border-radius: 10px; margin-bottom: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.06);">';
+                html += `<p style="font-weight: 600; color: #1e293b; margin-bottom: 10px;">${trend.name}</p>`;
+                html += `<div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #f8fafc; border-radius: 6px;">`;
+                html += `<div><span style="color: #64748b;">2022년:</span> <strong>${trend.values[0].toFixed(2)}${trend.unit}</strong></div>`;
+                html += `<div><span style="color: #64748b;">2023년:</span> <strong>${trend.values[1].toFixed(2)}${trend.unit}</strong></div>`;
+                html += `<div><span style="color: #64748b;">2024년:</span> <strong>${trend.values[2].toFixed(2)}${trend.unit}</strong></div>`;
+                html += `</div>`;
+                
+                let trendText = '';
+                let trendColor = '';
+                if ((trend.higher && trend1 > 0 && trend2 > 0) || (!trend.higher && trend1 < 0 && trend2 < 0)) {
+                    trendText = '✅ 3년 연속 개선 추세';
+                    trendColor = '#059669';
+                } else if ((trend.higher && trend1 < 0 && trend2 < 0) || (!trend.higher && trend1 > 0 && trend2 > 0)) {
+                    trendText = '⚠️ 3년 연속 악화 추세 - 즉시 개선 필요';
+                    trendColor = '#dc2626';
+                } else {
+                    trendText = '📊 변동성 있음 - 지속 모니터링 필요';
+                    trendColor = '#d97706';
+                }
+                
+                html += `<p style="margin-top: 10px; color: ${trendColor}; font-weight: 600;">${trendText}</p>`;
+                html += '</div>';
+            });
+            
+            html += '</div>';
+            return html;
+        }
+
+        // 개선 로드맵
+        function generateImprovementRoadmap(latest, prev, industryCode, evaluationResults) {
+            let html = '<div class="comment-section" style="background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); border-left: 5px solid #10b981; padding: 25px;">';
+            html += '<h4 style="color: #065f46; font-size: 18px; margin-bottom: 18px;">🗺️ 맞춤형 재무개선 로드맵 (3개월 단위)</h4>';
+            
+            html += '<div style="background: white; padding: 20px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">';
+            html += '<h5 style="color: #047857; font-size: 16px; margin-bottom: 12px;">1단계: 즉시 실행 (1개월 내)</h5>';
+            html += '<ul style="margin-left: 20px; line-height: 1.9; color: #374151;">';
+            
+            if (latest.유동비율 < 100) {
+                html += '<li><strong>유동성 확보:</strong> 단기차입금 3억원 확보 (신보/기보 보증 활용)</li>';
+                html += '<li><strong>채권관리:</strong> 90일 이상 연체채권 집중 회수 (법무법인 협조)</li>';
+            }
+            if (latest.현금보유율 < 5) {
+                html += '<li><strong>현금흐름 개선:</strong> 주요 거래처 결제조건 재협상 (선수금 10% 확보)</li>';
+            }
+            if (latest.이자보상배수 < 2) {
+                html += '<li><strong>이자부담 경감:</strong> 고금리 단기차입금 정책자금 전환 신청</li>';
+            }
+            
+            html += '</ul></div>';
+            
+            html += '<div style="background: white; padding: 20px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">';
+            html += '<h5 style="color: #047857; font-size: 16px; margin-bottom: 12px;">2단계: 단기 개선 (2~3개월)</h5>';
+            html += '<ul style="margin-left: 20px; line-height: 1.9; color: #374151;">';
+            
+            html += '<li><strong>원가절감:</strong> 주요 원재료 공동구매로 5% 원가절감 목표</li>';
+            html += '<li><strong>판관비 효율화:</strong> 관리비 10% 절감 (통신비, 소모품비, 복리후생비 재검토)</li>';
+            html += '<li><strong>재고관리:</strong> 적정 재고수준 설정 및 재고회전율 20% 개선</li>';
+            
+            html += '</ul></div>';
+            
+            html += '<div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">';
+            html += '<h5 style="color: #047857; font-size: 16px; margin-bottom: 12px;">3단계: 중장기 전략 (4~6개월)</h5>';
+            html += '<ul style="margin-left: 20px; line-height: 1.9; color: #374151;">';
+            
+            if (evaluationResults[evaluationMode].excellent >= 5) {
+                html += '<li><strong>성장투자:</strong> 안정적 재무상태 기반 신규설비 투자 검토 (중진공 시설자금 5억)</li>';
+                html += '<li><strong>시장확대:</strong> 온라인 판로 개척, 해외시장 진출 준비</li>';
+            } else {
+                html += '<li><strong>재무구조 개선:</strong> 영업이익 재투자로 자기자본 20% 확충</li>';
+                html += '<li><strong>수익성 강화:</strong> 고부가가치 제품 비중 30% 이상 확대</li>';
+            }
+            
+            html += '<li><strong>정기점검:</strong> 월별 재무제표 모니터링 체계 구축</li>';
+            
+            html += '</ul></div>';
+            
+            html += '</div>';
+            return html;
+        }
+
+        // 우선순위 과제
+        function generatePriorityTasks(latest, currentResults) {
+            let html = '<div class="comment-section" style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-left: 5px solid #ef4444; padding: 25px;">';
+            html += '<h4 style="color: #991b1b; font-size: 18px; margin-bottom: 18px;">🎯 긴급 우선순위 개선과제</h4>';
+            
+            const tasks = [];
+            
+            // 우선순위 1: 긴급
+            if (latest.자본잠식률 > 0) {
+                tasks.push({ priority: 1, emoji: '🔴', task: '자본잠식 해소', detail: '감자 후 증자, 출자전환 등 법률전문가 상담 필수' });
+            }
+            if (latest.유동비율 < 100) {
+                tasks.push({ priority: 1, emoji: '🔴', task: '단기 유동성 확보', detail: '운전자금 3억원 긴급 확보 (신보/기보 보증)' });
+            }
+            if (latest.이자보상배수 < 1) {
+                tasks.push({ priority: 1, emoji: '🔴', task: '이자부담 긴급 경감', detail: '고금리 차입금 정책자금 전환, 만기연장 협상' });
+            }
+            if (latest.영업이익율 < 0) {
+                tasks.push({ priority: 1, emoji: '🔴', task: '영업손실 전환', detail: '원가구조 전면 재검토, 불필요 고정비 30% 삭감' });
+            }
+            
+            // 우선순위 2: 중요
+            if (latest.부채비율 > 200) {
+                tasks.push({ priority: 2, emoji: '🟡', task: '부채비율 200% 이하 감축', detail: '3개월 내 부채 10% 상환 계획 수립' });
+            }
+            if (latest.당좌비율 < 100) {
+                tasks.push({ priority: 2, emoji: '🟡', task: '당좌자산 확충', detail: '매출채권 조기회수, 재고자산 20% 감축' });
+            }
+            if (latest.현금보유율 < 5) {
+                tasks.push({ priority: 2, emoji: '🟡', task: '현금보유 비율 확대', detail: '월별 현금흐름표 작성, 선수금 제도 도입' });
+            }
+            
+            // 우선순위 3: 일반
+            if (latest.매출채권회전율 < 6) {
+                tasks.push({ priority: 3, emoji: '🟢', task: '매출채권 회수 개선', detail: '회수기간 30일 단축, 조기결제 할인제도' });
+            }
+            if (currentResults.poor >= 4) {
+                tasks.push({ priority: 3, emoji: '🟢', task: '전반적 재무관리 시스템 구축', detail: '월별 재무분석, 전문 컨설팅 의뢰' });
+            }
+            
+            tasks.sort((a, b) => a.priority - b.priority);
+            
+            if (tasks.length > 0) {
+                html += '<div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">';
+                tasks.forEach((t, idx) => {
+                    const bgColor = t.priority === 1 ? '#fee2e2' : t.priority === 2 ? '#fef3c7' : '#dbeafe';
+                    const borderColor = t.priority === 1 ? '#dc2626' : t.priority === 2 ? '#f59e0b' : '#3b82f6';
+                    
+                    html += `<div style="background: ${bgColor}; padding: 18px; border-radius: 10px; border-left: 4px solid ${borderColor}; margin-bottom: 12px;">`;
+                    html += `<p style="font-size: 16px; font-weight: 700; color: #1e293b; margin-bottom: 8px;">${t.emoji} ${idx + 1}. ${t.task}</p>`;
+                    html += `<p style="font-size: 14px; line-height: 1.7; color: #475569;">→ ${t.detail}</p>`;
+                    html += `</div>`;
+                });
+                html += '</div>';
+            } else {
+                html += '<div style="background: #ecfdf5; padding: 20px; border-radius: 12px; border: 2px solid #10b981;">';
+                html += '<p style="font-size: 16px; font-weight: 600; color: #065f46;">✅ 현재 재무상태가 전반적으로 양호합니다.</p>';
+                html += '<p style="font-size: 14px; line-height: 1.8; color: #047857; margin-top: 8px;">지속적인 모니터링과 관리를 통해 현재 수준을 유지하시기 바랍니다.</p>';
+                html += '</div>';
+            }
+            
+            html += '</div>';
+            return html;
+        }
+    </script>
+</body>
+</html>

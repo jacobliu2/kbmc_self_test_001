@@ -1,0 +1,1811 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KSIC 기반 기업부설연구소 연구주제 추천·진단 엔진</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #283f55;
+            --primary-dark: #1a2d3f;
+            --primary-light: #3d5a73;
+            --accent: #1e3a5f;
+            
+            --tech: #1e4d7b;
+            --finance: #2d5a4f;
+            --management: #5a3d2d;
+            --hr: #7b3d1e;
+            
+            --bg-light: #f5f5f7;
+            --bg-white: #ffffff;
+            --text-dark: #1a1a2e;
+            --text-gray: #64748b;
+            --border: #e2e8f0;
+            --shadow: rgba(40, 63, 85, 0.08);
+            
+            --priority-high: #ef4444;
+            --priority-medium: #f59e0b;
+            --priority-low: #10b981;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.7;
+            word-break: keep-all;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            animation: fadeIn 0.6s ease-in;
+        }
+        
+        .header h1 {
+            font-family: 'Montserrat', 'Noto Sans KR', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 16px;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            color: var(--text-gray);
+            line-height: 1.8;
+        }
+        
+        .card {
+            background: var(--bg-white);
+            border-radius: 24px;
+            box-shadow: 0 20px 60px var(--shadow);
+            overflow: hidden;
+            margin-bottom: 40px;
+            animation: fadeIn 0.6s ease-in;
+        }
+        
+        .card-header {
+            height: 6px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+        }
+        
+        .card-body {
+            padding: 50px;
+        }
+        
+        .step-section {
+            display: none;
+        }
+        
+        .step-section.active {
+            display: block;
+        }
+        
+        .step-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 12px;
+        }
+        
+        .step-subtitle {
+            font-size: 1.05rem;
+            color: var(--text-gray);
+            margin-bottom: 32px;
+        }
+        
+        .form-group {
+            margin-bottom: 28px;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+        }
+        
+        .form-label .required {
+            color: var(--priority-high);
+            margin-left: 4px;
+        }
+        
+        .select-wrapper {
+            position: relative;
+        }
+        
+        select, input, textarea {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 1.05rem;
+            font-family: 'Noto Sans KR', sans-serif;
+            transition: all 0.3s ease;
+            background: var(--bg-white);
+        }
+        
+        select:focus, input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            background: #eef7ff;
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+            line-height: 1.7;
+        }
+        
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        
+        .checkbox-item {
+            position: relative;
+        }
+        
+        .checkbox-item input[type="checkbox"] {
+            position: absolute;
+            opacity: 0;
+        }
+        
+        .checkbox-label {
+            display: block;
+            padding: 16px 20px;
+            background: var(--bg-light);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.0rem;
+            text-align: center;
+        }
+        
+        .checkbox-item input[type="checkbox"]:checked + .checkbox-label {
+            background: #eef7ff;
+            border-color: var(--accent);
+            font-weight: 500;
+        }
+        
+        .checkbox-label:hover {
+            background: #eef2f7;
+            border-color: var(--accent);
+            transform: translateX(2px);
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 16px;
+            margin-top: 40px;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 16px 32px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            font-family: 'Noto Sans KR', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(40, 116, 166, 0.3);
+        }
+        
+        .btn-secondary {
+            background: var(--bg-light);
+            color: var(--text-dark);
+            border: 2px solid var(--border);
+        }
+        
+        .btn-secondary:hover {
+            background: #eef2f7;
+            border-color: var(--accent);
+        }
+        
+        .progress-indicator {
+            text-align: center;
+            margin-bottom: 32px;
+            padding: 20px;
+            background: var(--bg-light);
+            border-radius: 12px;
+        }
+        
+        .progress-text {
+            font-size: 0.95rem;
+            color: var(--text-gray);
+            margin-bottom: 8px;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+        
+        /* 결과 섹션 */
+        .result-section {
+            display: none;
+        }
+        
+        .result-section.active {
+            display: block;
+        }
+        
+        .result-header {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            padding: 40px;
+            border-radius: 16px;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .result-header h2 {
+            font-size: 2.0rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+        
+        .result-header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+        }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        
+        .section-badge {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .research-item {
+            background: var(--bg-light);
+            border-radius: 12px;
+            padding: 28px;
+            margin-bottom: 16px;
+            border-left: 4px solid var(--tech);
+        }
+        
+        .research-item.avoid {
+            border-left-color: var(--priority-high);
+        }
+        
+        .research-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 16px;
+        }
+        
+        .research-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary);
+            flex: 1;
+        }
+        
+        .research-rank {
+            background: var(--accent);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        
+        .research-reason {
+            font-size: 1.05rem;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+            line-height: 1.8;
+        }
+        
+        .research-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        
+        .tag {
+            background: white;
+            color: var(--text-dark);
+            padding: 6px 14px;
+            border-radius: 16px;
+            font-size: 0.85rem;
+            border: 1px solid var(--border);
+        }
+        
+        .research-output {
+            font-size: 0.95rem;
+            color: var(--text-gray);
+            font-weight: 500;
+        }
+        
+        .avoid-warning {
+            background: #fef2f2;
+            border-left-color: var(--priority-high);
+        }
+        
+        .avoid-text {
+            font-size: 1.05rem;
+            color: var(--priority-high);
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .avoid-reason {
+            font-size: 1.0rem;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+            line-height: 1.8;
+        }
+        
+        .safe-alternative {
+            background: white;
+            padding: 16px;
+            border-radius: 8px;
+            margin-top: 12px;
+        }
+        
+        .safe-label {
+            font-size: 0.9rem;
+            color: var(--priority-low);
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+        
+        .safe-text {
+            font-size: 1.0rem;
+            color: var(--text-dark);
+        }
+        
+        .roadmap-timeline {
+            position: relative;
+            padding-left: 40px;
+        }
+        
+        .roadmap-item {
+            position: relative;
+            background: var(--bg-light);
+            border-radius: 12px;
+            padding: 28px;
+            margin-bottom: 24px;
+            border-left: 4px solid var(--management);
+        }
+        
+        .roadmap-item::before {
+            content: '';
+            position: absolute;
+            left: -52px;
+            top: 20px;
+            width: 16px;
+            height: 16px;
+            background: var(--management);
+            border-radius: 50%;
+            border: 4px solid white;
+            box-shadow: 0 0 0 2px var(--management);
+        }
+        
+        .roadmap-item:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            left: -44px;
+            top: 36px;
+            bottom: -24px;
+            width: 2px;
+            background: var(--border);
+        }
+        
+        .roadmap-phase {
+            font-size: 0.9rem;
+            color: var(--text-gray);
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .roadmap-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 16px;
+        }
+        
+        .roadmap-content {
+            margin-bottom: 12px;
+        }
+        
+        .roadmap-label {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 6px;
+        }
+        
+        .roadmap-text {
+            font-size: 1.0rem;
+            color: var(--text-gray);
+            line-height: 1.8;
+        }
+        
+        .roadmap-list {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .roadmap-list li {
+            position: relative;
+            padding-left: 24px;
+            margin-bottom: 8px;
+            font-size: 1.0rem;
+            color: var(--text-gray);
+        }
+        
+        .roadmap-list li::before {
+            content: '•';
+            position: absolute;
+            left: 8px;
+            color: var(--accent);
+            font-weight: 700;
+        }
+        
+        .notice-box {
+            background: var(--bg-light);
+            border-left: 4px solid var(--accent);
+            padding: 24px 28px;
+            border-radius: 12px;
+            margin-top: 40px;
+            margin-bottom: 32px;
+        }
+        
+        .notice-box p {
+            font-size: 0.95rem;
+            color: var(--text-gray);
+            line-height: 1.8;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding: 32px 0;
+            color: var(--text-gray);
+            font-size: 0.9rem;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px 24px;
+            }
+            
+            .card-body {
+                padding: 30px 24px;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .header p {
+                font-size: 1.0rem;
+            }
+            
+            .checkbox-group {
+                grid-template-columns: 1fr;
+            }
+            
+            .btn-group {
+                flex-direction: column;
+            }
+            
+            .roadmap-timeline {
+                padding-left: 30px;
+            }
+            
+            .roadmap-item::before {
+                left: -42px;
+            }
+            
+            .roadmap-item::after {
+                left: -34px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 헤더 -->
+        <div class="header">
+            <h1>KSIC 기반 기업부설연구소<br>연구주제 추천·진단 엔진</h1>
+            <p>귀사의 업종과 사업 현황을 기반으로 기업부설연구소 설립 시<br>추천 연구유형, 지양 연구주제, 3년 운영 로드맵을 제시합니다</p>
+        </div>
+        
+        <!-- 입력 카드 -->
+        <div class="card">
+            <div class="card-header"></div>
+            <div class="card-body">
+                <!-- 진행률 표시 -->
+                <div class="progress-indicator" id="progressIndicator" style="display: none;">
+                    <div class="progress-text">진단 진행률</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                </div>
+                
+                <!-- Step 1: 업종 선택 -->
+                <div class="step-section active" id="step1">
+                    <h2 class="step-title">업종 정보 입력</h2>
+                    <p class="step-subtitle">귀사의 표준산업분류(KSIC) 업종을 선택해 주십시오</p>
+                    
+                    <div class="form-group">
+                        <label class="form-label">KSIC 대분류<span class="required">*</span></label>
+                        <select id="ksicMajor" required>
+                            <option value="">선택해 주십시오</option>
+                            <option value="C">C. 제조업</option>
+                            <option value="J">J. 정보통신업</option>
+                            <option value="M">M. 전문, 과학 및 기술 서비스업</option>
+                            <option value="G">G. 도매 및 소매업</option>
+                            <option value="F">F. 건설업</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">KSIC 중분류<span class="required">*</span></label>
+                        <select id="ksicMinor" required>
+                            <option value="">대분류를 먼저 선택해 주십시오</option>
+                        </select>
+                    </div>
+                    
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="nextStep(1)">다음 단계</button>
+                    </div>
+                </div>
+                
+                <!-- Step 2: 사업 현황 -->
+                <div class="step-section" id="step2">
+                    <h2 class="step-title">사업 현황 입력</h2>
+                    <p class="step-subtitle">귀사의 주요 사업 내용을 간략히 입력해 주십시오</p>
+                    
+                    <div class="form-group">
+                        <label class="form-label">사업 내용 요약<span class="required">*</span></label>
+                        <textarea id="businessDesc" placeholder="예: 자동차 부품 중 브레이크 시스템 제조 및 공급, 내수 80% / 수출 20%" maxlength="300" required></textarea>
+                        <div style="text-align: right; font-size: 0.85rem; color: var(--text-gray); margin-top: 6px;">
+                            <span id="charCount">0</span> / 300자
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">주요 제품/서비스 키워드<span class="required">*</span></label>
+                        <input type="text" id="keywords" placeholder="예: 디스크 브레이크, ABS 시스템, 전자제어 모듈" required>
+                    </div>
+                    
+                    <div class="btn-group">
+                        <button class="btn btn-secondary" onclick="prevStep(2)">이전</button>
+                        <button class="btn btn-primary" onclick="nextStep(2)">다음 단계</button>
+                    </div>
+                </div>
+                
+                <!-- Step 3: 당면 문제 -->
+                <div class="step-section" id="step3">
+                    <h2 class="step-title">당면 과제 선택</h2>
+                    <p class="step-subtitle">현재 겪고 있는 주요 문제를 최대 3개까지 선택해 주십시오</p>
+                    
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="prob1" value="품질">
+                            <label class="checkbox-label" for="prob1">품질 개선</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="prob2" value="원가">
+                            <label class="checkbox-label" for="prob2">원가 절감</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="prob3" value="납기">
+                            <label class="checkbox-label" for="prob3">납기 단축</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="prob4" value="확장성">
+                            <label class="checkbox-label" for="prob4">생산 확장성</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="prob5" value="수출">
+                            <label class="checkbox-label" for="prob5">수출 확대</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="prob6" value="규제">
+                            <label class="checkbox-label" for="prob6">규제 대응</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="prob7" value="인력의존">
+                            <label class="checkbox-label" for="prob7">인력 의존도</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="prob8" value="기술혁신">
+                            <label class="checkbox-label" for="prob8">기술 혁신</label>
+                        </div>
+                    </div>
+                    
+                    <div class="btn-group">
+                        <button class="btn btn-secondary" onclick="prevStep(3)">이전</button>
+                        <button class="btn btn-primary" onclick="nextStep(3)">다음 단계</button>
+                    </div>
+                </div>
+                
+                <!-- Step 4: 보유 역량 -->
+                <div class="step-section" id="step4">
+                    <h2 class="step-title">보유 역량 선택</h2>
+                    <p class="step-subtitle">현재 보유하고 있는 자원을 모두 선택해 주십시오</p>
+                    
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="cap1" value="설비">
+                            <label class="checkbox-label" for="cap1">생산 설비</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="cap2" value="데이터">
+                            <label class="checkbox-label" for="cap2">데이터 축적</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="cap3" value="소프트웨어">
+                            <label class="checkbox-label" for="cap3">소프트웨어</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="cap4" value="시험장비">
+                            <label class="checkbox-label" for="cap4">시험/측정 장비</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="cap5" value="전담인력">
+                            <label class="checkbox-label" for="cap5">전담 인력</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="cap6" value="인증">
+                            <label class="checkbox-label" for="cap6">인증/규격</label>
+                        </div>
+                    </div>
+                    
+                    <div class="btn-group">
+                        <button class="btn btn-secondary" onclick="prevStep(4)">이전</button>
+                        <button class="btn btn-primary" onclick="analyzeAndShowResult()">진단 결과 확인</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 결과 섹션 -->
+        <div class="result-section" id="resultSection">
+            <div class="result-header">
+                <h2 id="resultTitle">맞춤형 연구소 추천 과제</h2>
+                <p id="resultSubtitle"></p>
+            </div>
+            
+            <!-- 입력 정보 요약 -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-badge" style="background: linear-gradient(135deg, var(--text-gray), #64748b);">입력정보</div>
+                    <h3 class="section-title">귀사 사업 현황</h3>
+                </div>
+                <div id="businessSummary"></div>
+            </div>
+            
+            <!-- 추천 연구유형 TOP 10 -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-badge">추천</div>
+                    <h3 class="section-title">추천 연구유형 TOP 10</h3>
+                </div>
+                <div id="recommendedResearch"></div>
+            </div>
+            
+            <!-- 지양 연구주제 TOP 10 -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-badge" style="background: linear-gradient(135deg, var(--priority-high), #dc2626);">주의</div>
+                    <h3 class="section-title">지양해야 할 연구주제 패턴 TOP 10</h3>
+                </div>
+                <div id="avoidPatterns"></div>
+            </div>
+            
+            <!-- 향후 연구·운영 로드맵 -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-badge" style="background: linear-gradient(135deg, var(--management), #8b5a3c);">로드맵</div>
+                    <h3 class="section-title">향후 연구·운영 로드맵 (0~36개월)</h3>
+                </div>
+                <div class="roadmap-timeline" id="roadmapTimeline"></div>
+            </div>
+            
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="restart()">처음부터 다시 진단하기</button>
+            </div>
+            
+            <div class="notice-box">
+                <p>본 진단은 기업부설연구소 또는 연구전담부서 설립을 검토하는 기업을 위해 연구주제 적합성을 사전 점검하실 수 있도록 제작된 전문 진단 도구입니다. 더 상세한 컨설팅이나 실제 설립 지원이 필요하시면 전문가와 상담하시기 바랍니다.</p>
+            </div>
+        </div>
+        
+        <!-- 저작권 -->
+        <div class="copyright">
+            © 코리아경영자문. All rights reserved.
+        </div>
+    </div>
+    
+    <script>
+        // 전역 변수
+        let currentStep = 1;
+        let inputData = {
+            ksicMajor: '',
+            ksicMinor: '',
+            businessDesc: '',
+            keywords: '',
+            problems: [],
+            capabilities: []
+        };
+        
+        // KSIC 중분류 데이터
+        const ksicMinorData = {
+            'C': [
+                { value: 'C10', text: '식료품 제조업' },
+                { value: 'C13', text: '섬유제품 제조업' },
+                { value: 'C20', text: '화학물질 및 화학제품 제조업' },
+                { value: 'C24', text: '1차 금속 제조업' },
+                { value: 'C25', text: '금속가공제품 제조업' },
+                { value: 'C26', text: '전자부품, 컴퓨터, 영상, 음향 통신장비 제조업' },
+                { value: 'C28', text: '전기장비 제조업' },
+                { value: 'C29', text: '기타 기계 및 장비 제조업' },
+                { value: 'C30', text: '자동차 및 트레일러 제조업' },
+                { value: 'C31', text: '기타 운송장비 제조업' }
+            ],
+            'J': [
+                { value: 'J58', text: '출판업' },
+                { value: 'J62', text: '컴퓨터 프로그래밍, 시스템 통합 및 관리업' },
+                { value: 'J63', text: '정보서비스업' }
+            ],
+            'M': [
+                { value: 'M70', text: '연구개발업' },
+                { value: 'M71', text: '전문서비스업' },
+                { value: 'M73', text: '광고업' }
+            ],
+            'G': [
+                { value: 'G46', text: '도매 및 상품중개업' },
+                { value: 'G47', text: '소매업' }
+            ],
+            'F': [
+                { value: 'F41', text: '종합 건설업' },
+                { value: 'F42', text: '전문직별 공사업' }
+            ]
+        };
+        
+        // 연구유형 아키타입 라이브러리
+        const researchArchetypes = [
+            {
+                id: 'arch01',
+                name: '공정 자동화 시스템 개발',
+                industryTags: ['C'],
+                problemTags: ['인력의존', '원가', '품질'],
+                resourceTags: ['설비', '데이터'],
+                reason: '수작업 의존도를 낮추고 생산성과 품질 균일성을 확보할 수 있습니다',
+                domains: ['공정 표준화', '로봇 제어', '품질 자동검사'],
+                deliverables: '자동화 시스템 설계서, 제어 알고리즘, 시제품',
+                examples: ['금속 가공 공정의 로봇 자동화 시스템 개발', '반복 작업 공정 자동화를 위한 비전 검사 시스템 구축']
+            },
+            {
+                id: 'arch02',
+                name: 'AI 기반 품질 예측·검사 시스템',
+                industryTags: ['C'],
+                problemTags: ['품질', '원가'],
+                resourceTags: ['데이터', '시험장비'],
+                reason: '불량 사전 예측 및 검사 자동화로 품질 비용을 절감할 수 있습니다',
+                domains: ['머신러닝 모델', '영상 검사', '통계적 품질관리'],
+                deliverables: '예측 모델, 검사 시스템 프로토타입, 검증 리포트',
+                examples: ['딥러닝 기반 표면 결함 자동 검출 시스템 개발', '공정 데이터 분석을 통한 불량 예측 모델 구축']
+            },
+            {
+                id: 'arch03',
+                name: '친환경 소재 개발',
+                industryTags: ['C'],
+                problemTags: ['규제', '수출'],
+                resourceTags: ['시험장비'],
+                reason: '환경 규제 강화에 대응하고 해외 시장 진출을 지원합니다',
+                domains: ['재활용 소재', '생분해성 물질', '탄소 저감'],
+                deliverables: '친환경 소재 샘플, 성능 시험 보고서, 인증 준비 자료',
+                examples: ['재활용 플라스틱 소재의 물성 개선 연구', '생분해성 포장재 개발 및 성능 검증']
+            },
+            {
+                id: 'arch04',
+                name: '스마트팩토리 MES/IoT 구축',
+                industryTags: ['C'],
+                problemTags: ['확장성', '납기', '원가'],
+                resourceTags: ['설비', '소프트웨어'],
+                reason: '실시간 생산 가시화로 납기 준수율을 높이고 설비 효율을 극대화합니다',
+                domains: ['센서 네트워크', '데이터 수집', '생산 스케줄링'],
+                deliverables: 'MES 시스템, IoT 플랫폼, 대시보드',
+                examples: ['생산 설비 실시간 모니터링 IoT 시스템 개발', '공장 자동화를 위한 통합 MES 플랫폼 구축']
+            },
+            {
+                id: 'arch05',
+                name: '에너지 절감 공정 최적화',
+                industryTags: ['C'],
+                problemTags: ['원가', '규제'],
+                resourceTags: ['설비', '데이터'],
+                reason: '에너지 사용량 감축으로 원가를 절감하고 탄소중립에 기여합니다',
+                domains: ['공정 시뮬레이션', '열관리', '전력 최적화'],
+                deliverables: '공정 개선안, 에너지 절감 보고서, 시뮬레이션 모델',
+                examples: ['열처리 공정의 에너지 효율 개선 연구', '공장 전력 사용 최적화 시스템 개발']
+            },
+            {
+                id: 'arch06',
+                name: '신제품 내구성·안전성 검증 체계',
+                industryTags: ['C'],
+                problemTags: ['품질', '수출', '규제'],
+                resourceTags: ['시험장비', '인증'],
+                reason: '제품 신뢰성을 객관적으로 입증하여 해외 인증 취득을 지원합니다',
+                domains: ['내구 시험', '안전성 평가', '규격 적합성'],
+                deliverables: '시험 프로토콜, 검증 보고서, 인증 준비 자료',
+                examples: ['자동차 부품의 내구성 시험 표준 수립', '전기전자 제품 안전성 검증 체계 구축']
+            },
+            {
+                id: 'arch07',
+                name: '맞춤형 생산 유연화 시스템',
+                industryTags: ['C'],
+                problemTags: ['확장성', '납기'],
+                resourceTags: ['설비', '소프트웨어'],
+                reason: '다품종 소량 생산 체제로 전환하여 시장 변화에 빠르게 대응합니다',
+                domains: ['모듈화 설계', '생산 전환', '재고 최적화'],
+                deliverables: '유연 생산 시스템, 전환 매뉴얼, 시뮬레이션',
+                examples: ['다품종 생산을 위한 모듈형 생산라인 설계', '신속 금형 교체 시스템(SMED) 개발']
+            },
+            {
+                id: 'arch08',
+                name: '클라우드 기반 업무 자동화 플랫폼',
+                industryTags: ['J', 'M'],
+                problemTags: ['인력의존', '확장성'],
+                resourceTags: ['소프트웨어', '데이터'],
+                reason: '반복 업무를 자동화하여 인력을 고부가 업무에 집중시킵니다',
+                domains: ['RPA', '워크플로우 엔진', 'API 통합'],
+                deliverables: '자동화 플랫폼, 사용자 매뉴얼, API 문서',
+                examples: ['문서 처리 업무 자동화 RPA 시스템 구축', '업무 프로세스 통합 워크플로우 엔진 개발']
+            },
+            {
+                id: 'arch09',
+                name: '데이터 분석 기반 의사결정 시스템',
+                industryTags: ['J', 'M', 'G'],
+                problemTags: ['확장성', '기술혁신'],
+                resourceTags: ['데이터', '소프트웨어'],
+                reason: '축적된 데이터를 활용하여 전략적 의사결정을 지원합니다',
+                domains: ['BI 대시보드', '예측 분석', '리포팅 자동화'],
+                deliverables: 'BI 시스템, 분석 모델, 인사이트 리포트',
+                examples: ['매출 예측 및 분석을 위한 BI 대시보드 개발', '경영 의사결정 지원 데이터 분석 플랫폼 구축']
+            },
+            {
+                id: 'arch10',
+                name: '고객 맞춤형 추천 알고리즘',
+                industryTags: ['J', 'G'],
+                problemTags: ['수출', '기술혁신'],
+                resourceTags: ['데이터', '소프트웨어'],
+                reason: '개인화 추천으로 고객 만족도와 재구매율을 향상시킵니다',
+                domains: ['협업 필터링', '콘텐츠 기반 추천', 'A/B 테스트'],
+                deliverables: '추천 엔진, 성능 검증 리포트, API',
+                examples: ['이커머스 개인화 추천 엔진 개발', '사용자 행동 분석 기반 콘텐츠 추천 시스템 구축']
+            },
+            {
+                id: 'arch11',
+                name: '모바일 앱 UX/UI 최적화 연구',
+                industryTags: ['J'],
+                problemTags: ['기술혁신', '수출'],
+                resourceTags: ['소프트웨어', '전담인력'],
+                reason: '사용자 경험 개선으로 서비스 경쟁력을 강화합니다',
+                domains: ['사용성 테스트', '인터페이스 설계', '접근성'],
+                deliverables: 'UX 가이드라인, 프로토타입, 테스트 리포트',
+                examples: ['모바일 앱 사용성 개선을 위한 UI/UX 재설계', '접근성 향상을 위한 인터페이스 최적화 연구']
+            },
+            {
+                id: 'arch12',
+                name: '블록체인 기반 이력 추적 시스템',
+                industryTags: ['C', 'G'],
+                problemTags: ['규제', '수출'],
+                resourceTags: ['소프트웨어', '데이터'],
+                reason: '제품 이력 투명성 확보로 신뢰도를 높이고 규제에 대응합니다',
+                domains: ['분산원장', '스마트 계약', '인증 체계'],
+                deliverables: '블록체인 플랫폼, 추적 시스템, 검증 보고서',
+                examples: ['식품 이력 추적을 위한 블록체인 시스템 개발', '제품 원산지 증명 블록체인 플랫폼 구축']
+            },
+            {
+                id: 'arch13',
+                name: '빅데이터 기반 수요 예측 모델',
+                industryTags: ['G', 'C'],
+                problemTags: ['확장성', '원가'],
+                resourceTags: ['데이터', '소프트웨어'],
+                reason: '정확한 수요 예측으로 재고 비용을 절감하고 결품을 방지합니다',
+                domains: ['시계열 분석', '회귀 모델', '재고 최적화'],
+                deliverables: '예측 모델, 시뮬레이션 툴, 운영 가이드',
+                examples: ['판매 데이터 기반 수요 예측 AI 모델 개발', '재고 최적화를 위한 수요 분석 시스템 구축']
+            },
+            {
+                id: 'arch14',
+                name: '전산 구조 해석·시뮬레이션',
+                industryTags: ['F', 'C'],
+                problemTags: ['품질', '원가'],
+                resourceTags: ['소프트웨어', '전담인력'],
+                reason: '설계 단계에서 구조 안전성을 검증하여 시공 오류를 사전 방지합니다',
+                domains: ['유한요소 해석', '구조 최적화', '안전성 평가'],
+                deliverables: '해석 보고서, 설계 개선안, 시뮬레이션 모델',
+                examples: ['건축 구조물의 유한요소 해석 시스템 개발', '제품 설계 최적화를 위한 구조 해석 연구']
+            },
+            {
+                id: 'arch15',
+                name: 'BIM 기반 건설 프로세스 표준화',
+                industryTags: ['F'],
+                problemTags: ['납기', '품질'],
+                resourceTags: ['소프트웨어', '전담인력'],
+                reason: '3D 모델 기반 협업으로 공기를 단축하고 시공 품질을 향상시킵니다',
+                domains: ['3D 모델링', '공정 관리', '충돌 검토'],
+                deliverables: 'BIM 모델, 표준 프로세스, 협업 가이드',
+                examples: ['BIM 기반 건설 공정 관리 시스템 개발', '3D 모델링을 활용한 설계 충돌 검토 체계 구축']
+            },
+            {
+                id: 'arch16',
+                name: '사이버 보안 취약점 진단·개선',
+                industryTags: ['J', 'M'],
+                problemTags: ['규제', '기술혁신'],
+                resourceTags: ['소프트웨어', '전담인력'],
+                reason: '보안 위협에 선제적으로 대응하여 데이터 유출을 방지합니다',
+                domains: ['취약점 스캐닝', '침투 테스트', '보안 정책'],
+                deliverables: '진단 보고서, 개선 로드맵, 보안 매뉴얼',
+                examples: ['전자책 출간 업무 중 사이버 보안 취약점 진단·개선', '웹서비스 보안 강화를 위한 침투 테스트 시스템 개발']
+            },
+            {
+                id: 'arch17',
+                name: '협업 로봇(Cobot) 작업 설계',
+                industryTags: ['C'],
+                problemTags: ['인력의존', '품질'],
+                resourceTags: ['설비', '전담인력'],
+                reason: '사람과 로봇이 협업하여 작업 효율과 안전성을 동시에 확보합니다',
+                domains: ['로봇 프로그래밍', '안전 시스템', '작업 분석'],
+                deliverables: '협업 시나리오, 안전 매뉴얼, 시범 운영 보고서',
+                examples: ['조립 공정 협업 로봇 작업 시스템 개발', '포장 작업의 인간-로봇 협업 설계']
+            },
+            {
+                id: 'arch18',
+                name: '디지털 트윈 기반 공정 모니터링',
+                industryTags: ['C'],
+                problemTags: ['확장성', '품질'],
+                resourceTags: ['설비', '소프트웨어', '데이터'],
+                reason: '가상 공장 모델로 실시간 상태를 파악하고 문제를 조기 감지합니다',
+                domains: ['3D 시뮬레이션', '센서 통합', '예지 보전'],
+                deliverables: '디지털 트윈 모델, 모니터링 시스템, 분석 리포트',
+                examples: ['생산라인의 디지털 트윈 모델 구축', '설비 예지 보전을 위한 가상 공장 시스템 개발']
+            },
+            {
+                id: 'arch19',
+                name: '지능형 물류·재고 관리 시스템',
+                industryTags: ['G', 'C'],
+                problemTags: ['납기', '원가'],
+                resourceTags: ['소프트웨어', '데이터'],
+                reason: '재고 최적화와 배송 경로 개선으로 물류 비용을 절감합니다',
+                domains: ['창고 관리', '경로 최적화', '재고 예측'],
+                deliverables: 'WMS 시스템, 최적화 알고리즘, 운영 매뉴얼',
+                examples: ['AI 기반 창고 재고 관리 시스템(WMS) 개발', '배송 경로 최적화 알고리즘 연구']
+            },
+            {
+                id: 'arch20',
+                name: '글로벌 규격 인증 지원 체계',
+                industryTags: ['C'],
+                problemTags: ['수출', '규제'],
+                resourceTags: ['인증', '시험장비'],
+                reason: '해외 규격에 적합한 제품을 개발하여 수출 경쟁력을 확보합니다',
+                domains: ['규격 분석', '시험 프로토콜', '인증 준비'],
+                deliverables: '규격 대응 가이드, 시험 보고서, 인증 준비 자료',
+                examples: ['CE 인증 획득을 위한 제품 성능 개선 연구', 'UL 규격 적합성 검증 체계 구축']
+            }
+        ];
+        
+        // 지양 패턴 라이브러리
+        const avoidPatterns = [
+            {
+                id: 'avoid01',
+                triggerTags: ['C', '품질'],
+                avoidText: '"불량률 0% 달성을 위한 연구"',
+                reason: '0%는 통계적으로 달성 불가능한 목표이며, 과장된 표현으로 의심받을 수 있습니다',
+                safeAlternative: '"불량률 X% 이하로 개선하기 위한 공정 안정화 연구" (구체적 수치 제시)'
+            },
+            {
+                id: 'avoid02',
+                triggerTags: ['C', 'J'],
+                avoidText: '"세계 최초/최고/유일 기술 개발"',
+                reason: '검증 없이 최고·최초를 주장하는 것은 과장으로 간주되며 입증 책임이 발생합니다',
+                safeAlternative: '"국내외 벤치마킹을 통한 고성능 ○○ 기술 개발"'
+            },
+            {
+                id: 'avoid03',
+                triggerTags: ['수출'],
+                avoidText: '"글로벌 시장 진출을 위한 연구"',
+                reason: '마케팅 목적 연구로 의심받으며, 연구개발과 직접 연관성이 불명확합니다',
+                safeAlternative: '"해외 규격(CE, UL 등) 적합성 확보를 위한 제품 개선 연구"'
+            },
+            {
+                id: 'avoid04',
+                triggerTags: ['원가'],
+                avoidText: '"원가 절감을 위한 연구"',
+                reason: '원가 절감만으로는 기술 개발 목적이 불명확하며, 경영 개선으로 간주될 수 있습니다',
+                safeAlternative: '"소재 대체 기술 개발을 통한 제조 원가 ○% 개선 연구"'
+            },
+            {
+                id: 'avoid05',
+                triggerTags: ['기술혁신'],
+                avoidText: '"AI 도입 연구"',
+                reason: 'AI는 수단일 뿐 연구 목적이 아니며, 구체적 문제 정의가 없으면 형식적으로 보입니다',
+                safeAlternative: '"머신러닝 기반 ○○ 예측 모델 개발 및 정확도 향상 연구"'
+            },
+            {
+                id: 'avoid06',
+                triggerTags: ['J', 'M'],
+                avoidText: '"단순 유지보수 및 기능 추가"',
+                reason: '기존 시스템의 유지보수는 연구개발이 아닌 일상 업무로 간주됩니다',
+                safeAlternative: '"기존 시스템 성능 개선을 위한 알고리즘 최적화 연구"'
+            },
+            {
+                id: 'avoid07',
+                triggerTags: ['확장성'],
+                avoidText: '"매출 증대를 위한 생산 확대 연구"',
+                reason: '매출 증대는 경영 목표이며 기술적 난제 해결과 무관하게 보일 수 있습니다',
+                safeAlternative: '"생산 공정 자동화를 통한 생산 능력 ○% 향상 연구"'
+            },
+            {
+                id: 'avoid08',
+                triggerTags: ['규제'],
+                avoidText: '"법규 준수를 위한 연구"',
+                reason: '법규 준수는 의무사항이며, 이를 연구 목적으로 제시하면 소극적으로 비칩니다',
+                safeAlternative: '"환경 규제 강화에 대응하는 저공해 공정 기술 개발"'
+            },
+            {
+                id: 'avoid09',
+                triggerTags: ['C'],
+                avoidText: '"타사 제품 모방 개발"',
+                reason: '독창성이 없는 모방은 연구개발로 인정받기 어렵고 지식재산권 문제가 발생할 수 있습니다',
+                safeAlternative: '"벤치마킹 기반 차별화된 ○○ 기능 개발 및 성능 검증"'
+            },
+            {
+                id: 'avoid10',
+                triggerTags: ['품질', '납기'],
+                avoidText: '"작업자 교육 및 숙련도 향상 연구"',
+                reason: '인력 교육은 HRD 영역이며 기술적 연구개발 성과로 간주되지 않습니다',
+                safeAlternative: '"작업 표준화 및 자동화를 통한 공정 안정성 확보 연구"'
+            }
+        ];
+        
+        // 문자 수 카운터
+        document.getElementById('businessDesc').addEventListener('input', function(e) {
+            document.getElementById('charCount').textContent = e.target.value.length;
+        });
+        
+        // KSIC 대분류 변경 시 중분류 업데이트
+        document.getElementById('ksicMajor').addEventListener('change', function(e) {
+            const major = e.target.value;
+            const minorSelect = document.getElementById('ksicMinor');
+            
+            minorSelect.innerHTML = '<option value="">선택해 주십시오</option>';
+            
+            if (major && ksicMinorData[major]) {
+                ksicMinorData[major].forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = item.value;
+                    option.textContent = item.text;
+                    minorSelect.appendChild(option);
+                });
+            }
+        });
+        
+        // 체크박스 최대 개수 제한 (Step 3만 적용)
+        document.addEventListener('DOMContentLoaded', function() {
+            const step3Checkboxes = document.querySelectorAll('#step3 input[type="checkbox"]');
+            step3Checkboxes.forEach(cb => {
+                cb.addEventListener('change', function() {
+                    const checked = document.querySelectorAll('#step3 input[type="checkbox"]:checked');
+                    if (checked.length > 3) {
+                        this.checked = false;
+                        alert('당면 과제는 최대 3개까지만 선택 가능합니다.');
+                    }
+                });
+            });
+        });
+        
+        // 다음 단계로 이동
+        function nextStep(step) {
+            // 유효성 검사
+            if (step === 1) {
+                const major = document.getElementById('ksicMajor').value;
+                const minor = document.getElementById('ksicMinor').value;
+                
+                if (!major || !minor) {
+                    alert('업종 정보를 모두 선택해 주십시오.');
+                    return;
+                }
+                
+                inputData.ksicMajor = major;
+                inputData.ksicMinor = minor;
+            }
+            
+            if (step === 2) {
+                const desc = document.getElementById('businessDesc').value.trim();
+                const keywords = document.getElementById('keywords').value.trim();
+                
+                if (!desc || !keywords) {
+                    alert('사업 현황 정보를 모두 입력해 주십시오.');
+                    return;
+                }
+                
+                inputData.businessDesc = desc;
+                inputData.keywords = keywords;
+            }
+            
+            if (step === 3) {
+                const problems = [];
+                document.querySelectorAll('#step3 input[type="checkbox"]:checked').forEach(cb => {
+                    problems.push(cb.value);
+                });
+                
+                if (problems.length === 0) {
+                    alert('당면 과제를 최소 1개 이상 선택해 주십시오.');
+                    return;
+                }
+                
+                inputData.problems = problems;
+            }
+            
+            // 현재 단계 숨기기
+            document.getElementById(`step${step}`).classList.remove('active');
+            
+            // 다음 단계 표시
+            currentStep = step + 1;
+            document.getElementById(`step${currentStep}`).classList.add('active');
+            
+            // 진행률 표시
+            updateProgress();
+            
+            // 스크롤
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        // 이전 단계로 이동
+        function prevStep(step) {
+            document.getElementById(`step${step}`).classList.remove('active');
+            currentStep = step - 1;
+            document.getElementById(`step${currentStep}`).classList.add('active');
+            
+            updateProgress();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        // 진행률 업데이트
+        function updateProgress() {
+            const progress = ((currentStep - 1) / 4) * 100;
+            document.getElementById('progressIndicator').style.display = 'block';
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+        
+        // 분석 및 결과 표시
+        function analyzeAndShowResult() {
+            // 보유 역량 수집
+            const capabilities = [];
+            document.querySelectorAll('#step4 input[type="checkbox"]:checked').forEach(cb => {
+                capabilities.push(cb.value);
+            });
+            
+            inputData.capabilities = capabilities;
+            
+            // 분석 수행
+            const result = performAnalysis(inputData);
+            
+            // 결과 표시
+            displayResult(result);
+            
+            // 입력 카드 숨기고 결과 표시
+            document.querySelector('.card').style.display = 'none';
+            document.getElementById('resultSection').classList.add('active');
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        // 동적 과제명 생성 함수
+        function generateCustomExamples(archetype, data) {
+            const keywords = data.keywords.split(',').map(k => k.trim()).filter(k => k);
+            const mainKeyword = keywords[0] || '제품';
+            const secondKeyword = keywords[1] || '시스템';
+            
+            const businessLower = data.businessDesc.toLowerCase();
+            
+            // 업종별 주요 용어 추출
+            let industryContext = '';
+            if (data.ksicMajor === 'C') {
+                if (businessLower.includes('자동차')) industryContext = '자동차 부품';
+                else if (businessLower.includes('전자')) industryContext = '전자부품';
+                else if (businessLower.includes('기계')) industryContext = '기계장비';
+                else if (businessLower.includes('금속')) industryContext = '금속가공';
+                else if (businessLower.includes('화학')) industryContext = '화학제품';
+                else if (businessLower.includes('식품')) industryContext = '식품';
+                else industryContext = '제조 공정';
+            } else if (data.ksicMajor === 'J') {
+                if (businessLower.includes('소프트웨어') || businessLower.includes('sw')) industryContext = '소프트웨어';
+                else if (businessLower.includes('앱') || businessLower.includes('모바일')) industryContext = '모바일 앱';
+                else if (businessLower.includes('플랫폼')) industryContext = '플랫폼';
+                else industryContext = 'IT 서비스';
+            } else if (data.ksicMajor === 'G') {
+                industryContext = '유통';
+            } else if (data.ksicMajor === 'F') {
+                industryContext = '건설';
+            }
+            
+            const templates = {
+                'arch01': [
+                    `${mainKeyword} 생산 공정의 자동화 시스템 개발 및 검증`,
+                    `${industryContext} 제조 라인 로봇 자동화 기술 연구`
+                ],
+                'arch02': [
+                    `${mainKeyword} 품질 검사를 위한 AI 비전 시스템 개발`,
+                    `머신러닝 기반 ${mainKeyword} 불량 예측 모델 구축`
+                ],
+                'arch03': [
+                    `${mainKeyword} 제조 시 친환경 소재 적용 연구`,
+                    `재활용 ${mainKeyword} 개발 및 성능 검증`
+                ],
+                'arch04': [
+                    `${industryContext} 생산 현장의 스마트팩토리 MES 구축`,
+                    `${mainKeyword} 제조 공정 IoT 센서 기반 실시간 모니터링 시스템 개발`
+                ],
+                'arch05': [
+                    `${mainKeyword} 제조 공정의 에너지 절감 최적화 연구`,
+                    `${industryContext} 생산라인 전력 소비 저감 기술 개발`
+                ],
+                'arch06': [
+                    `${mainKeyword} 내구성 향상을 위한 시험 검증 체계 구축`,
+                    `${mainKeyword} 안전성 평가 및 글로벌 인증 획득 연구`
+                ],
+                'arch07': [
+                    `${mainKeyword} 다품종 생산을 위한 유연 생산 시스템 설계`,
+                    `${industryContext} 맞춤형 제조 공정 모듈화 연구`
+                ],
+                'arch08': [
+                    `${secondKeyword} 업무 프로세스 RPA 자동화 시스템 개발`,
+                    `클라우드 기반 ${industryContext} 업무 효율화 플랫폼 구축`
+                ],
+                'arch09': [
+                    `${mainKeyword} 데이터 분석 기반 의사결정 지원 시스템 개발`,
+                    `${industryContext} BI 대시보드 및 예측 분석 모델 구축`
+                ],
+                'arch10': [
+                    `${mainKeyword} 고객 맞춤형 AI 추천 알고리즘 개발`,
+                    `사용자 행동 분석 기반 ${mainKeyword} 개인화 추천 엔진 구축`
+                ],
+                'arch11': [
+                    `${mainKeyword} 모바일 앱 UX/UI 최적화 연구`,
+                    `${industryContext} 서비스의 사용성 개선 및 인터페이스 재설계`
+                ],
+                'arch12': [
+                    `${mainKeyword} 이력 추적을 위한 블록체인 시스템 개발`,
+                    `${industryContext} 공급망 투명성 확보 블록체인 플랫폼 구축`
+                ],
+                'arch13': [
+                    `${mainKeyword} 판매 데이터 기반 수요 예측 AI 모델 개발`,
+                    `${industryContext} 재고 최적화를 위한 빅데이터 분석 시스템 구축`
+                ],
+                'arch14': [
+                    `${mainKeyword} 구조 안전성 검증을 위한 전산 해석 연구`,
+                    `${industryContext} 설계 최적화 시뮬레이션 시스템 개발`
+                ],
+                'arch15': [
+                    `${mainKeyword} 시공 프로젝트 BIM 기반 공정 관리 시스템 개발`,
+                    `${industryContext} 3D 모델링 협업 플랫폼 구축`
+                ],
+                'arch16': [
+                    `${industryContext} ${mainKeyword} 서비스의 사이버 보안 취약점 진단·개선`,
+                    `${mainKeyword} 시스템 보안 강화를 위한 침투 테스트 체계 구축`
+                ],
+                'arch17': [
+                    `${mainKeyword} 조립 공정의 협업 로봇 작업 시스템 개발`,
+                    `${industryContext} 생산 현장 인간-로봇 협업 설계 연구`
+                ],
+                'arch18': [
+                    `${mainKeyword} 생산라인의 디지털 트윈 모델 구축`,
+                    `${industryContext} 공정 가상화 및 실시간 모니터링 시스템 개발`
+                ],
+                'arch19': [
+                    `${mainKeyword} 물류 최적화를 위한 지능형 창고 관리 시스템(WMS) 개발`,
+                    `${industryContext} 배송 경로 최적화 알고리즘 연구`
+                ],
+                'arch20': [
+                    `${mainKeyword} 수출을 위한 글로벌 규격(CE/UL) 적합성 연구`,
+                    `${industryContext} 해외 인증 획득 지원 체계 구축`
+                ]
+            };
+            
+            return templates[archetype.id] || archetype.examples;
+        }
+        function performAnalysis(data) {
+            // 태그 변환
+            const industryTag = data.ksicMajor;
+            const problemTags = data.problems;
+            const resourceTags = data.capabilities;
+            
+            // 사업내용 및 키워드 분석
+            const businessText = (data.businessDesc + ' ' + data.keywords).toLowerCase();
+            
+            // 키워드 가중치 맵핑
+            const keywordBonus = {
+                // 제조업 관련
+                '자동화': ['arch01', 'arch04', 'arch17', 'arch18'],
+                '로봇': ['arch01', 'arch17'],
+                '품질': ['arch02', 'arch06'],
+                'ai': ['arch02', 'arch09', 'arch10', 'arch13'],
+                '머신러닝': ['arch02', 'arch10', 'arch13'],
+                '검사': ['arch02', 'arch06'],
+                '친환경': ['arch03'],
+                '재활용': ['arch03'],
+                '에너지': ['arch05'],
+                '전력': ['arch05'],
+                'mes': ['arch04'],
+                'iot': ['arch04', 'arch18'],
+                '스마트': ['arch04', 'arch18'],
+                '내구성': ['arch06'],
+                '안전': ['arch06'],
+                '인증': ['arch06', 'arch20'],
+                '유연': ['arch07'],
+                '다품종': ['arch07'],
+                
+                // IT/소프트웨어 관련
+                '클라우드': ['arch08'],
+                'rpa': ['arch08'],
+                '자동화': ['arch08'],
+                '데이터': ['arch09', 'arch13'],
+                'bi': ['arch09'],
+                '분석': ['arch09', 'arch13'],
+                '추천': ['arch10'],
+                '개인화': ['arch10'],
+                'ux': ['arch11'],
+                'ui': ['arch11'],
+                '모바일': ['arch11'],
+                '앱': ['arch11'],
+                '블록체인': ['arch12'],
+                '이력': ['arch12'],
+                '추적': ['arch12'],
+                '수요예측': ['arch13'],
+                '재고': ['arch13', 'arch19'],
+                
+                // 건설/엔지니어링 관련
+                '구조': ['arch14'],
+                '해석': ['arch14'],
+                'bim': ['arch15'],
+                '건설': ['arch15'],
+                '3d': ['arch15', 'arch18'],
+                
+                // 보안/물류
+                '보안': ['arch16'],
+                '취약점': ['arch16'],
+                '물류': ['arch19'],
+                '배송': ['arch19'],
+                'wms': ['arch19'],
+                '창고': ['arch19'],
+                
+                // 수출/인증
+                '수출': ['arch20'],
+                'ce': ['arch20'],
+                'ul': ['arch20'],
+                '글로벌': ['arch20']
+            };
+            
+            // 연구유형 점수 계산
+            const scoredArchetypes = researchArchetypes.map(arch => {
+                let score = 0;
+                let bonusReasons = [];
+                let matchDetails = {
+                    problems: [],
+                    resources: [],
+                    keywords: []
+                };
+                
+                // 1. 업종 적합도 (0-5)
+                if (arch.industryTags.includes(industryTag)) {
+                    score += 5;
+                }
+                
+                // 2. 문제 적합도 (0-5)
+                const matchedProblems = arch.problemTags.filter(tag => {
+                    if (problemTags.includes(tag)) {
+                        matchDetails.problems.push(tag);
+                        return true;
+                    }
+                    return false;
+                }).length;
+                score += Math.min(matchedProblems * 2, 5);
+                
+                if (matchedProblems > 0) {
+                    bonusReasons.push(`귀사의 '${matchDetails.problems.join(', ')}' 문제 해결 가능`);
+                }
+                
+                // 3. 자원 충족도 (0-5)
+                const matchedResources = arch.resourceTags.filter(tag => {
+                    if (resourceTags.includes(tag)) {
+                        matchDetails.resources.push(tag);
+                        return true;
+                    }
+                    return false;
+                }).length;
+                score += Math.min(matchedResources * 1.5, 5);
+                
+                if (matchedResources > 0) {
+                    bonusReasons.push(`보유하신 '${matchDetails.resources.join(', ')}' 역량 활용 가능`);
+                }
+                
+                // 4. 키워드 매칭 보너스 (0-10)
+                let keywordScore = 0;
+                for (const [keyword, archIds] of Object.entries(keywordBonus)) {
+                    if (businessText.includes(keyword) && archIds.includes(arch.id)) {
+                        keywordScore += 2;
+                        matchDetails.keywords.push(keyword);
+                    }
+                }
+                score += Math.min(keywordScore, 10);
+                
+                if (matchDetails.keywords.length > 0) {
+                    bonusReasons.push(`사업 내용 중 '${matchDetails.keywords.join(', ')}' 키워드와 직접 연관`);
+                }
+                
+                // 5. 보유 역량 완벽 매칭 보너스 (0-3)
+                if (arch.resourceTags.length > 0) {
+                    const resourceMatchRate = matchedResources / arch.resourceTags.length;
+                    if (resourceMatchRate >= 0.8) {
+                        score += 3;
+                        bonusReasons.push(`필요 역량의 ${Math.round(resourceMatchRate * 100)}% 이미 보유`);
+                    } else if (resourceMatchRate >= 0.5) {
+                        score += 1.5;
+                    }
+                }
+                
+                // 6. 복합 문제 해결 보너스 (0-2)
+                if (matchedProblems >= 2) {
+                    score += 2;
+                    bonusReasons.push('여러 당면 과제를 동시 해결');
+                }
+                
+                // 7. 미보유 역량 분석
+                const missingResources = arch.resourceTags.filter(tag => 
+                    !resourceTags.includes(tag)
+                );
+                
+                return {
+                    ...arch,
+                    score: score,
+                    bonusReasons: bonusReasons,
+                    matchedProblems: matchedProblems,
+                    matchedResources: matchedResources,
+                    missingResources: missingResources,
+                    matchDetails: matchDetails,
+                    customExamples: generateCustomExamples(arch, data)
+                };
+            });
+            
+            // 상위 10개 추천
+            const recommended = scoredArchetypes
+                .sort((a, b) => b.score - a.score)
+                .slice(0, 10);
+            
+            // 지양 패턴 매칭 (키워드 기반 확장)
+            const triggeredPatterns = avoidPatterns.filter(pattern => {
+                const tagMatch = pattern.triggerTags.some(tag => 
+                    tag === industryTag || problemTags.includes(tag)
+                );
+                
+                // 사업 내용에서 위험 키워드 감지
+                const riskKeywords = {
+                    'avoid01': ['불량 0', '불량률 0', '제로 불량'],
+                    'avoid02': ['세계 최초', '세계 최고', '세계 유일', '국내 최초'],
+                    'avoid03': ['글로벌 진출', '세계 시장'],
+                    'avoid04': ['원가 절감', '비용 절감'],
+                    'avoid05': ['ai 도입', '인공지능 도입'],
+                    'avoid06': ['유지보수', '기능 추가'],
+                    'avoid07': ['매출 증대', '매출 확대'],
+                    'avoid08': ['법규 준수', '규제 대응'],
+                    'avoid09': ['모방', '벤치마킹'],
+                    'avoid10': ['교육', '훈련', '숙련도']
+                };
+                
+                const keywordMatch = riskKeywords[pattern.id]?.some(keyword => 
+                    businessText.includes(keyword.toLowerCase())
+                ) || false;
+                
+                return tagMatch || keywordMatch;
+            }).slice(0, 10);
+            
+            // 로드맵 생성
+            const roadmap = generateRoadmap(recommended.slice(0, 3), data);
+            
+            return {
+                industry: ksicMinorData[industryTag].find(item => item.value === data.ksicMinor)?.text || '',
+                businessSummary: data.businessDesc.substring(0, 100) + (data.businessDesc.length > 100 ? '...' : ''),
+                keywords: data.keywords,
+                selectedProblems: problemTags,
+                selectedCapabilities: resourceTags,
+                recommended: recommended,
+                avoid: triggeredPatterns,
+                roadmap: roadmap
+            };
+        }
+        
+        // 로드맵 생성
+        function generateRoadmap(topResearch, data) {
+            return [
+                {
+                    phase: '0~6개월',
+                    title: '설립 및 기초 연구 단계',
+                    goal: '연구소 인프라 구축 및 핵심 연구 주제 1개 착수',
+                    tasks: [
+                        '연구소 설립 신고 및 전담 인력 확보 (연구원 2인 이상)',
+                        `${topResearch[0].name} 연구 계획 수립`,
+                        '연구 장비 및 시설 구축',
+                        '연구 노트 작성 체계 수립'
+                    ],
+                    deliverables: '연구소 설립 인정서, 연구 계획서, 초기 연구 노트',
+                    resources: '연구 전담 인력 2~3명, 기본 연구 설비',
+                    programs: '연구개발특구진흥재단 R&D 지원, 중소벤처기업부 기술개발사업'
+                },
+                {
+                    phase: '6~18개월',
+                    title: '연구 수행·확장 단계',
+                    goal: '주요 연구 과제 2~3개 동시 수행 및 중간 성과 도출',
+                    tasks: [
+                        `${topResearch[0].name} 시제품 또는 프로토타입 개발`,
+                        `${topResearch[1]?.name || '후속 연구'} 착수`,
+                        '외부 전문기관 협업 체계 구축 (대학, 연구소)',
+                        '중간 성과 보고 및 개선 방향 수립'
+                    ],
+                    deliverables: '시제품/프로토타입, 중간 연구 보고서, 논문 또는 특허 출원',
+                    resources: '연구 인력 4~5명, 전문 장비 추가 도입',
+                    programs: '산업통상자원부 R&D 과제, 특허청 IP-R&D 지원'
+                },
+                {
+                    phase: '18~36개월',
+                    title: '고도화·사업화 단계',
+                    goal: '연구 성과의 사업 적용 및 지속 가능한 R&D 체계 확립',
+                    tasks: [
+                        '연구 성과의 실제 생산 라인 적용 및 검증',
+                        `${topResearch[2]?.name || '신규 연구'} 과제 기획`,
+                        '인증 획득 및 성과 확산 (논문, 특허, 기술이전)',
+                        '차기 3개년 연구 로드맵 수립'
+                    ],
+                    deliverables: '최종 연구 보고서, 사업화 실적, 인증서, 특허 등록',
+                    resources: '연구 인력 5~7명, 전문 연구 시설 완비',
+                    programs: '중기부 성과활용지원, 한국산업기술진흥원 사업화 연계'
+                }
+            ];
+        }
+        
+        // 결과 표시
+        function displayResult(result) {
+            document.getElementById('resultSubtitle').textContent = 
+                `${result.industry} 업종 기준 분석 결과입니다`;
+            
+            // 사업 정보 요약
+            const summaryHtml = `
+                <div style="background: var(--bg-light); border-radius: 12px; padding: 28px;">
+                    <div style="margin-bottom: 20px;">
+                        <div style="font-size: 0.95rem; font-weight: 600; color: var(--text-dark); margin-bottom: 8px;">📌 사업 내용</div>
+                        <div style="font-size: 1.0rem; color: var(--text-gray); line-height: 1.8;">${result.businessSummary}</div>
+                    </div>
+                    <div style="margin-bottom: 20px;">
+                        <div style="font-size: 0.95rem; font-weight: 600; color: var(--text-dark); margin-bottom: 8px;">🔑 주요 키워드</div>
+                        <div style="font-size: 1.0rem; color: var(--text-gray);">${result.keywords}</div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+                        <div>
+                            <div style="font-size: 0.95rem; font-weight: 600; color: var(--text-dark); margin-bottom: 8px;">⚠️ 당면 과제</div>
+                            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                                ${result.selectedProblems.map(p => `<span class="tag">${p}</span>`).join('')}
+                            </div>
+                        </div>
+                        <div>
+                            <div style="font-size: 0.95rem; font-weight: 600; color: var(--text-dark); margin-bottom: 8px;">💪 보유 역량</div>
+                            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                                ${result.selectedCapabilities.map(c => `<span class="tag">${c}</span>`).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('businessSummary').innerHTML = summaryHtml;
+            
+            // 추천 연구유형
+            const recHtml = result.recommended.map((item, idx) => `
+                <div class="research-item">
+                    <div class="research-header">
+                        <div class="research-name">${item.name}</div>
+                        <div class="research-rank">${idx + 1}순위 (${item.score.toFixed(1)}점)</div>
+                    </div>
+                    <div class="research-reason">${item.reason}</div>
+                    ${item.bonusReasons.length > 0 ? `
+                        <div style="margin: 12px 0; padding: 12px 16px; background: #f0f9ff; border-radius: 8px; border-left: 3px solid var(--accent);">
+                            <div style="font-size: 0.85rem; font-weight: 600; color: var(--accent); margin-bottom: 6px;">✨ 귀사 맞춤 추천 근거</div>
+                            ${item.bonusReasons.map(reason => `
+                                <div style="font-size: 0.9rem; color: var(--text-dark); margin-bottom: 4px;">• ${reason}</div>
+                            `).join('')}
+                        </div>
+                    ` : ''}
+                    <div class="research-tags">
+                        ${item.domains.map(d => `<span class="tag">${d}</span>`).join('')}
+                    </div>
+                    ${item.customExamples ? `
+                    <div style="margin-top: 16px; padding: 16px; background: white; border-radius: 8px; border-left: 3px solid var(--accent);">
+                        <div style="font-size: 0.9rem; color: var(--text-gray); font-weight: 600; margin-bottom: 8px;">💡 귀사 맞춤 과제명 예시</div>
+                        ${item.customExamples.map(ex => `
+                            <div style="font-size: 0.95rem; color: var(--text-dark); margin-bottom: 6px; padding-left: 12px; position: relative;">
+                                <span style="position: absolute; left: 0; color: var(--accent);">•</span>
+                                ${ex}
+                            </div>
+                        `).join('')}
+                    </div>
+                    ` : ''}
+                    ${item.missingResources && item.missingResources.length > 0 ? `
+                    <div style="margin-top: 12px; padding: 12px 16px; background: #fef9f3; border-radius: 8px; border-left: 3px solid var(--priority-medium);">
+                        <div style="font-size: 0.85rem; font-weight: 600; color: var(--priority-medium); margin-bottom: 6px;">⚡ 추가 확보 필요 역량</div>
+                        <div style="font-size: 0.9rem; color: var(--text-dark);">
+                            ${item.missingResources.join(', ')} 확보 시 연구 성공률 증가
+                        </div>
+                    </div>
+                    ` : ''}
+                    <div class="research-output">📋 예상 산출물: ${item.deliverables}</div>
+                </div>
+            `).join('');
+            document.getElementById('recommendedResearch').innerHTML = recHtml;
+            
+            // 지양 패턴
+            const avoidHtml = result.avoid.map((item, idx) => `
+                <div class="research-item avoid-warning">
+                    <div class="research-header">
+                        <div class="research-name" style="color: var(--priority-high);">패턴 ${idx + 1}</div>
+                    </div>
+                    <div class="avoid-text">⚠️ ${item.avoidText}</div>
+                    <div class="avoid-reason">${item.reason}</div>
+                    <div class="safe-alternative">
+                        <div class="safe-label">✅ 안전한 대체 표현</div>
+                        <div class="safe-text">${item.safeAlternative}</div>
+                    </div>
+                </div>
+            `).join('');
+            document.getElementById('avoidPatterns').innerHTML = avoidHtml;
+            
+            // 로드맵
+            const roadmapHtml = result.roadmap.map(stage => `
+                <div class="roadmap-item">
+                    <div class="roadmap-phase">${stage.phase}</div>
+                    <div class="roadmap-title">${stage.title}</div>
+                    <div class="roadmap-content">
+                        <div class="roadmap-label">🎯 단계 목표</div>
+                        <div class="roadmap-text">${stage.goal}</div>
+                    </div>
+                    <div class="roadmap-content">
+                        <div class="roadmap-label">📌 핵심 과업</div>
+                        <ul class="roadmap-list">
+                            ${stage.tasks.map(t => `<li>${t}</li>`).join('')}
+                        </ul>
+                    </div>
+                    <div class="roadmap-content">
+                        <div class="roadmap-label">📄 주요 산출물</div>
+                        <div class="roadmap-text">${stage.deliverables}</div>
+                    </div>
+                    <div class="roadmap-content">
+                        <div class="roadmap-label">👥 필요 인력·자원</div>
+                        <div class="roadmap-text">${stage.resources}</div>
+                    </div>
+                    <div class="roadmap-content">
+                        <div class="roadmap-label">🔗 연계 가능 지원사업</div>
+                        <div class="roadmap-text">${stage.programs}</div>
+                    </div>
+                </div>
+            `).join('');
+            document.getElementById('roadmapTimeline').innerHTML = roadmapHtml;
+        }
+        
+        // 재시작
+        function restart() {
+            currentStep = 1;
+            inputData = {
+                ksicMajor: '',
+                ksicMinor: '',
+                businessDesc: '',
+                keywords: '',
+                problems: [],
+                capabilities: []
+            };
+            
+            // 폼 초기화
+            document.getElementById('ksicMajor').value = '';
+            document.getElementById('ksicMinor').innerHTML = '<option value="">대분류를 먼저 선택해 주십시오</option>';
+            document.getElementById('businessDesc').value = '';
+            document.getElementById('charCount').textContent = '0';
+            document.getElementById('keywords').value = '';
+            
+            document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                cb.checked = false;
+            });
+            
+            // 화면 초기화
+            document.querySelectorAll('.step-section').forEach(step => {
+                step.classList.remove('active');
+            });
+            document.getElementById('step1').classList.add('active');
+            
+            document.getElementById('progressIndicator').style.display = 'none';
+            document.getElementById('progressFill').style.width = '0%';
+            
+            document.querySelector('.card').style.display = 'block';
+            document.getElementById('resultSection').classList.remove('active');
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>지식재산(IP) 지원사업 자가진단 | 코리아경영자문</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: #f8f9fc;
+            min-height: 100vh;
+            padding: 0;
+        }
+
+        .top-gradient {
+            height: 6px;
+            background: linear-gradient(90deg, #1e3a5f 0%, #2874a6 100%);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            min-height: calc(100vh - 6px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3a5f 0%, #152a45 100%);
+            color: white;
+            padding: 40px 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-family: 'Montserrat', 'Noto Sans KR', sans-serif;
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.95;
+            font-weight: 400;
+        }
+
+        .header .subtitle {
+            font-size: 13px;
+            opacity: 0.8;
+            margin-top: 6px;
+        }
+
+        .content {
+            flex: 1;
+            padding: 50px 40px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-box {
+            background: #f8f9fc;
+            border-left: 4px solid #2874a6;
+            padding: 24px;
+            margin-bottom: 40px;
+            border-radius: 16px;
+        }
+
+        .info-box h3 {
+            color: #1e3a5f;
+            margin-bottom: 16px;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .requirements-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .requirement-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+        }
+
+        .requirement-item .icon {
+            color: #2874a6;
+            font-weight: bold;
+            font-size: 18px;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+
+        .requirement-item .text {
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .progress-container {
+            margin-bottom: 40px;
+            padding: 24px;
+            background: #f8f9fc;
+            border-radius: 16px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #2874a6 0%, #1e3a5f 100%);
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 10px;
+        }
+
+        .progress-text {
+            text-align: center;
+            color: #64748b;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .question-wrapper {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .question-wrapper.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .question-section {
+            padding: 40px;
+            background: #ffffff;
+            border-radius: 20px;
+            border: 2px solid #f1f5f9;
+            min-height: 400px;
+        }
+
+        .question-section h3 {
+            color: #1a1a2e;
+            margin-bottom: 30px;
+            font-size: 22px;
+            font-weight: 700;
+            line-height: 1.6;
+            text-align: center;
+        }
+
+        .question-number {
+            display: inline-block;
+            background: linear-gradient(135deg, #2874a6 0%, #1e3a5f 100%);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .radio-option {
+            position: relative;
+        }
+
+        .radio-option input[type="radio"] {
+            display: none;
+        }
+
+        .radio-option label {
+            display: block;
+            padding: 20px 24px;
+            background: #f8f9fc;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+            font-weight: 500;
+            color: #64748b;
+            font-size: 16px;
+        }
+
+        .radio-option input[type="radio"]:checked + label {
+            background: linear-gradient(135deg, #2874a6 0%, #1e3a5f 100%);
+            color: white;
+            border-color: #2874a6;
+            transform: translateX(5px);
+            box-shadow: 0 6px 20px rgba(40, 116, 166, 0.3);
+        }
+
+        .radio-option label:hover {
+            border-color: #2874a6;
+            transform: translateX(3px);
+            box-shadow: 0 4px 12px rgba(40, 116, 166, 0.15);
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .checkbox-group label {
+            display: flex;
+            align-items: flex-start;
+            padding: 16px 20px;
+            background: #f8f9fc;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            margin-right: 14px;
+            margin-top: 3px;
+            width: 22px;
+            height: 22px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .checkbox-group label:hover {
+            border-color: #2874a6;
+            background: white;
+            transform: translateX(3px);
+        }
+
+        .checkbox-group input[type="checkbox"]:checked + .checkbox-text {
+            color: #1e3a5f;
+            font-weight: 600;
+        }
+
+        .checkbox-text {
+            color: #64748b;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        .btn-container {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .btn {
+            padding: 16px 50px;
+            font-size: 17px;
+            font-weight: 700;
+            border: none;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        .btn-next {
+            background: linear-gradient(135deg, #2874a6 0%, #1e3a5f 100%);
+            color: white;
+            box-shadow: 0 6px 20px rgba(40, 116, 166, 0.3);
+        }
+
+        .btn-next:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(40, 116, 166, 0.4);
+        }
+
+        .btn-prev {
+            background: white;
+            color: #2874a6;
+            border: 2px solid #2874a6;
+            margin-right: 15px;
+        }
+
+        .btn-prev:hover {
+            background: #f8f9fc;
+        }
+
+        .result-container {
+            display: none;
+            padding: 50px 40px;
+            border-radius: 24px;
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+            background: linear-gradient(135deg, #2874a6 0%, #1e3a5f 100%);
+        }
+
+        .result-container h2 {
+            font-family: 'Montserrat', 'Noto Sans KR', sans-serif;
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .result-container > p {
+            font-size: 18px;
+            line-height: 1.8;
+            color: white;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .result-details {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            margin-top: 30px;
+            text-align: left;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .result-details h3 {
+            color: #1e3a5f;
+            margin-bottom: 20px;
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .program-card {
+            background: #f8f9fc;
+            padding: 24px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border-left: 4px solid #2874a6;
+        }
+
+        .program-card h4 {
+            color: #1e3a5f;
+            font-size: 18px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+        }
+
+        .program-badge {
+            display: inline-block;
+            background: #2874a6;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-left: 10px;
+            font-weight: 600;
+        }
+
+        .program-card p {
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .program-card .amount {
+            color: #2874a6;
+            font-weight: 700;
+            font-size: 16px;
+            margin-top: 12px;
+        }
+
+        .roadmap-section {
+            margin-top: 30px;
+            padding: 30px;
+            background: #f8f9fc;
+            border-radius: 16px;
+        }
+
+        .roadmap-section h3 {
+            color: #1e3a5f;
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+
+        .roadmap-timeline {
+            position: relative;
+            padding-left: 40px;
+            margin-top: 20px;
+        }
+
+        .roadmap-timeline::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 10px;
+            bottom: 10px;
+            width: 3px;
+            background: linear-gradient(180deg, #2874a6 0%, #1e3a5f 100%);
+        }
+
+        .roadmap-item {
+            position: relative;
+            margin-bottom: 25px;
+            padding-left: 20px;
+        }
+
+        .roadmap-item::before {
+            content: '';
+            position: absolute;
+            left: -29px;
+            top: 5px;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #2874a6;
+            border: 3px solid white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
+
+        .roadmap-item .step-title {
+            font-weight: 700;
+            color: #1e3a5f;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+
+        .roadmap-item .step-desc {
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .budget-summary {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 20px;
+            border: 2px solid #2874a6;
+        }
+
+        .budget-summary h4 {
+            color: #1e3a5f;
+            font-size: 18px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .budget-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #f3e8ff;
+        }
+
+        .budget-row:last-child {
+            border-bottom: none;
+            font-weight: 700;
+            color: #1e3a5f;
+            font-size: 17px;
+            padding-top: 18px;
+            margin-top: 8px;
+            border-top: 2px solid #2874a6;
+        }
+
+        .disclaimer {
+            margin-top: 40px;
+            padding: 30px;
+            background: #fef3c7;
+            border-radius: 16px;
+            border-left: 4px solid #f59e0b;
+        }
+
+        .disclaimer p {
+            color: #92400e;
+            line-height: 1.8;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+
+        .disclaimer p:last-child {
+            margin-bottom: 0;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 30px 40px;
+            background: #f8f9fc;
+            color: #64748b;
+            font-size: 14px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .footer p {
+            margin: 8px 0;
+        }
+
+        .footer .copyright {
+            font-weight: 600;
+            color: #1e3a5f;
+            margin-top: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 25px 24px;
+            }
+
+            .header h1 {
+                font-size: 22px;
+            }
+
+            .content {
+                padding: 30px 24px;
+            }
+
+            .question-section {
+                padding: 30px 24px;
+                min-height: 350px;
+            }
+
+            .question-section h3 {
+                font-size: 18px;
+            }
+
+            .result-container {
+                padding: 30px 24px;
+            }
+
+            .result-container h2 {
+                font-size: 28px;
+            }
+
+            .result-details {
+                padding: 24px;
+            }
+
+            .requirements-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="top-gradient"></div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>지식재산(IP) 지원사업</h1>
+            <p>맞춤형 자가진단 시스템</p>
+            <p class="subtitle">Korea Management Consulting</p>
+        </div>
+
+        <div class="content">
+            <!-- 초기 안내 -->
+            <div id="introSection">
+                <div class="info-box">
+                    <h3>🎯 IP 지원사업 안내</h3>
+                    <div class="requirements-grid">
+                        <div class="requirement-item">
+                            <span class="icon">✓</span>
+                            <span class="text"><strong>IP나래:</strong> 창업 7년 이내 (신성장 10년)</span>
+                        </div>
+                        <div class="requirement-item">
+                            <span class="icon">✓</span>
+                            <span class="text"><strong>지원한도:</strong> 최대 2,500만원</span>
+                        </div>
+                        <div class="requirement-item">
+                            <span class="icon">✓</span>
+                            <span class="text"><strong>IP긴급지원:</strong> 업력 무관 중소기업</span>
+                        </div>
+                        <div class="requirement-item">
+                            <span class="icon">✓</span>
+                            <span class="text"><strong>지원내용:</strong> 특허·상표·디자인 출원</span>
+                        </div>
+                        <div class="requirement-item">
+                            <span class="icon">✓</span>
+                            <span class="text"><strong>글로벌IP:</strong> 수출기업 3년 지원</span>
+                        </div>
+                        <div class="requirement-item">
+                            <span class="icon">✓</span>
+                            <span class="text"><strong>주관:</strong> 한국발명진흥회</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="btn-container">
+                    <button class="btn btn-next" onclick="startDiagnosis()">진단 시작하기</button>
+                </div>
+            </div>
+
+            <!-- 진행률 표시 -->
+            <div class="progress-container" id="progressContainer" style="display: none;">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-text" id="progressText">진행률: 0% (0/10)</div>
+            </div>
+
+            <!-- 질문 1: 업력 -->
+            <div class="question-wrapper" data-question="1">
+                <div class="question-section">
+                    <div class="question-number">질문 1 / 10</div>
+                    <h3>귀사의 업력(사업자등록 기준)은 몇 년입니까?</h3>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="q1_new3" name="q1" value="new3">
+                            <label for="q1_new3">3년 이하</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="q1_new7" name="q1" value="new7">
+                            <label for="q1_new7">4년 ~ 7년</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="q1_new10" name="q1" value="new10">
+                            <label for="q1_new10">8년 ~ 10년 (신성장산업)</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="q1_old" name="q1" value="old">
+                            <label for="q1_old">10년 이상</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 질문 2: 업종 -->
+            <div class="question-wrapper" data-question="2">
+                <div class="question-section">
+                    <div class="question-number">질문 2 / 10</div>
+                    <h3>귀사의 업종을 선택해주세요</h3>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="q2_manu" name="q2" value="manufacturing">
+                            <label for="q2_manu">제조업</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="q2_it" name="q2" value="it">
+                            <label for="q2_it">IT/소프트웨어</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="q2_service" name="q2" value="service">
+                            <label for="q2_service">서비스업</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="q2_retail" name="q2" value="retail">
+                            <label for="q2_retail">도소매/유통</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 질문 3: 보유 IP -->
+            <div class="question-wrapper" data-question="3">
+                <div class="question-section">
+                    <div class="question-number">질문 3 / 10</div>
+                    <h3>현재 보유하고 있는 지식재산권이 있나요? (복수선택)</h3>
+                    <div class="checkbox-group">
+                        <label>
+                            <input type="checkbox" name="q3" value="patent">
+                            <span class="checkbox-text">특허 (등록 또는 출원 중)</span>
+                        </label>
+                        <label>
+                            <input type="checkbox" name="q3" value="trademark">
+                            <span class="checkbox-text">상표 (등록 또는 출원 중)</span>
+                        </label>
+                        <label>
+                            <input type="checkbox" name="q3" value="design">
+                            <span class="checkbox-text">디자인 (등록 또는 출원 중)</span>
+                        </label>
+                        <label>
+                            <input type="checkbox" name="q3" value="none">
+                            <span class="checkbox-text">보유한 IP 없음</span>
+                        </label>
+                    </div>
+                    <div class="btn-container">
+                        <button class="btn btn-prev" onclick="prevQuestion()">이전</button>
+                        <button class="btn btn-next" onclick="nextQuestion()">다음</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 질문 4: IP 출원 계획 -->
+            <div class="question-wrapper" data-question="4">
+                <div class="question-section">
+                    <div class="question-number">질문 4 / 10</div>
+                    <h3>향후 출원을 희망하는 지식재산권은? (복수선택)</h3>
+                    <div class="checkbox-group">
+                        <label>
+                            <input type="checkbox" name="q4" value="patent_domestic">
+                            <span class="checkbox-text">국내 특허 출원</span>
+                        </label>
+                        <label>
+                            <input type="checkbox" name="q4" value="patent_foreign">
+                            <span class="checkbox-text">해외 특허 출원 (PCT, 미국, 유럽 등)</span>
+                        </label>
+                        <label>
+                            <input type="checkbox" name="q4" value="trademark_domestic">
+                            <span class="checkbox-text">국내 상표 출원</span>
+                        </label>
+                        <label>
+                            <input type="checkbox" name="q4" value="design_domestic">
+                            <span class="checkbox-text">국내 디자인 출원</span>
+                        </label>
+                        <label>
+                            <input type="checkbox" name="q4" value="none">
+                            <span class="checkbox-text">출원 계획 없음</span>
+                        </label>
+                    </div>
+                    <div class="btn-container">
+                        <button class="btn btn-prev" onclick="prevQuestion()">이전</button>
+                        <button class="btn btn-next" onclick="nextQuestion()">다음</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 질문 5: IP 전략 니즈 -->
+            <div class="question-wrapper" data-question="5">
+                <div class="question-section">
+                    <div class="question-number">질문 5 / 10</div>
+                    <h3>필요한 IP 전략 지원 분야는? (복수선택)</h3>
+                    <div class="checkbox-group">
+                        <label>
+                            <input type="checkbox" name="q5" value="portfolio">
+                            <span class="checkbox-text">특허 포트폴리오 전략 수립</span>
+                        </label>
+                        <label>
+                            <input type="checkbox" name="q5" value="analysis">
+                            <span class="checkbox-text">특허 동향 분석 및 선행기술 조사</span>
+                        </label>
+                        <label>
+                            <input type="checkbox" name="q5" value="infringement">
+                            <span class="checkbox-text">침해 분쟁 대응 전략</span>
+                        </label>
+                        <label>
+                            <input type="checkbox" name="q5" value="valuation">
+                            <span class="checkbox-text">IP 가치평가 및 사업화 전략</span>
+                        </label>
+                        <label>
+                            <input type="checkbox" name="q5" value="none">
+                            <span class="checkbox-text">해당 없음</span>
+                        </label>
+                    </div>
+                    <div class="btn-container">
+                        <button class="btn btn-prev" onclick="prevQuestion()">이전</button>
+                        <button class="btn btn-next" onclick="nextQuestion()">다음</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 질문 6: 브랜드/디자인 니즈 -->
+            <div class="question-wrapper" data-question="6">
+                <div class="question-section">
+                    <div class="question-number">질문 6 / 10</div>
+                    <h3>브랜드·디자인 개발이 필요하신가요?</h3>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="q6_brand" name="q6" value="brand">
+                            <label for="q6_brand">브랜드 개발 및 CI/BI 필요</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="q6_product" name="q6" value="product">
+                            <label for="q6_product">제품 디자인 개발 필요</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="q6_both" name="q6" value="both">
+                            <label for="q6_both">브랜드 + 제품디자인 모두 필요</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="q6_none" name="q6" value="none">
+                            <label for="q6_none">필요 없음</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 질문 7: 수출 여부 -->
+            <div class="question-wrapper" data-question="7">
+                <div class="question-section">
+                    <div class="question-number">질문 7 / 10</div>
+                    <h3>해외 수출 실적 또는 계획이 있으신가요?</h3>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="q7_active" name="q7" value="active">
+                            <label for="q7_active">현재 수출 중 (실적 있음)</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="q7_plan" name="q7" value="plan">
+                            <label for="q7_plan">수출 계획 중</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="q7_future" name="q7" value="future">
+                            <label for="q7_future">향후 수출 검토 예정</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="q7_domestic" name="q7" value="domestic">
+                            <label for="q7_domestic">내수 전용</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 질문 8: IP 관리 수준 -->
+            <div class="question-wrapper" data-question="8">
+                <div class="question-section">
+                    <div class="question-number">질문 8 / 10</div>
+                    <h3>현재 IP 관리 수준은 어떠한가요?</h3>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="q8_systematic" name="q8" value="systematic">
+                            <label for="q8_systematic">체계적인 IP 관리시스템 운영 중</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="q8_basic" name="q8" value="basic">
+                            <label for="q8_basic">기본적인 관리만 진행</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="q8_weak" name="q8" value="weak">
+                            <label for="q8_weak">IP 관리가 미흡함</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 질문 9: 긴급 지원 필요성 -->
+            <div class="question-wrapper" data-question="9">
+                <div class="question-section">
+                    <div class="question-number">질문 9 / 10</div>
+                    <h3>현재 긴급하게 해결해야 할 IP 이슈가 있나요? (복수선택)</h3>
+                    <div class="checkbox-group">
+                        <label>
+                            <input type="checkbox" name="q9" value="dispute">
+                            <span class="checkbox-text">특허 분쟁 또는 침해 경고</span>
+                        </label>
+                        <label>
+                            <input type="checkbox" name="q9" value="defense">
+                            <span class="checkbox-text">방어 특허 확보 필요</span>
+                        </label>
+                        <label>
+                            <input type="checkbox" name="q9" value="urgent_filing">
+                            <span class="checkbox-text">긴급 출원 필요 (공개 예정)</span>
+                        </label>
+                        <label>
+                            <input type="checkbox" name="q9" value="competitor">
+                            <span class="checkbox-text">경쟁사 특허 대응 필요</span>
+                        </label>
+                        <label>
+                            <input type="checkbox" name="q9" value="none">
+                            <span class="checkbox-text">긴급 이슈 없음</span>
+                        </label>
+                    </div>
+                    <div class="btn-container">
+                        <button class="btn btn-prev" onclick="prevQuestion()">이전</button>
+                        <button class="btn btn-next" onclick="nextQuestion()">다음</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 질문 10: 예산 규모 -->
+            <div class="question-wrapper" data-question="10">
+                <div class="question-section">
+                    <div class="question-number">질문 10 / 10</div>
+                    <h3>희망하는 정부지원 규모는?</h3>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="q10_large" name="q10" value="large">
+                            <label for="q10_large">1,500만원 이상 (종합 컨설팅)</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="q10_mid" name="q10" value="mid">
+                            <label for="q10_mid">500만원 ~ 1,000만원</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="q10_small" name="q10" value="small">
+                            <label for="q10_small">500만원 이하 (출원 중심)</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 결과 영역 -->
+            <div class="result-container" id="resultContainer">
+                <h2 id="resultTitle"></h2>
+                <p id="resultMessage"></p>
+                <div class="result-details" id="resultDetails"></div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>본 진단 시스템은 참고용으로 제공되며, 실제 선정 결과와 다를 수 있습니다.</p>
+            <p>정확한 정보는 한국발명진흥회 및 지역지식재산센터(pms.ripc.org)를 참고해주시기 바랍니다.</p>
+            <p class="copyright">© 코리아경영자문</p>
+        </div>
+    </div>
+
+    <script>
+        let currentQuestion = 0;
+        const totalQuestions = 10;
+        const answers = {};
+
+        function startDiagnosis() {
+            document.getElementById('introSection').style.display = 'none';
+            document.getElementById('progressContainer').style.display = 'block';
+            currentQuestion = 1;
+            showQuestion(1);
+            updateProgress();
+        }
+
+        function showQuestion(questionNum) {
+            document.querySelectorAll('.question-wrapper').forEach(q => {
+                q.classList.remove('active');
+            });
+            const question = document.querySelector(`[data-question="${questionNum}"]`);
+            if (question) {
+                question.classList.add('active');
+            }
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < totalQuestions) {
+                currentQuestion++;
+                showQuestion(currentQuestion);
+                updateProgress();
+            } else {
+                showResults();
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestion > 1) {
+                currentQuestion--;
+                showQuestion(currentQuestion);
+                updateProgress();
+            }
+        }
+
+        function updateProgress() {
+            const percentage = Math.round((currentQuestion / totalQuestions) * 100);
+            document.getElementById('progressFill').style.width = percentage + '%';
+            document.getElementById('progressText').textContent = `진행률: ${percentage}% (${currentQuestion}/${totalQuestions})`;
+        }
+
+        // 라디오 버튼 자동 넘김
+        document.querySelectorAll('input[type="radio"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const questionName = this.name;
+                answers[questionName] = this.value;
+                
+                setTimeout(() => {
+                    nextQuestion();
+                }, 300);
+            });
+        });
+
+        // 체크박스 값 저장
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const questionName = this.name;
+                if (!answers[questionName]) {
+                    answers[questionName] = [];
+                }
+                
+                if (this.checked) {
+                    answers[questionName].push(this.value);
+                } else {
+                    answers[questionName] = answers[questionName].filter(v => v !== this.value);
+                }
+            });
+        });
+
+        function showResults() {
+            // 모든 질문 숨기기
+            document.querySelectorAll('.question-wrapper').forEach(q => {
+                q.classList.remove('active');
+            });
+            document.getElementById('progressContainer').style.display = 'none';
+
+            // 추천 프로그램 결정
+            let recommendedPrograms = [];
+            let totalAmount = 0;
+            let mainProgram = '';
+
+            // 업력 기반 주요 사업 판단
+            if (answers.q1 === 'new3' || answers.q1 === 'new7' || answers.q1 === 'new10') {
+                // IP나래 대상
+                mainProgram = 'ipnarae';
+                recommendedPrograms.push({
+                    name: 'IP 나래 프로그램',
+                    badge: '추천',
+                    desc: '• 창업 7년 이내(신성장산업 10년) 중소기업 대상<br>• <strong>IP기술전략:</strong> 보유기술 유망기술 도출, IP 분쟁예방 전략, 강한 특허권 확보, 특허 포트폴리오 전략<br>• <strong>IP경영전략:</strong> IP 자산구축, IP 사업화 전략, IP 브랜드/디자인 경영전략<br>• 100일 이내 8회 컨설팅 진행 (연 639건)',
+                    amount: '총 2,500만원 (정부지원 1,750만원)',
+                    govAmount: 17500000,
+                    self: '기업부담금 30% (현금15% + 현물15%)<br>※ 전년도 매출 없거나 (예비)사회적기업 현금10% + 현물20%'
+                });
+                totalAmount += 25000000;
+            }
+
+            // 수출 기업 - 글로벌 IP스타 추천
+            if (answers.q7 === 'active' || answers.q7 === 'plan') {
+                recommendedPrograms.push({
+                    name: '글로벌 IP스타기업 육성',
+                    badge: '수출기업',
+                    desc: '• 수출 실적 또는 계획이 있는 중소기업 대상<br>• <strong>3년 연차평가 지원:</strong> 기업당 7,000만원 이내<br>• 지원기업 선정 후 매년 연차평가를 통해 계속지원 여부 결정 (해당연도 지원기준 적용)<br>• 국내/해외 특허·디자인 전략, 브랜드 개발, 특허기술홍보영상 제작 등',
+                    amount: '기업당 7,000만원 이내 (3년 종합지원)',
+                    govAmount: 70000000,
+                    self: '기업부담금 40% (현금20% + 현물20%)<br>※ 해외관리회(출원, 중간대응, 등록)의 경우 현금 40%'
+                });
+            }
+
+            // IP 긴급지원 - 업력 무관, 출원 니즈
+            if (answers.q4 && answers.q4.length > 0 && !answers.q4.includes('none')) {
+                let filingSupport = [];
+                if (answers.q4.includes('patent_domestic')) {
+                    filingSupport.push('국내 특허출원 (최대 168만원)');
+                }
+                if (answers.q4.includes('patent_foreign')) {
+                    filingSupport.push('해외 특허출원 PCT (최대 220만원)');
+                }
+                if (answers.q4.includes('trademark_domestic')) {
+                    filingSupport.push('국내 상표출원 (최대 40만원)');
+                }
+                if (answers.q4.includes('design_domestic')) {
+                    filingSupport.push('국내 디자인출원 (최대 50만원)');
+                }
+
+                recommendedPrograms.push({
+                    name: '지식재산 긴급지원 (중소기업 IP 바로지원)',
+                    badge: '긴급지원',
+                    desc: '• 업력 무관 중소기업 대상 (기업당 2,000만원 이내)<br>• ' + filingSupport.join('<br>• ') + '<br>• <strong>특허:</strong> 특허기술홍보영상 제작 (900만원), 국내맞춤 특허전략 (900만원)<br>• <strong>디자인:</strong> 제품디자인개발 (1,600만원), 디자인개발(GUI 중심) (600만원)<br>• <strong>브랜드:</strong> 신규브랜드개발 (1,400만원), 리뉴얼브랜드개발 (600만원)',
+                    amount: '기업당 2,000만원 이내 (자원금 합산 기준)',
+                    govAmount: 20000000,
+                    self: '기업부담금 40% (현금20% + 현물20%)<br>※ 국내·해외출원비용지원 현금 40% / 소상공인, 여성기업, (예비)사회적기업 현금 10% + 현물 30%'
+                });
+            }
+
+            // 소상공인 대상
+            if (answers.q2 === 'retail' || answers.q2 === 'service') {
+                recommendedPrograms.push({
+                    name: '소상공인 IP 창출지원',
+                    badge: '소상공인',
+                    desc: '• 소상공인 기본법 제2조에 따른 소상공인(사업자등록증 보유)<br>• 소상공인이 보유한 상표·브랜드 등의 상표권 확보 지원<br>• 지식재산 기초교육 및 상담 프로그램 운영<br>• <strong>상표출원 지원:</strong> 533천원 이내<br>• <strong>IP창출 종합패키지(브랜드&디자인 융합):</strong> 17,600천원',
+                    amount: '소상공인 당 상표출원 연 2건 이내',
+                    govAmount: 5330000,
+                    self: '기업부담금 20% (현금10% + 현물10%)<br>※ 교육 이수시 분담금 면제'
+                });
+            }
+
+            // 브랜드/디자인 지원
+            if (answers.q6 && answers.q6 !== 'none') {
+                recommendedPrograms.push({
+                    name: '브랜드·디자인 개발 지원',
+                    badge: '디자인',
+                    desc: '• 브랜드 개발 및 CI/BI 구축<br>• 제품디자인 개발 및 고도화<br>• 디자인 특화 컨설팅<br>• 시각디자인 및 패키지 디자인 포함',
+                    amount: '최대 1,600만원',
+                    govAmount: 16000000,
+                    self: '기업부담금 30%'
+                });
+            }
+
+            // 긴급 이슈 대응
+            if (answers.q9 && !answers.q9.includes('none')) {
+                if (answers.q9.includes('dispute') || answers.q9.includes('defense')) {
+                    recommendedPrograms.push({
+                        name: 'IP 분쟁 대응 및 방어전략',
+                        badge: '긴급',
+                        desc: '• 특허 침해 분쟁 대응 전략<br>• 방어 특허 포트폴리오 구축<br>• 무효심판 대응 지원<br>• 기술보호지원단 컨설팅',
+                        amount: '상담 및 맞춤형 지원',
+                        govAmount: 0,
+                        self: '별도 문의'
+                    });
+                }
+            }
+
+            // 프로그램이 없거나 예비창업자인 경우
+            if (recommendedPrograms.length === 0 || answers.q1 === 'new3') {
+                recommendedPrograms.push({
+                    name: 'IP 디딤돌 프로그램',
+                    badge: '예비창업',
+                    desc: '• 지역 내 "예비창업자" (단, 당해 연도 창업자의 경우 지원 가능)<br>• 아이디어의 기술성/사업성, 예비창업자의 창업의지 검토하여 선정<br>• 아이디어 감성팅 결과 도출된 사업아이템의 특허출원에 소요되는 비용 지원<br>• 정부지원금 80% + 개인부담금 20% (IP창업은 32시간 교육 수료 시 1회 면제)',
+                    amount: '최대 500만원',
+                    govAmount: 5000000,
+                    self: '개인부담금 20%'
+                });
+            }
+
+            // 결과 표시
+            const resultContainer = document.getElementById('resultContainer');
+            const resultTitle = document.getElementById('resultTitle');
+            const resultMessage = document.getElementById('resultMessage');
+            const resultDetails = document.getElementById('resultDetails');
+
+            resultContainer.style.display = 'block';
+            resultTitle.textContent = '💡 맞춤형 IP 지원계획 완성!';
+            resultMessage.textContent = `귀사에게 적합한 ${recommendedPrograms.length}개 프로그램을 추천합니다.`;
+
+            let detailsHTML = '<h3>📌 추천 프로그램</h3>';
+
+            recommendedPrograms.forEach((program, index) => {
+                detailsHTML += `
+                    <div class="program-card">
+                        <h4>${program.name}<span class="program-badge">${program.badge}</span></h4>
+                        <p>${program.desc}</p>
+                        <p class="amount">💰 ${program.amount}</p>
+                        ${program.self ? `<p style="color:#64748b; font-size:13px; margin-top:5px;">※ ${program.self}</p>` : ''}
+                    </div>`;
+            });
+
+            // 3개년 로드맵
+            const currentYear = new Date().getFullYear();
+            detailsHTML += `
+                <div class="roadmap-section">
+                    <h3>📍 IP 지원사업 수행 후 3개년 로드맵</h3>
+                    <div class="roadmap-timeline">
+                        <div class="roadmap-item">
+                            <div class="step-title">${currentYear}년: IP 기반 구축 및 권리 확보</div>
+                            <div class="step-desc">
+                                <strong>[상반기]</strong> IP 지원사업 신청 및 선정, 현황 진단<br>
+                                <strong>[하반기]</strong> 핵심 특허 출원, 상표·디자인 등록, 포트폴리오 구축<br>
+                                <strong>[기대효과]</strong> 기술보호 기반 마련, IP 10건 이상 확보
+                            </div>
+                        </div>
+                        <div class="roadmap-item">
+                            <div class="step-title">${currentYear + 1}년: IP 사업화 및 경쟁력 강화</div>
+                            <div class="step-desc">
+                                <strong>[1~2분기]</strong> 등록 특허 기반 제품 출시, 브랜드 마케팅 강화<br>
+                                <strong>[3~4분기]</strong> IP 라이선싱 추진, 기술거래 활성화, 투자유치 준비<br>
+                                <strong>[기대효과]</strong> IP 기반 매출 20% 증가, 기술가치 평가 AA 등급
+                            </div>
+                        </div>
+                        <div class="roadmap-item">
+                            <div class="step-title">${currentYear + 2}년: 글로벌 IP 경쟁력 확보</div>
+                            <div class="step-desc">
+                                <strong>[상반기]</strong> 해외 특허 출원 (PCT, 주요국), 글로벌 IP 전략 수립<br>
+                                <strong>[하반기]</strong> 해외 전시회 참가, 수출 거래선 확보, 해외 인증 획득<br>
+                                <strong>[기대효과]</strong> 글로벌 시장 진출, IP 기반 수출 30% 이상 증대
+                            </div>
+                        </div>
+                        <div class="roadmap-item">
+                            <div class="step-title">${currentYear + 3}년 이후: IP 기반 지속성장 생태계</div>
+                            <div class="step-desc">
+                                • IP 포트폴리오 100건 이상 구축 (특허, 상표, 디자인)<br>
+                                • IP 라이선싱 수익 연 5억 이상 창출<br>
+                                • 기술평가 AAA 등급, IP 담보대출 활용 성장투자<br>
+                                • 업계 대표 IP 강자 기업으로 도약
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+
+            detailsHTML += `
+                <div class="disclaimer">
+                    <p><strong>본 진단은 IP 지원사업을 준비하시는 대표님께서 사업 수행 전 준비를 도울 수 있도록 제작된 간이 진단입니다.</strong></p>
+                    <p>더 상세한 분석이나 전문가 상담이 필요하시면 하단의 상담문의를 이용해주시기 바랍니다.</p>
+                    <p><strong>코리아경영자문은 IP 지원사업 컨설팅에 대해 어떠한 수수료(현금, 보험가입 등)을 유도하거나 받지 않습니다.</strong></p>
+                    <p style="margin-top:15px;"><strong>📞 신청: 지역지식재산센터 (pms.ripc.org) / 문의: 1661-1900</strong></p>
+                </div>`;
+
+            resultDetails.innerHTML = detailsHTML;
+            resultContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    </script>
+</body>
+</html>

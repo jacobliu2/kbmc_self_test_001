@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026년 중소기업 혁신바우처 자가진단 | 코리아경영자문</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: #f8f9fc;
+            min-height: 100vh;
+            padding: 0;
+        }
+
+        .top-gradient {
+            height: 6px;
+            background: linear-gradient(90deg, #1e3a5f 0%, #2874a6 100%);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            min-height: calc(100vh - 6px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3a5f 0%, #152a45 100%);
+            color: white;
+            padding: 40px 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-family: 'Montserrat', 'Noto Sans KR', sans-serif;
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.95;
+            font-weight: 400;
+        }
+
+        .header .subtitle {
+            font-size: 13px;
+            opacity: 0.8;
+            margin-top: 6px;
+        }
+
+        .content {
+            flex: 1;
+            padding: 50px 40px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-box {
+            background: #f8f9fc;
+            border-left: 4px solid #2874a6;
+            padding: 24px;
+            margin-bottom: 40px;
+            border-radius: 16px;
+        }
+
+        .info-box h3 {
+            color: #1e3a5f;
+            margin-bottom: 16px;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .requirements-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .requirement-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+        }
+
+        .requirement-item .icon {
+            color: #2874a6;
+            font-weight: bold;
+            font-size: 18px;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+
+        .requirement-item .text {
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .progress-container {
+            margin-bottom: 40px;
+            padding: 24px;
+            background: #f8f9fc;
+            border-radius: 16px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #2874a6 0%, #1e3a5f 100%);
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 10px;
+        }
+
+        .progress-text {
+            text-align: center;
+            color: #64748b;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .question-wrapper {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .question-wrapper.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .question-section {
+            padding: 40px;
+            background: #ffffff;
+            border-radius: 20px;
+            border: 2px solid #f1f5f9;
+            min-height: 400px;
+        }
+
+        .question-section h3 {
+            color: #1a1a2e;
+            margin-bottom: 30px;
+            font-size: 22px;
+            font-weight: 700;
+            line-height: 1.6;
+            text-align: center;
+        }
+
+        .question-number {
+            display: inline-block;
+            background: linear-gradient(135deg, #2874a6 0%, #1e3a5f 100%);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .radio-option {
+            position: relative;
+        }
+
+        .radio-option input[type="radio"] {
+            display: none;
+        }
+
+        .radio-option label {
+            display: block;
+            padding: 20px 24px;
+            background: #f8f9fc;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+            font-weight: 500;
+            color: #64748b;
+            font-size: 16px;
+        }
+
+        .radio-option input[type="radio"]:checked + label {
+            background: linear-gradient(135deg, #2874a6 0%, #1e3a5f 100%);
+            color: white;
+            border-color: #2874a6;
+            transform: translateX(5px);
+            box-shadow: 0 6px 20px rgba(40, 116, 166, 0.3);
+        }
+
+        .radio-option label:hover {
+            border-color: #2874a6;
+            transform: translateX(3px);
+            box-shadow: 0 4px 12px rgba(40, 116, 166, 0.15);
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .checkbox-group label {
+            display: flex;
+            align-items: flex-start;
+            padding: 16px 20px;
+            background: #f8f9fc;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            margin-right: 14px;
+            margin-top: 3px;
+            width: 22px;
+            height: 22px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .checkbox-group label:hover {
+            border-color: #2874a6;
+            background: white;
+            transform: translateX(3px);
+        }
+
+        .checkbox-group input[type="checkbox"]:checked + .checkbox-text {
+            color: #1e3a5f;
+            font-weight: 600;
+        }
+
+        .checkbox-text {
+            color: #64748b;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        .btn-container {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .btn {
+            padding: 16px 50px;
+            font-size: 17px;
+            font-weight: 700;
+            border: none;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        .btn-next {
+            background: linear-gradient(135deg, #2874a6 0%, #1e3a5f 100%);
+            color: white;
+            box-shadow: 0 6px 20px rgba(40, 116, 166, 0.3);
+        }
+
+        .btn-next:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(40, 116, 166, 0.4);
+        }
+
+        .btn-prev {
+            background: white;
+            color: #2874a6;
+            border: 2px solid #2874a6;
+            margin-right: 15px;
+        }
+
+        .btn-prev:hover {
+            background: #f8f9fc;
+        }
+
+        .result-container {
+            display: none;
+            padding: 50px 40px;
+            border-radius: 24px;
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+            background: linear-gradient(135deg, #2874a6 0%, #1e3a5f 100%);
+        }
+
+        .result-container h2 {
+            font-family: 'Montserrat', 'Noto Sans KR', sans-serif;
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .result-container > p {
+            font-size: 18px;
+            line-height: 1.8;
+            color: white;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .result-details {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            margin-top: 30px;
+            text-align: left;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .result-details h3 {
+            color: #1e3a5f;
+            margin-bottom: 20px;
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .program-card {
+            background: #f8f9fc;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            border-left: 4px solid #2874a6;
+        }
+
+        .program-card h4 {
+            color: #1e3a5f;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .program-card p {
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+
+        .program-card .amount {
+            color: #2874a6;
+            font-weight: 700;
+            font-size: 15px;
+        }
+
+        .roadmap-section {
+            margin-top: 30px;
+            padding: 30px;
+            background: #f8f9fc;
+            border-radius: 16px;
+        }
+
+        .roadmap-section h3 {
+            color: #1e3a5f;
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+
+        .roadmap-timeline {
+            position: relative;
+            padding-left: 40px;
+            margin-top: 20px;
+        }
+
+        .roadmap-timeline::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 10px;
+            bottom: 10px;
+            width: 3px;
+            background: linear-gradient(180deg, #2874a6 0%, #1e3a5f 100%);
+        }
+
+        .roadmap-item {
+            position: relative;
+            margin-bottom: 25px;
+            padding-left: 20px;
+        }
+
+        .roadmap-item::before {
+            content: '';
+            position: absolute;
+            left: -29px;
+            top: 5px;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #2874a6;
+            border: 3px solid white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
+
+        .roadmap-item .step-title {
+            font-weight: 700;
+            color: #1e3a5f;
+            margin-bottom: 5px;
+        }
+
+        .roadmap-item .step-desc {
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .budget-summary {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 20px;
+            border: 2px solid #2874a6;
+        }
+
+        .budget-summary h4 {
+            color: #1e3a5f;
+            font-size: 18px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .budget-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .budget-row:last-child {
+            border-bottom: none;
+            font-weight: 700;
+            color: #1e3a5f;
+            font-size: 16px;
+            padding-top: 15px;
+            margin-top: 5px;
+            border-top: 2px solid #2874a6;
+        }
+
+        .disclaimer {
+            margin-top: 40px;
+            padding: 30px;
+            background: #fff8e1;
+            border-radius: 16px;
+            border-left: 4px solid #fbbf24;
+        }
+
+        .disclaimer p {
+            color: #92400e;
+            line-height: 1.8;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+
+        .disclaimer p:last-child {
+            margin-bottom: 0;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 30px 40px;
+            background: #f8f9fc;
+            color: #64748b;
+            font-size: 14px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .footer p {
+            margin: 8px 0;
+        }
+
+        .footer .copyright {
+            font-weight: 600;
+            color: #1e3a5f;
+            margin-top: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 25px 24px;
+            }
+
+            .header h1 {
+                font-size: 22px;
+            }
+
+            .content {
+                padding: 30px 24px;
+            }
+
+            .question-section {
+                padding: 30px 24px;
+                min-height: 350px;
+            }
+
+            .question-section h3 {
+                font-size: 18px;
+            }
+
+            .result-container {
+                padding: 30px 24px;
+            }
+
+            .result-container h2 {
+                font-size: 28px;
+            }
+
+            .result-details {
+                padding: 24px;
+            }
+
+            .requirements-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="top-gradient"></div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>2026년 중소기업 혁신바우처</h1>
+            <p>맞춤형 자가진단 시스템</p>
+            <p class="subtitle">Korea Management Consulting</p>
+        </div>
+
+        <div class="content">
+            <!-- 초기 안내 -->
+            <div id="introSection">
+                <div class="info-box">
+                    <h3>📋 지원자격 체크리스트</h3>
+                    <div class="requirements-grid">
+                        <div class="requirement-item">
+                            <span class="icon">✓</span>
+                            <span class="text"><strong>지원대상:</strong> 제조업 소기업</span>
+                        </div>
+                        <div class="requirement-item">
+                            <span class="icon">✓</span>
+                            <span class="text"><strong>지원한도:</strong> 최대 5천만원 (정부 70%)</span>
+                        </div>
+                        <div class="requirement-item">
+                            <span class="icon">✓</span>
+                            <span class="text"><strong>지원분야:</strong> 경영·기술·마케팅</span>
+                        </div>
+                        <div class="requirement-item">
+                            <span class="icon">✓</span>
+                            <span class="text"><strong>필수조건:</strong> 국세·지방세 완납</span>
+                        </div>
+                        <div class="requirement-item">
+                            <span class="icon">✓</span>
+                            <span class="text"><strong>매출기준:</strong> 3개년 평균 140억 이하</span>
+                        </div>
+                        <div class="requirement-item">
+                            <span class="icon">✓</span>
+                            <span class="text"><strong>사업기간:</strong> 협약일 ~ 10월말 정산</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="btn-container">
+                    <button class="btn btn-next" onclick="startDiagnosis()">진단 시작하기</button>
+                </div>
+            </div>
+
+            <!-- 진행률 표시 (진단 시작 후 표시) -->
+            <div class="progress-container" id="progressContainer" style="display: none;">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-text" id="progressText">진행률: 0% (0/10)</div>
+            </div>
+
+            <!-- 질문 1: 주요 경영 과제 -->
+            <div class="question-wrapper" data-question="1">
+                <div class="question-section">
+                    <div class="question-number">질문 1 / 10</div>
+                    <h3>현재 가장 시급하게 해결하고 싶은 경영 과제는 무엇인가요?</h3>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="q1_cost" name="q1" value="cost">
+                            <label for="q1_cost">원가절감 및 수익성 개선</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="q1_quality" name="q1" value="quality">
+                            <label for="q1_quality">품질관리 및 불량률 감소</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="q1_productivity" name="q1" value="productivity">
+                            <label for="q1_productivity">생산성 향상 및 공정 개선</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="q1_sales" name="q1" value="sales">
+                            <label for="q1_sales">매출 증대 및 판로 개척</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 질문 2: 생산 현장 문제 -->
+            <div class="question-wrapper" data-question="2">
+                <div class="question-section">
+                    <div class="question-number">질문 2 / 10</div>
+                    <h3>생산 현장에서 겪고 있는 어려움을 모두 선택해주세요 (복수선택)</h3>
+                    <div class="checkbox-group">
+                        <label>
+                            <input type="checkbox" name="q2" value="manual">
+                            <span class="checkbox-text">수작업이 많아 생산속도가 느림</span>
+                        </label>
+                        <label>
+                            <input type="checkbox" name="q2" value="defect">
+                            <span class="checkbox-text">불량 발생률이 높음</span>
+                        </label>
+                        <label>
+                            <input type="checkbox" name="q2" value="equipment">
+                            <span class="checkbox-text">노후 설비로 인한 생산성 저하</span>
+                        </label>
+                        <label>
+                            <input type="checkbox" name="q2" value="data">
+                            <span class="checkbox-text">생산 데이터 관리가 체계적이지 않음</span>
+                        </label>
+                    </div>
+                    <div class="btn-container">
+                        <button class="btn btn-prev" onclick="prevQuestion()">이전</button>
+                        <button class="btn btn-next" onclick="nextQuestion()">다음</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 질문 3: 품질관리 수준 -->
+            <div class="question-wrapper" data-question="3">
+                <div class="question-section">
+                    <div class="question-number">질문 3 / 10</div>
+                    <h3>귀사의 현재 품질관리 수준은 어떠한가요?</h3>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="q3_systematic" name="q3" value="systematic">
+                            <label for="q3_systematic">체계적인 품질관리 시스템 운영 중</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="q3_basic" name="q3" value="basic">
+                            <label for="q3_basic">기본적인 검사만 진행</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="q3_lacking" name="q3" value="lacking">
+                            <label for="q3_lacking">품질관리 체계가 미흡함</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 질문 4: 기술개발 니즈 -->
+            <div class="question-wrapper" data-question="4">
+                <div class="question-section">
+                    <div class="question-number">질문 4 / 10</div>
+                    <h3>기술개발과 관련하여 필요한 지원을 모두 선택해주세요 (복수선택)</h3>
+                    <div class="checkbox-group">
+                        <label>
+                            <input type="checkbox" name="q4" value="newproduct">
+                            <span class="checkbox-text">신제품 개발 및 시제품 제작</span>
+                        </label>
+                        <label>
+                            <input type="checkbox" name="q4" value="process">
+                            <span class="checkbox-text">생산공정 기술 개발</span>
+                        </label>
+                        <label>
+                            <input type="checkbox" name="q4" value="automation">
+                            <span class="checkbox-text">자동화 설비 도입</span>
+                        </label>
+                        <label>
+                            <input type="checkbox" name="q4" value="testing">
+                            <span class="checkbox-text">제품 성능시험 및 분석</span>
+                        </label>
+                        <label>
+                            <input type="checkbox" name="q4" value="none">
+                            <span class="checkbox-text">해당 없음</span>
+                        </label>
+                    </div>
+                    <div class="btn-container">
+                        <button class="btn btn-prev" onclick="prevQuestion()">이전</button>
+                        <button class="btn btn-next" onclick="nextQuestion()">다음</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 질문 5: 보유 인증 -->
+            <div class="question-wrapper" data-question="5">
+                <div class="question-section">
+                    <div class="question-number">질문 5 / 10</div>
+                    <h3>귀사가 보유한 인증 및 특허 현황은?</h3>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="q5_multiple" name="q5" value="multiple">
+                            <label for="q5_multiple">특허, 인증 다수 보유 (3개 이상)</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="q5_some" name="q5" value="some">
+                            <label for="q5_some">일부 보유 (1~2개)</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="q5_none" name="q5" value="none">
+                            <label for="q5_none">없음 (취득 희망)</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 질문 6: 스마트화 수준 -->
+            <div class="question-wrapper" data-question="6">
+                <div class="question-section">
+                    <div class="question-number">질문 6 / 10</div>
+                    <h3>공장의 스마트화(디지털 전환) 수준은?</h3>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="q6_advanced" name="q6" value="advanced">
+                            <label for="q6_advanced">스마트공장 구축 완료 또는 고도화 단계</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="q6_basic" name="q6" value="basic">
+                            <label for="q6_basic">기초 단계 (일부 자동화)</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="q6_planning" name="q6" value="planning">
+                            <label for="q6_planning">준비 단계 (구축 예정)</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="q6_none" name="q6" value="none">
+                            <label for="q6_none">관심 없음</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 질문 7: 마케팅 역량 -->
+            <div class="question-wrapper" data-question="7">
+                <div class="question-section">
+                    <div class="question-number">질문 7 / 10</div>
+                    <h3>현재 마케팅 및 홍보 역량은 어느 정도인가요?</h3>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="q7_strong" name="q7" value="strong">
+                            <label for="q7_strong">자체 마케팅팀 운영 및 적극적 홍보</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="q7_moderate" name="q7" value="moderate">
+                            <label for="q7_moderate">기본적인 홍보만 진행</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="q7_weak" name="q7" value="weak">
+                            <label for="q7_weak">마케팅 역량이 부족함</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 질문 8: 마케팅 니즈 -->
+            <div class="question-wrapper" data-question="8">
+                <div class="question-section">
+                    <div class="question-number">질문 8 / 10</div>
+                    <h3>마케팅 지원이 필요한 분야를 모두 선택해주세요 (복수선택)</h3>
+                    <div class="checkbox-group">
+                        <label>
+                            <input type="checkbox" name="q8" value="brand">
+                            <span class="checkbox-text">브랜드 개발 및 CI/BI 구축</span>
+                        </label>
+                        <label>
+                            <input type="checkbox" name="q8" value="video">
+                            <span class="checkbox-text">홍보영상 및 제품사진 촬영</span>
+                        </label>
+                        <label>
+                            <input type="checkbox" name="q8" value="online">
+                            <span class="checkbox-text">온라인 마케팅 (SNS, 블로그)</span>
+                        </label>
+                        <label>
+                            <input type="checkbox" name="q8" value="catalog">
+                            <span class="checkbox-text">카탈로그 및 회사소개서 제작</span>
+                        </label>
+                        <label>
+                            <input type="checkbox" name="q8" value="none">
+                            <span class="checkbox-text">해당 없음</span>
+                        </label>
+                    </div>
+                    <div class="btn-container">
+                        <button class="btn btn-prev" onclick="prevQuestion()">이전</button>
+                        <button class="btn btn-next" onclick="nextQuestion()">다음</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 질문 9: 수출 의향 -->
+            <div class="question-wrapper" data-question="9">
+                <div class="question-section">
+                    <div class="question-number">질문 9 / 10</div>
+                    <h3>해외 수출 또는 판로개척 의향이 있으신가요?</h3>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="q9_active" name="q9" value="active">
+                            <label for="q9_active">현재 수출 중이거나 적극 추진 중</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="q9_interested" name="q9" value="interested">
+                            <label for="q9_interested">관심 있으나 준비 중</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="q9_domestic" name="q9" value="domestic">
+                            <label for="q9_domestic">내수 중심으로 운영 예정</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 질문 10: 예상 사업비 규모 -->
+            <div class="question-wrapper" data-question="10">
+                <div class="question-section">
+                    <div class="question-number">질문 10 / 10</div>
+                    <h3>희망하는 총 사업비 규모는 어느 정도인가요?</h3>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="q10_max" name="q10" value="max">
+                            <label for="q10_max">5천만원 (최대 한도)</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="q10_mid" name="q10" value="mid">
+                            <label for="q10_mid">3천만원 ~ 4천만원</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="q10_basic" name="q10" value="basic">
+                            <label for="q10_basic">1천만원 ~ 2천만원</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 결과 영역 -->
+            <div class="result-container" id="resultContainer">
+                <h2 id="resultTitle"></h2>
+                <p id="resultMessage"></p>
+                <div class="result-details" id="resultDetails"></div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>본 진단 시스템은 참고용으로 제공되며, 실제 선정 결과와 다를 수 있습니다.</p>
+            <p>정확한 정보는 중소벤처기업진흥공단 공식 홈페이지를 참고해주시기 바랍니다.</p>
+            <p class="copyright">© 코리아경영자문</p>
+        </div>
+    </div>
+
+    <script>
+        let currentQuestion = 0;
+        const totalQuestions = 10;
+        const answers = {};
+
+        function startDiagnosis() {
+            document.getElementById('introSection').style.display = 'none';
+            document.getElementById('progressContainer').style.display = 'block';
+            currentQuestion = 1;
+            showQuestion(1);
+            updateProgress();
+        }
+
+        function showQuestion(questionNum) {
+            document.querySelectorAll('.question-wrapper').forEach(q => {
+                q.classList.remove('active');
+            });
+            const question = document.querySelector(`[data-question="${questionNum}"]`);
+            if (question) {
+                question.classList.add('active');
+            }
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < totalQuestions) {
+                currentQuestion++;
+                showQuestion(currentQuestion);
+                updateProgress();
+            } else {
+                showResults();
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestion > 1) {
+                currentQuestion--;
+                showQuestion(currentQuestion);
+                updateProgress();
+            }
+        }
+
+        function updateProgress() {
+            const percentage = Math.round((currentQuestion / totalQuestions) * 100);
+            document.getElementById('progressFill').style.width = percentage + '%';
+            document.getElementById('progressText').textContent = `진행률: ${percentage}% (${currentQuestion}/${totalQuestions})`;
+        }
+
+        // 라디오 버튼 자동 넘김
+        document.querySelectorAll('input[type="radio"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const questionName = this.name;
+                answers[questionName] = this.value;
+                
+                setTimeout(() => {
+                    nextQuestion();
+                }, 300);
+            });
+        });
+
+        // 체크박스 값 저장
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const questionName = this.name;
+                if (!answers[questionName]) {
+                    answers[questionName] = [];
+                }
+                
+                if (this.checked) {
+                    answers[questionName].push(this.value);
+                } else {
+                    answers[questionName] = answers[questionName].filter(v => v !== this.value);
+                }
+            });
+        });
+
+        // 프로그램 데이터베이스
+        const programDatabase = {
+            cost: { name: '원가절감 컨설팅', desc: '원가구조 분석 및 개선방안 도출', amount: 15000000, category: '경영컨설팅' },
+            quality: { name: '품질경영 컨설팅', desc: '품질관리 시스템 구축 및 불량률 저감', amount: 18000000, category: '경영컨설팅' },
+            productivity: { name: '생산성향상 컨설팅', desc: '공정분석 및 생산성 개선', amount: 20000000, category: '경영컨설팅' },
+            defect: { name: '불량저감 컨설팅', desc: '불량원인 분석 및 품질개선', amount: 16000000, category: '경영컨설팅' },
+            data: { name: '데이터 기반 공정관리', desc: '생산데이터 수집 및 분석 시스템 구축', amount: 22000000, category: '기술지원' },
+            newproduct: { name: '신제품 시제품 제작', desc: '제품 설계 및 시제품 제작·검증', amount: 20000000, category: '기술지원' },
+            process: { name: '공정기술 개발', desc: '생산공정 최적화 및 기술개발', amount: 22000000, category: '기술지원' },
+            automation: { name: '설비자동화', desc: 'IoT 기반 설비 자동화 시스템', amount: 30000000, category: '기술지원' },
+            testing: { name: '성능시험 및 분석', desc: '제품 성능평가, 신뢰성 시험', amount: 15000000, category: '기술지원' },
+            certification: { name: '인증획득 지원', desc: '기술문서 작성 및 인증 컨설팅', amount: 12000000, category: '기술지원' },
+            brand: { name: '브랜드 개발', desc: 'CI/BI 구축 및 브랜드 전략', amount: 15000000, category: '마케팅' },
+            video: { name: '홍보콘텐츠 제작', desc: '홍보영상, 제품사진 촬영', amount: 12000000, category: '마케팅' },
+            online: { name: '온라인마케팅', desc: 'SNS 마케팅, 쇼핑몰 구축', amount: 10000000, category: '마케팅' },
+            catalog: { name: '홍보물 제작', desc: '카탈로그, 회사소개서 제작', amount: 8000000, category: '마케팅' },
+            export: { name: '해외마케팅', desc: '수출 판로개척, 해외전시회', amount: 18000000, category: '마케팅' }
+        };
+
+        function showResults() {
+            // 모든 질문 숨기기
+            document.querySelectorAll('.question-wrapper').forEach(q => {
+                q.classList.remove('active');
+            });
+            document.getElementById('progressContainer').style.display = 'none';
+
+            // 답변 분석 및 프로그램 추천
+            let recommendedPrograms = [];
+            let totalAmount = 0;
+
+            // Q1 기반 추천
+            if (answers.q1) {
+                if (programDatabase[answers.q1]) {
+                    recommendedPrograms.push(programDatabase[answers.q1]);
+                    totalAmount += programDatabase[answers.q1].amount;
+                }
+            }
+
+            // Q2 생산현장 문제
+            if (answers.q2) {
+                answers.q2.forEach(issue => {
+                    if (issue === 'defect' && programDatabase.defect) {
+                        recommendedPrograms.push(programDatabase.defect);
+                        totalAmount += programDatabase.defect.amount;
+                    }
+                    if (issue === 'data' && programDatabase.data) {
+                        recommendedPrograms.push(programDatabase.data);
+                        totalAmount += programDatabase.data.amount;
+                    }
+                    if (issue === 'equipment' && programDatabase.automation) {
+                        recommendedPrograms.push(programDatabase.automation);
+                        totalAmount += programDatabase.automation.amount;
+                    }
+                });
+            }
+
+            // Q4 기술개발
+            if (answers.q4) {
+                answers.q4.forEach(tech => {
+                    if (tech !== 'none' && programDatabase[tech]) {
+                        recommendedPrograms.push(programDatabase[tech]);
+                        totalAmount += programDatabase[tech].amount;
+                    }
+                });
+            }
+
+            // Q5 인증
+            if (answers.q5 === 'none' && programDatabase.certification) {
+                recommendedPrograms.push(programDatabase.certification);
+                totalAmount += programDatabase.certification.amount;
+            }
+
+            // Q8 마케팅
+            if (answers.q8) {
+                answers.q8.forEach(marketing => {
+                    if (marketing !== 'none' && programDatabase[marketing]) {
+                        recommendedPrograms.push(programDatabase[marketing]);
+                        totalAmount += programDatabase[marketing].amount;
+                    }
+                });
+            }
+
+            // Q9 수출
+            if (answers.q9 === 'active' || answers.q9 === 'interested') {
+                if (programDatabase.export) {
+                    recommendedPrograms.push(programDatabase.export);
+                    totalAmount += programDatabase.export.amount;
+                }
+            }
+
+            // Q10 예산 조정
+            if (answers.q10 === 'basic') {
+                // 예산이 작으면 상위 2개만 추천
+                recommendedPrograms = recommendedPrograms.slice(0, 2);
+                totalAmount = recommendedPrograms.reduce((sum, p) => sum + p.amount, 0);
+            } else if (answers.q10 === 'mid') {
+                // 중간 예산이면 상위 3개
+                recommendedPrograms = recommendedPrograms.slice(0, 3);
+                totalAmount = recommendedPrograms.reduce((sum, p) => sum + p.amount, 0);
+            }
+
+            // 최대 5천만원 제한
+            if (totalAmount > 50000000) {
+                totalAmount = 50000000;
+            }
+
+            const govSupport = Math.round(totalAmount * 0.7);
+            const selfPay = totalAmount - govSupport;
+
+            // 결과 표시
+            const resultContainer = document.getElementById('resultContainer');
+            const resultTitle = document.getElementById('resultTitle');
+            const resultMessage = document.getElementById('resultMessage');
+            const resultDetails = document.getElementById('resultDetails');
+
+            resultContainer.style.display = 'block';
+            resultTitle.textContent = '🎯 맞춤형 지원계획이 완성되었습니다!';
+            resultMessage.textContent = `귀사의 현황 분석 결과, ${recommendedPrograms.length}개 프로그램을 추천합니다.`;
+
+            let detailsHTML = '<h3>📌 추천 프로그램 목록</h3>';
+            
+            if (recommendedPrograms.length === 0) {
+                detailsHTML += '<p style="text-align:center; color:#64748b; padding:20px;">선택하신 내용을 바탕으로 적절한 프로그램을 찾지 못했습니다. 전문가 상담을 권장합니다.</p>';
+            } else {
+                recommendedPrograms.forEach((program, index) => {
+                    detailsHTML += `
+                        <div class="program-card">
+                            <h4>${index + 1}. [${program.category}] ${program.name}</h4>
+                            <p>${program.desc}</p>
+                            <p class="amount">예상금액: ${(program.amount / 10000).toFixed(0)}만원</p>
+                        </div>`;
+                });
+
+                // 예산 요약
+                detailsHTML += `
+                    <div class="budget-summary">
+                        <h4>💰 사업비 산출 내역</h4>
+                        <div class="budget-row">
+                            <span>총 사업비</span>
+                            <span>${(totalAmount / 10000).toFixed(0)}만원</span>
+                        </div>
+                        <div class="budget-row">
+                            <span>정부지원금 (70%)</span>
+                            <span style="color:#2874a6; font-weight:700;">${(govSupport / 10000).toFixed(0)}만원</span>
+                        </div>
+                        <div class="budget-row">
+                            <span>기업부담금 (30%)</span>
+                            <span>${(selfPay / 10000).toFixed(0)}만원</span>
+                        </div>
+                        <p style="color:#64748b; font-size:13px; margin-top:15px; text-align:center; line-height:1.6;">
+                            * 희망 지원금에 따른 단순 산출값으로 실제 사업신청 시 달라질 수 있습니다.
+                        </p>
+                    </div>`;
+
+                // 3개년 로드맵
+                const currentYear = new Date().getFullYear();
+                const year1 = currentYear;
+                const year2 = currentYear + 1;
+                const year3 = currentYear + 2;
+                
+                detailsHTML += `
+                    <div class="roadmap-section">
+                        <h3>📍 혁신바우처 수행 후 3개년 성장 로드맵</h3>
+                        <div class="roadmap-timeline">
+                            <div class="roadmap-item">
+                                <div class="step-title">${year1}년: 혁신바우처 수행 및 기반 구축</div>
+                                <div class="step-desc">
+                                    <strong>[상반기]</strong> 사업 신청 → 선정 → 공급기업 선정<br>
+                                    <strong>[하반기]</strong> ${recommendedPrograms.map(p => p.name).slice(0, 2).join(', ')} 등 수행<br>
+                                    <strong>[기대효과]</strong> 현장 문제점 개선, 관리시스템 구축, 매출 5~10% 증가
+                                </div>
+                            </div>
+                            <div class="roadmap-item">
+                                <div class="step-title">${year2}년: 성과 확산 및 고도화</div>
+                                <div class="step-desc">
+                                    <strong>[1분기]</strong> ${year1}년 사업성과 분석 및 보완사항 도출<br>
+                                    <strong>[2~3분기]</strong> 구축 시스템 전사 확대, 추가 개선과제 발굴·실행<br>
+                                    <strong>[기대효과]</strong> 생산성 15~20% 향상, 신규 거래처 확보, 고용 증대
+                                </div>
+                            </div>
+                            <div class="roadmap-item">
+                                <div class="step-title">${year3}년: 지속성장 및 경쟁력 강화</div>
+                                <div class="step-desc">
+                                    <strong>[상반기]</strong> 축적된 데이터 기반 의사결정 체계 정착<br>
+                                    <strong>[하반기]</strong> 신규 R&D 투자, 해외시장 진출 또는 사업 다각화<br>
+                                    <strong>[기대효과]</strong> 매출 30% 이상 증대, 업계 선도기업으로 도약
+                                </div>
+                            </div>
+                            <div class="roadmap-item">
+                                <div class="step-title">${year3}년 이후: 지속가능 경영 기반 확립</div>
+                                <div class="step-desc">
+                                    • 혁신바우처 성과를 기반으로 정부 R&D 과제 수주<br>
+                                    • 스마트공장 고도화, ESG 경영체계 구축<br>
+                                    • 중견기업 진입 및 글로벌 경쟁력 확보
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
+            }
+
+            detailsHTML += `
+                <div class="disclaimer">
+                    <p><strong>본 진단은 혁신바우처를 준비하시는 대표님께서 사업 수행 전 준비를 도울 수 있도록 제작된 간이 진단입니다.</strong></p>
+                    <p>더 상세한 분석이나 전문가 상담이 필요하시면 하단의 상담문의를 이용해주시기 바랍니다.</p>
+                    <p><strong>코리아경영자문은 혁신바우처 컨설팅에 대해 어떠한 수수료(현금, 보험가입 등)을 유도하거나 받지 않습니다.</strong></p>
+                </div>`;
+
+            resultDetails.innerHTML = detailsHTML;
+            resultContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    </script>
+</body>
+</html>
