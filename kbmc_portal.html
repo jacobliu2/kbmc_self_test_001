@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>코리아경영자문 자가진단 포털</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: #f8f9fc;
+            min-height: 100vh;
+        }
+
+        .top-line {
+            height: 6px;
+            background: linear-gradient(90deg, #1e3a5f 0%, #2874a6 100%);
+        }
+
+        /* 로그인 화면 */
+        .login-container {
+            max-width: 450px;
+            margin: 100px auto;
+            padding: 50px 40px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(30, 58, 95, 0.1);
+            border: 1px solid rgba(30, 58, 95, 0.06);
+        }
+
+        .login-container::before {
+            content: '';
+            display: block;
+            width: 100%;
+            height: 6px;
+            background: linear-gradient(90deg, #1e3a5f 0%, #2874a6 100%);
+            margin: -50px -40px 40px;
+            border-radius: 20px 20px 0 0;
+        }
+
+        .login-title {
+            font-family: 'Montserrat', 'Noto Sans KR', sans-serif;
+            font-size: 28px;
+            font-weight: 800;
+            color: #1e3a5f;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 18px;
+            font-size: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #2874a6;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 16px;
+            font-size: 16px;
+            font-weight: 700;
+            background: #1e3a5f;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .btn-login:hover {
+            background: #152a45;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(30, 58, 95, 0.3);
+        }
+
+        .error-message {
+            color: #d32f2f;
+            font-size: 14px;
+            margin-top: 10px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        /* 메인 컨테이너 */
+        .main-container {
+            display: none;
+        }
+
+        .main-container.active {
+            display: block;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 50px 40px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 50px;
+        }
+
+        .header h1 {
+            font-family: 'Montserrat', 'Noto Sans KR', sans-serif;
+            font-size: 36px;
+            font-weight: 800;
+            color: #1e3a5f;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1a1a2e;
+        }
+
+        .btn-logout, .btn-admin {
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 700;
+            border: 2px solid #1e3a5f;
+            background: white;
+            color: #1e3a5f;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-logout:hover, .btn-admin:hover {
+            background: #1e3a5f;
+            color: white;
+        }
+
+        .category-section {
+            margin-bottom: 50px;
+        }
+
+        .category-title {
+            font-family: 'Montserrat', 'Noto Sans KR', sans-serif;
+            font-size: 24px;
+            font-weight: 800;
+            color: #1e3a5f;
+            margin-bottom: 20px;
+            padding-left: 16px;
+            border-left: 5px solid #2874a6;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+            gap: 24px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 35px;
+            box-shadow: 0 2px 12px rgba(30, 58, 95, 0.08);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            border: 1px solid rgba(30, 58, 95, 0.06);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: linear-gradient(90deg, #1e3a5f 0%, #2874a6 100%);
+            border-radius: 20px 20px 0 0;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 32px rgba(30, 58, 95, 0.15);
+            border-color: #2874a6;
+        }
+
+        .card-category {
+            display: inline-block;
+            background: #2874a6;
+            color: white;
+            padding: 7px 16px;
+            border-radius: 14px;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .card-title {
+            font-family: 'Montserrat', 'Noto Sans KR', sans-serif;
+            font-size: 22px;
+            font-weight: 800;
+            color: #1a1a2e;
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+
+        .card-description {
+            font-size: 15px;
+            color: #64748b;
+            line-height: 1.6;
+            margin-bottom: 24px;
+            font-weight: 500;
+        }
+
+        .card-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            flex: 1;
+            min-width: 120px;
+            padding: 14px 20px;
+            font-size: 15px;
+            font-weight: 700;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: #1e3a5f;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #152a45;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #1e3a5f;
+            border: 2px solid #1e3a5f;
+        }
+
+        .btn-secondary:hover {
+            background: #1e3a5f;
+            color: white;
+        }
+
+        .btn-print {
+            background: white;
+            color: #2874a6;
+            border: 2px solid #2874a6;
+        }
+
+        .btn-print:hover {
+            background: #2874a6;
+            color: white;
+        }
+
+        /* 관리자 패널 */
+        .admin-panel {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+
+        .admin-panel.active {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .admin-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+            z-index: 1001;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .admin-title {
+            font-family: 'Montserrat', 'Noto Sans KR', sans-serif;
+            font-size: 24px;
+            font-weight: 800;
+            color: #1e3a5f;
+        }
+
+        .btn-close {
+            padding: 10px 24px;
+            font-size: 15px;
+            font-weight: 700;
+            background: #1e3a5f;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-close:hover {
+            background: #152a45;
+            transform: translateY(-2px);
+        }
+
+        .user-list {
+            margin-top: 20px;
+        }
+
+        .user-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        .user-item-info {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1a1a2e;
+        }
+
+        .user-item-role {
+            font-size: 13px;
+            color: #64748b;
+            margin-left: 10px;
+        }
+
+        .btn-delete {
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 700;
+            background: #d32f2f;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .add-user-form {
+            margin-top: 30px;
+            padding: 25px;
+            background: #f8f9fc;
+            border-radius: 15px;
+        }
+
+        .add-user-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: #1e3a5f;
+            margin-bottom: 20px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 40px;
+            margin-top: 60px;
+            border-top: 2px solid rgba(30, 58, 95, 0.1);
+        }
+
+        .footer-copyright {
+            font-size: 14px;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .login-container {
+                margin: 50px 20px;
+                padding: 40px 30px;
+            }
+
+            .container {
+                padding: 30px 24px;
+            }
+
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+            }
+
+            .header h1 {
+                font-size: 28px;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-content {
+                width: 95%;
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="top-line"></div>
+
+    <!-- 로그인 화면 -->
+    <div id="loginScreen" class="login-container">
+        <h1 class="login-title">코리아경영자문<br>자가진단 포털</h1>
+        <form id="loginForm">
+            <div class="form-group">
+                <label class="form-label">아이디</label>
+                <input type="text" id="username" class="form-input" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">비밀번호</label>
+                <input type="password" id="password" class="form-input" required>
+            </div>
+            <button type="submit" class="btn-login">로그인</button>
+            <div id="errorMessage" class="error-message"></div>
+        </form>
+    </div>
+
+    <!-- 메인 화면 -->
+    <div id="mainScreen" class="main-container">
+        <div class="container">
+            <div class="header">
+                <h1>코리아경영자문 자가진단 포털</h1>
+                <div class="user-info">
+                    <span class="user-name" id="currentUser"></span>
+                    <button id="adminBtn" class="btn-admin" style="display:none;">관리자 패널</button>
+                    <button id="logoutBtn" class="btn-logout">로그아웃</button>
+                </div>
+            </div>
+
+            <div id="content"></div>
+
+            <div class="footer">
+                <div class="footer-copyright">© 코리아경영자문</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 관리자 패널 -->
+    <div id="adminPanel" class="admin-panel">
+        <div class="admin-content">
+            <div class="admin-header">
+                <h2 class="admin-title">사용자 관리</h2>
+                <button id="closeAdmin" class="btn-close">닫기</button>
+            </div>
+
+            <div class="user-list" id="userList"></div>
+
+            <div class="add-user-form">
+                <h3 class="add-user-title">새 사용자 추가</h3>
+                <div class="form-group">
+                    <label class="form-label">아이디</label>
+                    <input type="text" id="newUserId" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">비밀번호</label>
+                    <input type="text" id="newUserPassword" class="form-input">
+                </div>
+                <button id="addUserBtn" class="btn-login">사용자 추가</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 초기 사용자 데이터
+        const defaultUsers = [
+            { id: "admin", password: "admin1234", role: "admin" },
+            { id: "조치범", password: "1234", role: "user" },
+            { id: "김범기", password: "1234", role: "user" },
+            { id: "정은미", password: "1234", role: "user" },
+            { id: "정혜윤", password: "1234", role: "user" },
+            { id: "강정환", password: "1234", role: "user" },
+            { id: "김봉필", password: "1234", role: "user" },
+            { id: "김연한", password: "1234", role: "user" },
+            { id: "김용희", password: "1234", role: "user" },
+            { id: "김종빈", password: "1234", role: "user" },
+            { id: "박문수", password: "1234", role: "user" },
+            { id: "서갑기", password: "1234", role: "user" },
+            { id: "양은모", password: "1234", role: "user" },
+            { id: "양환기", password: "1234", role: "user" },
+            { id: "유동관", password: "1234", role: "user" },
+            { id: "유영준", password: "1234", role: "user" },
+            { id: "임석중", password: "1234", role: "user" },
+            { id: "정우성", password: "1234", role: "user" },
+            { id: "차만희", password: "1234", role: "user" },
+            { id: "추정한", password: "1234", role: "user" },
+            { id: "형주영", password: "1234", role: "user" },
+            { id: "정명구", password: "1234", role: "user" },
+            { id: "김철희", password: "1234", role: "user" },
+            { id: "남상만", password: "1234", role: "user" },
+            { id: "문범모", password: "1234", role: "user" },
+            { id: "문성희", password: "1234", role: "user" },
+            { id: "박성훈", password: "1234", role: "user" },
+            { id: "안대승", password: "1234", role: "user" },
+            { id: "조영오", password: "1234", role: "user" },
+            { id: "조재완", password: "1234", role: "user" },
+            { id: "최회수", password: "1234", role: "user" },
+            { id: "신상국", password: "1234", role: "user" },
+            { id: "김관형", password: "1234", role: "user" },
+            { id: "김두한", password: "1234", role: "user" },
+            { id: "박상혁", password: "1234", role: "user" },
+            { id: "배한두", password: "1234", role: "user" },
+            { id: "서도겸", password: "1234", role: "user" },
+            { id: "신인균", password: "1234", role: "user" },
+            { id: "유인수", password: "1234", role: "user" },
+            { id: "이동혁", password: "1234", role: "user" },
+            { id: "이은정", password: "1234", role: "user" },
+            { id: "이현준", password: "1234", role: "user" },
+            { id: "이희용", password: "1234", role: "user" },
+            { id: "최종길", password: "1234", role: "user" },
+            { id: "김재근", password: "1234", role: "user" },
+            { id: "박상욱", password: "1234", role: "user" },
+            { id: "박승규", password: "1234", role: "user" },
+            { id: "양은현", password: "1234", role: "user" },
+            { id: "이성원", password: "1234", role: "user" },
+            { id: "전용준", password: "1234", role: "user" },
+            { id: "홍기열", password: "1234", role: "user" }
+        ];
+
+        // 현재 사용자
+        let currentUser = null;
+
+        // 로그인 처리
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            
+            // defaultUsers에서 직접 찾기
+            const user = defaultUsers.find(u => u.id === username && u.password === password);
+            
+            if (user) {
+                currentUser = user;
+                sessionStorage.setItem('currentUser', JSON.stringify(user));
+                
+                // 접속 로그 저장
+                saveLoginLog(username);
+                
+                showMainScreen();
+            } else {
+                document.getElementById('errorMessage').textContent = '아이디 또는 비밀번호가 올바르지 않습니다.';
+            }
+        });
+
+        // 접속 로그 저장
+        function saveLoginLog(userId) {
+            try {
+                let logs = JSON.parse(localStorage.getItem('loginLogs') || '{}');
+                
+                if (!logs[userId]) {
+                    logs[userId] = {
+                        count: 0,
+                        lastLogin: null,
+                        history: []
+                    };
+                }
+                
+                const now = new Date().toISOString();
+                logs[userId].count += 1;
+                logs[userId].lastLogin = now;
+                logs[userId].history.push(now);
+                
+                // 최근 10개만 유지
+                if (logs[userId].history.length > 10) {
+                    logs[userId].history = logs[userId].history.slice(-10);
+                }
+                
+                localStorage.setItem('loginLogs', JSON.stringify(logs));
+            } catch (e) {
+                console.error('로그 저장 오류:', e);
+            }
+        }
+
+        // 접속 로그 가져오기
+        function getLoginLogs() {
+            try {
+                return JSON.parse(localStorage.getItem('loginLogs') || '{}');
+            } catch (e) {
+                return {};
+            }
+        }
+
+        // 날짜 포맷
+        function formatDate(isoString) {
+            if (!isoString) return '-';
+            const date = new Date(isoString);
+            return date.toLocaleString('ko-KR', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        // 메인 화면 표시
+        function showMainScreen() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('mainScreen').classList.add('active');
+            document.getElementById('currentUser').textContent = currentUser.id + '님';
+            
+            if (currentUser.role === 'admin') {
+                document.getElementById('adminBtn').style.display = 'block';
+            }
+            
+            loadContent();
+        }
+
+        // 로그아웃
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            sessionStorage.removeItem('currentUser');
+            location.reload();
+        });
+
+        // 콘텐츠 로드
+        function loadContent() {
+            const categories = [
+                {
+                    title: "재무분석",
+                    tests: [
+                        { title: "재무건전성 종합진단", desc: "기업 재무상태 심층 분석 (2026년 기준)", file: "kbmc_finace_final_2026.html" },
+                        { title: "간편 재무진단", desc: "중소기업 재무상태 빠른 체크", file: "smessimple_finance.html" }
+                    ]
+                },
+                {
+                    title: "디지털전환",
+                    tests: [
+                        { title: "클라우드 바우처 자가진단", desc: "클라우드 서비스 도입 지원사업 적합성 평가", file: "cloudvocher_selftest.html" },
+                        { title: "데이터 바우처 자가진단", desc: "데이터 활용 및 AI 도입 지원사업 진단", file: "data_voucher_diagnosis.html" }
+                    ]
+                },
+                {
+                    title: "수출지원",
+                    tests: [
+                        { title: "수출바우처 자가진단", desc: "수출역량 평가 및 바우처 신청 적합성 진단", file: "export_voucher_diagnosis.html" }
+                    ]
+                },
+                {
+                    title: "재창업",
+                    tests: [
+                        { title: "희망리턴패키지 자가진단", desc: "재창업 지원사업 적합성 종합 평가", file: "hopereturn_salftest.html" }
+                    ]
+                },
+                {
+                    title: "제조혁신",
+                    tests: [
+                        { title: "스마트제조혁신 자가진단", desc: "제조혁신 역량 및 지원사업 매칭 진단", file: "hyeokshin_voucher.html" }
+                    ]
+                },
+                {
+                    title: "마케팅",
+                    tests: [
+                        { title: "마케팅 바우처 자가진단", desc: "마케팅 역량 강화 지원사업 적합성 평가", file: "markething_voucher.html" }
+                    ]
+                },
+                {
+                    title: "지식재산",
+                    tests: [
+                        { title: "지식재산 지원사업 자가진단", desc: "특허·상표 등 IP 지원사업 매칭 진단", file: "ip_support_voucher.html" }
+                    ]
+                },
+                {
+                    title: "R&D",
+                    tests: [
+                        { title: "R&D 역량진단", desc: "연구개발 역량 및 지원사업 적합성 평가", file: "ksic_research_diagnostic.html" }
+                    ]
+                },
+                {
+                    title: "경영전략",
+                    tests: [
+                        { title: "기업코드 자가진단", desc: "기업 경영전환 준비도 종합 평가", file: "cocdecselfrm.html" }
+                    ]
+                }
+            ];
+
+            let html = '';
+            categories.forEach(cat => {
+                html += `
+                    <div class="category-section">
+                        <h2 class="category-title">${cat.title}</h2>
+                        <div class="cards-grid">
+                `;
+                
+                cat.tests.forEach(test => {
+                    html += `
+                        <div class="card">
+                            <span class="card-category">${cat.title}</span>
+                            <h2 class="card-title">${test.title}</h2>
+                            <p class="card-description">${test.desc}</p>
+                            <div class="card-buttons">
+                                <button class="btn btn-primary" onclick="startTest('${test.file}')">시작하기 →</button>
+                                <button class="btn btn-secondary" onclick="copyLink('${test.file}')">링크 복사</button>
+                                <button class="btn btn-print" onclick="printTest('${test.file}')">🖨 인쇄</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                html += `
+                        </div>
+                    </div>
+                `;
+            });
+            
+            document.getElementById('content').innerHTML = html;
+        }
+
+        // 진단 시작
+        function startTest(filename) {
+            window.open(filename, '_blank');
+        }
+
+        // 링크 복사
+        function copyLink(filename) {
+            const baseUrl = window.location.href.split('/').slice(0, -1).join('/');
+            const fullUrl = baseUrl + '/' + filename;
+            
+            navigator.clipboard.writeText(fullUrl).then(() => {
+                alert('링크가 복사되었습니다');
+            });
+        }
+
+        // 인쇄 기능
+        function printTest(filename) {
+            const printWindow = window.open(filename, '_blank');
+            printWindow.onload = function() {
+                printWindow.print();
+            };
+        }
+
+        // 관리자 패널
+        document.getElementById('adminBtn')?.addEventListener('click', function() {
+            document.getElementById('adminPanel').classList.add('active');
+            loadUserList();
+        });
+
+        document.getElementById('closeAdmin').addEventListener('click', function() {
+            document.getElementById('adminPanel').classList.remove('active');
+        });
+
+        // 사용자 목록 로드
+        function loadUserList() {
+            const users = defaultUsers;
+            const logs = getLoginLogs();
+            let html = '';
+            
+            users.forEach((user, index) => {
+                const log = logs[user.id];
+                const loginCount = log ? log.count : 0;
+                const lastLogin = log ? formatDate(log.lastLogin) : '-';
+                
+                html += `
+                    <div class="user-item">
+                        <div style="flex: 1;">
+                            <div style="margin-bottom: 8px;">
+                                <span class="user-item-info">${user.id}</span>
+                                <span class="user-item-role">(${user.role === 'admin' ? '관리자' : '사용자'})</span>
+                            </div>
+                            <div style="font-size: 13px; color: #64748b;">
+                                <span style="margin-right: 15px;">접속 ${loginCount}회</span>
+                                <span>최종: ${lastLogin}</span>
+                            </div>
+                        </div>
+                        ${user.role !== 'admin' ? `<button class="btn-delete" onclick="deleteUser(${index})">삭제</button>` : ''}
+                    </div>
+                `;
+            });
+            
+            document.getElementById('userList').innerHTML = html;
+        }
+
+        // 사용자 삭제
+        function deleteUser(index) {
+            if (confirm('정말 이 사용자를 삭제하시겠습니까?')) {
+                defaultUsers.splice(index, 1);
+                localStorage.setItem('portalUsers', JSON.stringify(defaultUsers));
+                loadUserList();
+            }
+        }
+
+        // 사용자 추가
+        document.getElementById('addUserBtn').addEventListener('click', function() {
+            const newId = document.getElementById('newUserId').value.trim();
+            const newPassword = document.getElementById('newUserPassword').value.trim();
+            
+            if (!newId || !newPassword) {
+                alert('아이디와 비밀번호를 모두 입력하세요.');
+                return;
+            }
+            
+            if (defaultUsers.find(u => u.id === newId)) {
+                alert('이미 존재하는 아이디입니다.');
+                return;
+            }
+            
+            defaultUsers.push({ id: newId, password: newPassword, role: "user" });
+            localStorage.setItem('portalUsers', JSON.stringify(defaultUsers));
+            
+            document.getElementById('newUserId').value = '';
+            document.getElementById('newUserPassword').value = '';
+            
+            loadUserList();
+            alert('사용자가 추가되었습니다.');
+        });
+
+        // 페이지 로드 시 세션 복원
+        window.addEventListener('load', function() {
+            const savedUser = sessionStorage.getItem('currentUser');
+            if (savedUser) {
+                try {
+                    currentUser = JSON.parse(savedUser);
+                    showMainScreen();
+                } catch (e) {
+                    console.error('세션 복원 오류:', e);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
