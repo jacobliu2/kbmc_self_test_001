@@ -1060,18 +1060,19 @@ async function searchProjects() {
   
   try {
     const hashtags = generateHashtags(formData);
-    
-    // CORS 프록시를 사용하여 우회
     const apiUrl = API_BASE_URL + '?crtfcKey=' + API_KEY + '&dataType=json&searchCnt=500&hashtags=' + encodeURIComponent(hashtags);
-    const corsProxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(apiUrl);
     
     console.log('API 요청 URL:', apiUrl);
-    console.log('CORS 프록시 URL:', corsProxyUrl);
+    
+    // Cloudflare Workers 프록시 사용 (가장 안정적)
+    const corsProxyUrl = 'https://bizinfo-proxy.workers.dev/?url=' + encodeURIComponent(apiUrl);
+    
+    console.log('프록시 URL:', corsProxyUrl);
     
     const response = await fetch(corsProxyUrl);
     
     if (!response.ok) {
-      throw new Error('API 호출 실패 (상태코드: ' + response.status + ')');
+      throw new Error('API 호출 실패 (상태: ' + response.status + ')');
     }
     
     const data = await response.json();
@@ -1123,7 +1124,7 @@ async function searchProjects() {
     hideTyping();
     hideLoadingModal();
     console.error('검색 오류:', err);
-    addMessage(false, '<div class="question-text" style="color: #d93025;">검색 중 오류가 발생했어요. 잠시 후 다시 시도해주세요.<br><small style="font-size: 12px; font-weight: 400;">오류: ' + err.message + '</small></div>');
+    addMessage(false, '<div class="question-text" style="color: #d93025;">검색 중 오류가 발생했어요.<br><small style="font-size: 12px; font-weight: 400;">네트워크를 확인해주세요. 오류: ' + err.message + '</small></div>');
     setTimeout(function() {
       addMessage(false, '<div class="option-buttons"><button type="button" class="option-btn" onclick="location.reload()">다시 검색하기</button><a href="http://kbmc.or.kr/contact" class="option-btn btn-consulting">전문가 상담 신청하기</a></div>');
     }, 500);
