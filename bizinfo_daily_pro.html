@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>기업마당 일일 신규공고 | 코리아경영자문</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: #f8f9fc;
+            min-height: 100vh;
+            padding: 20px;
+            color: #1a1a2e;
+        }
+
+        .top-gradient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, #1e3a5f 0%, #2874a6 100%);
+            z-index: 1000;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 4px 24px rgba(30, 58, 95, 0.08);
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3a5f 0%, #152a45 100%);
+            padding: 50px 40px;
+            color: white;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 100%;
+            background: linear-gradient(135deg, transparent 0%, rgba(40, 116, 166, 0.1) 100%);
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .header h1 {
+            font-family: 'Montserrat', 'Noto Sans KR', sans-serif;
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .header .subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+            font-weight: 400;
+            margin-bottom: 20px;
+        }
+
+        .header-info {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .control-panel {
+            padding: 40px;
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .control-grid {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .refresh-btn {
+            background: linear-gradient(135deg, #2874a6 0%, #1e3a5f 100%);
+            color: white;
+            border: none;
+            padding: 18px 48px;
+            font-size: 16px;
+            font-weight: 700;
+            border-radius: 16px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(40, 116, 166, 0.25);
+            transition: all 0.3s;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40, 116, 166, 0.35);
+        }
+
+        .refresh-btn:active {
+            transform: translateY(0);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-card {
+            background: #f8f9fc;
+            padding: 20px;
+            border-radius: 16px;
+            border: 1px solid #e5e7eb;
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            border-color: #2874a6;
+            box-shadow: 0 2px 8px rgba(40, 116, 166, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .stat-card.active {
+            background: linear-gradient(135deg, #1e3a5f 0%, #2874a6 100%);
+            border-color: #2874a6;
+            box-shadow: 0 4px 16px rgba(40, 116, 166, 0.3);
+        }
+        
+        .stat-card.active .stat-label,
+        .stat-card.active .stat-value {
+            color: white !important;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 800;
+            color: #1e3a5f;
+            font-family: 'Montserrat', 'Noto Sans KR', sans-serif;
+        }
+
+        .stat-value.accent {
+            color: #2874a6;
+        }
+
+        .stat-value.alert {
+            color: #dc2626;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .category-section {
+            margin-bottom: 30px;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 2px solid #e5e7eb;
+            transition: all 0.3s;
+        }
+
+        .category-section:hover {
+            border-color: #2874a6;
+            box-shadow: 0 2px 12px rgba(40, 116, 166, 0.08);
+        }
+
+        .category-header {
+            background: linear-gradient(135deg, #1e3a5f 0%, #152a45 100%);
+            color: white;
+            padding: 20px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .category-header:hover {
+            background: linear-gradient(135deg, #2874a6 0%, #1e3a5f 100%);
+        }
+
+        .category-title {
+            font-size: 18px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .category-icon {
+            font-size: 24px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+        }
+
+        .category-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .category-badge.new {
+            background: #dc2626;
+        }
+
+        .toggle-icon {
+            font-size: 20px;
+            transition: transform 0.3s;
+        }
+
+        .category-header.collapsed .toggle-icon {
+            transform: rotate(-90deg);
+        }
+
+        .notice-list {
+            padding: 24px;
+            display: none;
+            background: #fafbfc;
+        }
+
+        .notice-list.active {
+            display: block;
+        }
+
+        .notice-item {
+            background: white;
+            padding: 24px;
+            margin-bottom: 16px;
+            border-radius: 16px;
+            border-left: 4px solid #2874a6;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: 1px solid #e5e7eb;
+        }
+
+        .notice-item:hover {
+            border-color: #2874a6;
+            transform: translateX(4px);
+            box-shadow: 0 4px 16px rgba(40, 116, 166, 0.12);
+        }
+
+        .notice-item.new {
+            border-left-color: #dc2626;
+            background: linear-gradient(135deg, #fff5f5 0%, white 100%);
+        }
+
+        .notice-item.new::before {
+            content: 'NEW';
+            background: #dc2626;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            margin-right: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .notice-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 14px;
+            line-height: 1.5;
+        }
+
+        .notice-meta {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 14px;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 500;
+        }
+
+        .notice-tags {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 14px;
+        }
+
+        .tag {
+            background: #f1f5f9;
+            color: #1e3a5f;
+            padding: 6px 14px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .tag.budget {
+            background: #fef3c7;
+            color: #d97706;
+            border-color: #fde68a;
+            font-weight: 700;
+        }
+        
+        .tag.target {
+            background: #d1fae5;
+            color: #059669;
+            border-color: #a7f3d0;
+            font-weight: 700;
+        }
+
+        .deadline-badge {
+            background: #fff7ed;
+            color: #ea580c;
+            padding: 6px 14px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 700;
+            border: 1px solid #fed7aa;
+        }
+
+        .deadline-badge.urgent {
+            background: #fef2f2;
+            color: #dc2626;
+            border-color: #fecaca;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            color: #64748b;
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        .empty-state p {
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px;
+            color: #64748b;
+        }
+
+        .spinner {
+            border: 4px solid #f1f5f9;
+            border-top: 4px solid #2874a6;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 24px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .footer {
+            background: #f8f9fc;
+            padding: 30px 40px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .footer-brand {
+            font-size: 15px;
+            font-weight: 700;
+            color: #1e3a5f;
+        }
+
+        .footer-contact {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #64748b;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .footer-copyright {
+            width: 100%;
+            text-align: center;
+            padding-top: 20px;
+            margin-top: 20px;
+            border-top: 1px solid #e5e7eb;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin-top: 10px;
+            }
+
+            .header {
+                padding: 30px 24px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .control-panel {
+                padding: 24px;
+            }
+
+            .control-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .refresh-btn {
+                width: 100%;
+            }
+
+            .content {
+                padding: 24px;
+            }
+
+            .notice-meta {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .footer {
+                padding: 24px;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="top-gradient"></div>
+    
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <h1>기업마당 일일 신규공고</h1>
+                <div class="subtitle">매일 아침 8시 기준 최신 지원사업 공고를 분야별로 확인하세요</div>
+                <div class="header-info">
+                    <div class="info-item">
+                        <span>📅</span>
+                        <span id="updateTime">최종 업데이트: -</span>
+                    </div>
+                    <div class="info-item">
+                        <span>☎</span>
+                        <span>02-6357-2025</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="control-panel">
+            <div class="control-grid">
+                <button class="refresh-btn" onclick="loadNewNotices()">
+                    📋 최신 공고 확인
+                </button>
+                <div class="stats-grid">
+                    <div class="stat-card" onclick="filterNotices('today')" style="cursor: pointer;">
+                        <div class="stat-label">오늘의 신규공고</div>
+                        <div class="stat-value accent" id="todayCount">0</div>
+                    </div>
+                    <div class="stat-card" onclick="filterNotices('all')" style="cursor: pointer;">
+                        <div class="stat-label">진행중 전체</div>
+                        <div class="stat-value" id="totalCount">0</div>
+                    </div>
+                    <div class="stat-card" onclick="filterNotices('urgent')" style="cursor: pointer;">
+                        <div class="stat-label">마감임박</div>
+                        <div class="stat-value alert" id="urgentCount">0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content" id="content">
+            <div class="empty-state">
+                <div class="empty-state-icon">📢</div>
+                <p>'최신 공고 확인' 버튼을 눌러<br>오늘의 신규 공고를 확인하세요</p>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="footer-content">
+                <div class="footer-brand">코리아경영자문</div>
+                <div class="footer-contact">
+                    <span>☎</span>
+                    <span>02-6357-2025</span>
+                </div>
+            </div>
+            <div class="footer-copyright">
+                © 코리아경영자문 · 데이터 출처: 기업마당(K-Startup) www.bizinfo.go.kr
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 카테고리별 키워드 매칭
+        const categoryKeywords = {
+            'R&D': ['R&D', '연구개발', '기술개발', '개발과제', '혁신개발', '신제품', '기술사업화'],
+            '자금지원': ['자금', '융자', '대출', '투자', '정책자금', '보증', '바우처', '지원금'],
+            '수출/해외진출': ['수출', '해외', '글로벌', '수출바우처', '해외진출', '외국', '국제'],
+            '인력양성': ['인력', '교육', '훈련', '채용', '인재', '직무', '역량'],
+            '스마트공장': ['스마트공장', '스마트제조', '디지털', '자동화', 'MES', 'IoT'],
+            '판로/마케팅': ['판로', '마케팅', '홍보', '온라인', '쇼핑몰', '유통'],
+            '창업지원': ['창업', '예비창업', '초기창업', '스타트업', '액셀러레이팅'],
+            '경영혁신': ['경영', '컨설팅', '혁신', '진단', '개선', '품질'],
+            'ESG/친환경': ['ESG', '친환경', '탄소중립', '녹색', '환경', '에너지절감'],
+            '기타': []
+        };
+        
+        let allNotices = []; // 전체 공고 저장
+        let currentFilter = 'all'; // 현재 필터 상태
+        
+        // 필터 함수
+        function filterNotices(type) {
+            currentFilter = type;
+            
+            // 활성화 상태 표시
+            document.querySelectorAll('.stat-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            
+            let filteredNotices = [];
+            
+            if (type === 'today') {
+                // 오늘의 신규공고
+                filteredNotices = allNotices.filter(notice => isNewNotice(notice.registDate));
+                document.querySelectorAll('.stat-card')[0].classList.add('active');
+            } else if (type === 'urgent') {
+                // 마감임박 (D-7 이내)
+                filteredNotices = allNotices.filter(notice => {
+                    const daysLeft = getDaysUntilDeadline(notice.deadline);
+                    return daysLeft <= 7 && daysLeft > 0;
+                });
+                document.querySelectorAll('.stat-card')[2].classList.add('active');
+            } else {
+                // 전체
+                filteredNotices = allNotices;
+                document.querySelectorAll('.stat-card')[1].classList.add('active');
+            }
+            
+            renderNotices(filteredNotices, type !== 'all');
+        }
+
+        async function fetchBizinfoData() {
+            try {
+                // 기업마당 API 호출 (JSON 방식)
+                const API_KEY = 's1wgwK'; // 발급받은 인증키
+                const API_URL = `https://www.bizinfo.go.kr/uss/rss/bizinfoApi.do?crtfcKey=${API_KEY}&dataType=json&searchCnt=100`;
+                
+                const response = await fetch(API_URL);
+                
+                if (!response.ok) {
+                    throw new Error('API 호출 실패');
+                }
+                
+                const data = await response.json();
+                const items = data.jsonArray || [];
+                
+                const notices = [];
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                
+                items.forEach((item, index) => {
+                    // 등록일 파싱
+                    const registDate = item.creatPnttm || item.pubDate || '';
+                    const itemRegDate = new Date(registDate);
+                    itemRegDate.setHours(0, 0, 0, 0);
+                    
+                    // 마감일 파싱
+                    const reqstPeriod = item.reqstBeginEndDe || '';
+                    const endDateMatch = reqstPeriod.match(/~\s*(\d{8})/);
+                    const endDate = endDateMatch ? endDateMatch[1] : '';
+                    
+                    // 진행중인 공고만 (마감일이 지나지 않은 것)
+                    if (endDate) {
+                        const deadline = new Date(
+                            endDate.substring(0, 4),
+                            parseInt(endDate.substring(4, 6)) - 1,
+                            endDate.substring(6, 8)
+                        );
+                        if (deadline < today) return;
+                    }
+                    
+                    notices.push({
+                        id: index + 1,
+                        title: item.pblancNm || '',
+                        agency: item.jrsdInsttNm || '',
+                        category: categorizeByField(item.pldirSportRealmLclasCodeNm || ''),
+                        registDate: registDate.split(' ')[0],
+                        deadline: endDate ? `${endDate.substring(0, 4)}-${endDate.substring(4, 6)}-${endDate.substring(6, 8)}` : '상시',
+                        budget: extractBudgetFromContent(item.bsnsSumryCn || item.pblancNm || ''),
+                        target: item.trgetNm || '중소기업', // 지원대상
+                        tags: extractTagsFromHashtags(item.hashtags || ''),
+                        url: item.pblancUrl ? `https://www.bizinfo.go.kr${item.pblancUrl}` : 'https://www.bizinfo.go.kr/web/lay1/bbs/S1T122C128/AS/74/list.do',
+                        isNew: itemRegDate.getTime() === today.getTime()
+                    });
+                });
+                
+                return notices.length > 0 ? notices : getSampleData();
+                
+            } catch (error) {
+                console.error('API 호출 실패:', error);
+                console.log('CORS 오류 또는 네트워크 문제입니다. 샘플 데이터로 표시합니다.');
+                return getSampleData();
+            }
+        }
+        
+        // 분야명으로 카테고리 매칭
+        function categorizeByField(fieldName) {
+            const fieldMap = {
+                '금융': '자금지원',
+                '기술': 'R&D',
+                '수출': '수출/해외진출',
+                '인력': '인력양성',
+                '내수': '판로/마케팅',
+                '창업': '창업지원',
+                '경영': '경영혁신'
+            };
+            
+            return fieldMap[fieldName] || categorizeByTitle(fieldName);
+        }
+        
+        // 내용에서 예산 추출
+        function extractBudgetFromContent(content) {
+            // HTML 태그 제거
+            const text = content.replace(/<[^>]*>/g, '');
+            
+            if (text.includes('억')) {
+                const match = text.match(/(\d+)억/);
+                if (match) return `최대 ${match[1]}억원`;
+            }
+            if (text.includes('백만') || text.includes('만원')) {
+                const match = text.match(/(\d+(?:,\d+)?)백만|(\d+(?:,\d+)?)만원/);
+                if (match) return `최대 ${match[1] || match[2]}만원`;
+            }
+            return '미정';
+        }
+        
+        // 해시태그에서 태그 추출
+        function extractTagsFromHashtags(hashtags) {
+            if (!hashtags) return [];
+            
+            const tags = hashtags.split(',').map(tag => tag.trim());
+            const filteredTags = tags.filter(tag => {
+                // 지역명과 연도 제외
+                const regions = ['서울', '부산', '대구', '인천', '광주', '대전', '울산', '세종', '경기', '강원', '충북', '충남', '전북', '전남', '경북', '경남', '제주'];
+                const isRegion = regions.includes(tag);
+                const isYear = /^\d{4}$/.test(tag);
+                return !isRegion && !isYear && tag.length > 1;
+            });
+            
+            return filteredTags.slice(0, 3);
+        }
+        
+        // 제목으로 카테고리 분류
+        function categorizeByTitle(title) {
+            for (const [category, keywords] of Object.entries(categoryKeywords)) {
+                if (category === '기타') continue;
+                for (const keyword of keywords) {
+                    if (title.includes(keyword)) {
+                        return category;
+                    }
+                }
+            }
+            return '기타';
+        }
+
+        function getSampleData() {
+            const today = new Date();
+            const yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
+            
+            return [
+                {
+                    id: 1,
+                    title: '2026년 중소기업 R&D 역량강화 지원사업',
+                    agency: '중소벤처기업부',
+                    category: 'R&D',
+                    registDate: today.toISOString().split('T')[0],
+                    deadline: '2026-02-28',
+                    budget: '최대 3억원',
+                    tags: ['R&D', '기술개발', '제조업'],
+                    url: 'https://www.bizinfo.go.kr/web/lay1/bbs/S1T122C128/AS/74/list.do'
+                },
+                {
+                    id: 2,
+                    title: '수출바우처 지원사업 (1차)',
+                    agency: '중소벤처기업부',
+                    category: '수출/해외진출',
+                    registDate: today.toISOString().split('T')[0],
+                    deadline: '2026-01-31',
+                    budget: '최대 1억원',
+                    tags: ['수출', '해외진출', '글로벌'],
+                    url: 'https://www.bizinfo.go.kr/web/lay1/bbs/S1T122C128/AS/74/list.do'
+                },
+                {
+                    id: 3,
+                    title: '스마트공장 구축·고도화 지원',
+                    agency: '산업통상자원부',
+                    category: '스마트공장',
+                    registDate: today.toISOString().split('T')[0],
+                    deadline: '2026-03-15',
+                    budget: '최대 2억원',
+                    tags: ['스마트공장', '디지털전환', '제조혁신'],
+                    url: 'https://www.bizinfo.go.kr/web/lay1/bbs/S1T122C128/AS/74/list.do'
+                },
+                {
+                    id: 4,
+                    title: 'AI 바우처 지원사업',
+                    agency: '과학기술정보통신부',
+                    category: 'R&D',
+                    registDate: yesterday.toISOString().split('T')[0],
+                    deadline: '2026-02-15',
+                    budget: '최대 2억원',
+                    tags: ['AI', '인공지능', '디지털'],
+                    url: 'https://www.bizinfo.go.kr/web/lay1/bbs/S1T122C128/AS/74/list.do'
+                },
+                {
+                    id: 5,
+                    title: '청년창업사관학교 10기 모집',
+                    agency: '중소벤처기업부',
+                    category: '창업지원',
+                    registDate: today.toISOString().split('T')[0],
+                    deadline: '2026-01-20',
+                    budget: '최대 1억원',
+                    tags: ['창업', '청년', '예비창업'],
+                    url: 'https://www.bizinfo.go.kr/web/lay1/bbs/S1T122C128/AS/74/list.do'
+                },
+                {
+                    id: 6,
+                    title: '탄소중립 실천 중소기업 지원',
+                    agency: '환경부',
+                    category: 'ESG/친환경',
+                    registDate: today.toISOString().split('T')[0],
+                    deadline: '2026-02-28',
+                    budget: '최대 5천만원',
+                    tags: ['ESG', '탄소중립', '친환경'],
+                    url: 'https://www.bizinfo.go.kr/web/lay1/bbs/S1T122C128/AS/74/list.do'
+                },
+                {
+                    id: 7,
+                    title: '중소기업 인력양성 지원사업',
+                    agency: '고용노동부',
+                    category: '인력양성',
+                    registDate: yesterday.toISOString().split('T')[0],
+                    deadline: '2026-03-31',
+                    budget: '1인당 200만원',
+                    tags: ['인력', '교육', '역량강화'],
+                    url: 'https://www.bizinfo.go.kr/web/lay1/bbs/S1T122C128/AS/74/list.do'
+                },
+                {
+                    id: 8,
+                    title: '온라인 판로개척 지원(이커머스)',
+                    agency: '중소벤처기업부',
+                    category: '판로/마케팅',
+                    registDate: today.toISOString().split('T')[0],
+                    deadline: '2026-02-10',
+                    budget: '최대 7천만원',
+                    tags: ['판로', '온라인', 'e커머스'],
+                    url: 'https://www.bizinfo.go.kr/web/lay1/bbs/S1T122C128/AS/74/list.do'
+                }
+            ];
+        }
+
+        function categorizeNotice(notice) {
+            const title = notice.title || '';
+            
+            for (const [category, keywords] of Object.entries(categoryKeywords)) {
+                if (category === '기타') continue;
+                
+                for (const keyword of keywords) {
+                    if (title.includes(keyword)) {
+                        return category;
+                    }
+                }
+            }
+            return '기타';
+        }
+
+        function getDaysUntilDeadline(deadlineStr) {
+            const deadline = new Date(deadlineStr);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            deadline.setHours(0, 0, 0, 0);
+            
+            const diffTime = deadline - today;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            
+            return diffDays;
+        }
+
+        function isNewNotice(registDate) {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            const regDate = new Date(registDate);
+            regDate.setHours(0, 0, 0, 0);
+            
+            return regDate.getTime() === today.getTime();
+        }
+
+        function renderNotices(notices, isFiltered = false) {
+            const content = document.getElementById('content');
+            
+            const categorized = {};
+            let todayNewCount = 0;
+            let urgentCount = 0;
+            
+            // 전체 데이터로 통계 계산 (항상 allNotices 기준)
+            allNotices.forEach(notice => {
+                if (isNewNotice(notice.registDate)) {
+                    todayNewCount++;
+                }
+                
+                const daysLeft = getDaysUntilDeadline(notice.deadline);
+                if (daysLeft <= 7 && daysLeft > 0) {
+                    urgentCount++;
+                }
+            });
+            
+            // 필터링된 공고만 카테고리 분류
+            notices.forEach(notice => {
+                const category = notice.category || categorizeNotice(notice);
+                if (!categorized[category]) {
+                    categorized[category] = [];
+                }
+                categorized[category].push(notice);
+            });
+            
+            document.getElementById('todayCount').textContent = todayNewCount;
+            document.getElementById('totalCount').textContent = allNotices.length;
+            document.getElementById('urgentCount').textContent = urgentCount;
+            document.getElementById('updateTime').textContent = 
+                `최종 업데이트: ${new Date().toLocaleString('ko-KR')}`;
+            
+            // 필터 메시지 추가
+            let filterMessage = '';
+            if (isFiltered) {
+                if (currentFilter === 'today') {
+                    filterMessage = '<div style="text-align: center; padding: 20px; background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); border-radius: 16px; margin-bottom: 20px; color: #1976d2; font-weight: 700; border: 2px solid #90caf9;">📢 오늘의 신규공고만 표시중입니다</div>';
+                } else if (currentFilter === 'urgent') {
+                    filterMessage = '<div style="text-align: center; padding: 20px; background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%); border-radius: 16px; margin-bottom: 20px; color: #c62828; font-weight: 700; border: 2px solid #ef9a9a;">⚠️ 마감임박 공고만 표시중입니다 (D-7 이내)</div>';
+                }
+            }
+            
+            let html = filterMessage;
+            
+            const categoryIcons = {
+                'R&D': '🔬',
+                '자금지원': '💰',
+                '수출/해외진출': '🌏',
+                '인력양성': '👥',
+                '스마트공장': '🏭',
+                '판로/마케팅': '📈',
+                '창업지원': '🚀',
+                '경영혁신': '💡',
+                'ESG/친환경': '🌱',
+                '기타': '📋'
+            };
+            
+            for (const [category, items] of Object.entries(categorized)) {
+                const icon = categoryIcons[category] || '📋';
+                const newInCategory = items.filter(n => isNewNotice(n.registDate)).length;
+                
+                html += `
+                    <div class="category-section">
+                        <div class="category-header" onclick="toggleCategory(this)">
+                            <div class="category-title">
+                                <div class="category-icon">${icon}</div>
+                                <span>${category}</span>
+                                <span class="category-badge">${items.length}건</span>
+                                ${newInCategory > 0 ? `<span class="category-badge new">NEW ${newInCategory}</span>` : ''}
+                            </div>
+                            <span class="toggle-icon">▼</span>
+                        </div>
+                        <div class="notice-list active">
+                `;
+                
+                items.forEach(notice => {
+                    const daysLeft = getDaysUntilDeadline(notice.deadline);
+                    const isNew = isNewNotice(notice.registDate);
+                    const isUrgent = daysLeft <= 7 && daysLeft > 0;
+                    
+                    let deadlineText = '';
+                    if (daysLeft < 0) {
+                        deadlineText = '마감';
+                    } else if (daysLeft === 0) {
+                        deadlineText = 'D-Day';
+                    } else {
+                        deadlineText = `D-${daysLeft}`;
+                    }
+                    
+                    // 지원금액 태그 생성
+                    const budgetTag = notice.budget && notice.budget !== '미정' 
+                        ? `<span class="tag budget">💰 ${notice.budget}</span>` 
+                        : '';
+                    
+                    // 추천대상 태그 생성 (지원대상: 소상공인, 중소기업 등)
+                    const targetTag = notice.target 
+                        ? `<span class="tag target">👥 ${notice.target}</span>` 
+                        : '';
+                    
+                    html += `
+                        <div class="notice-item ${isNew ? 'new' : ''}" onclick="window.open('${notice.url}', '_blank')">
+                            <div class="notice-title">${notice.title}</div>
+                            <div class="notice-meta">
+                                <div class="meta-item">🏢 ${notice.agency}</div>
+                                <div class="meta-item">📅 ${notice.deadline}</div>
+                                <div class="deadline-badge ${isUrgent ? 'urgent' : ''}">${deadlineText}</div>
+                            </div>
+                            <div class="notice-tags">
+                                ${budgetTag}
+                                ${targetTag}
+                                ${notice.tags.map(tag => `<span class="tag">#${tag}</span>`).join('')}
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                html += `
+                        </div>
+                    </div>
+                `;
+            }
+            
+            content.innerHTML = html;
+        }
+
+        function toggleCategory(header) {
+            header.classList.toggle('collapsed');
+            const noticeList = header.nextElementSibling;
+            noticeList.classList.toggle('active');
+        }
+
+        async function loadNewNotices() {
+            const content = document.getElementById('content');
+            
+            content.innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>최신 공고를 불러오는 중입니다...</p>
+                </div>
+            `;
+            
+            setTimeout(async () => {
+                const notices = await fetchBizinfoData();
+                allNotices = notices; // 전역 변수에 저장
+                
+                if (notices.length === 0) {
+                    content.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-state-icon">😊</div>
+                            <p>오늘 등록된 신규 공고가 없습니다.<br>내일 다시 확인해주세요!</p>
+                        </div>
+                    `;
+                } else {
+                    // 기본은 전체 표시
+                    filterNotices('all');
+                }
+            }, 1000);
+        }
+    </script>
+</body>
+</html>

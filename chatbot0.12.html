@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI 정부지원사업 추천 챗봇</title>
+  <style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+  
+  body {
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  }
+  </style>
+</head>
+<body>
+
+<div id="searchChatContainer">
+  <div id="startScreen" class="start-screen">
+    <div class="start-content">
+      <h1 class="start-main-title">KOREA BUSINESS</h1>
+      <p class="start-subtitle">AI 정부지원사업 추천 챗봇</p>
+      <img src="https://cdn.imweb.me/thumbnail/20251113/620ae517a76cb.png" alt="AI 챗봇" class="bot-image">
+      <button type="button" class="start-button" onclick="startChatbot()">
+        지금 바로 무료로 시작하기
+      </button>
+    </div>
+  </div>
+  <div class="chat-messages" id="chatMessages" style="display: none;"></div>
+</div>
+
+<div id="resultsModal" class="modal-overlay">
+  <div class="modal-content">
+    <button class="modal-close" onclick="closeResultsModal()">✕</button>
+    <div id="modalResults"></div>
+  </div>
+</div>
+
+<div id="loadingModal" class="loading-overlay">
+  <div class="loading-content">
+    <div class="loading-spinner"></div>
+    <h3 class="loading-title">잠시만 기다려주세요</h3>
+    <p class="loading-text">실시간으로 빠르게 매칭하겠습니다</p>
+  </div>
+</div>
+
+<style>
+#searchChatContainer {
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  letter-spacing: -0.01em;
+  background: transparent;
+  width: 100%;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  border-radius: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border: none;
+  box-shadow: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.start-screen {
+  width: 100%;
+  height: 100%;
+  background: url('https://cdn.imweb.me/thumbnail/20251113/e39e148668676.png') center center / cover no-repeat;
+  background-color: #0a1628;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.6s ease-out;
+  position: relative;
+}
+
+.start-screen::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(10, 22, 40, 0.3);
+}
+
+.start-content {
+  text-align: center;
+  color: white;
+  padding: 40px;
+  position: relative;
+  z-index: 1;
+}
+
+.start-main-title {
+  font-size: 48px;
+  font-weight: 900;
+  margin: 0 0 16px 0;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.start-subtitle {
+  font-size: 28px;
+  font-weight: 400;
+  line-height: 1.4;
+  margin: 0 0 40px 0;
+  color: white;
+  letter-spacing: -0.01em;
+}
+
+.bot-image {
+  width: 200px;
+  height: auto;
+  margin: 0 auto 40px;
+  display: block;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
+}
+
+.start-button {
+  background: white;
+  color: #0a1628;
+  border: none;
+  padding: 18px 50px;
+  border-radius: 50px;
+  font-size: 18px;
+  font-weight: 700;
+  font-family: 'Pretendard', sans-serif;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.start-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+  background: #f0f0f0;
+}
+
+.chat-messages {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: #f5f7fa;
+  overflow-y: auto;
+  flex: 1;
+  height: 100%;
+  width: 100%;
+}
+
+.chat-messages::-webkit-scrollbar {
+  width: 8px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
+  background: #e8eaed;
+  border-radius: 4px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+  background: #4a90e2;
+  border-radius: 4px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb:hover {
+  background: #3a7bc8;
+}
+
+.chat-message {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  animation: fadeIn 0.4s ease-out;
+}
+
+.chat-message.user-message {
+  flex-direction: row-reverse;
+}
+
+.chat-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+  background: linear-gradient(135deg, #4a90e2, #5ba3f5);
+  box-shadow: 0 2px 8px rgba(74, 144, 226, 0.3);
+}
+
+.user-avatar {
+  background: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.chat-bubble {
+  max-width: 75%;
+  padding: 16px 20px;
+  border-radius: 18px;
+  font-size: 15px;
+  line-height: 1.6;
+  background: white;
+  color: #333;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e8eaed;
+}
+
+.chat-bubble.user {
+  background: #4a90e2;
+  color: white;
+  border: none;
+  box-shadow: 0 2px 8px rgba(74, 144, 226, 0.3);
+}
+
+.greeting-text {
+  font-size: 17px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #1a1a1a;
+}
+
+.question-text {
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 14px;
+  line-height: 1.7;
+  color: #1a1a1a;
+}
+
+.option-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+  align-items: center;
+}
+
+.option-btn {
+  background: white;
+  border: 2px solid #e1e8f0;
+  padding: 11px 20px;
+  border-radius: 22px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  font-weight: 500;
+  font-family: 'Pretendard', sans-serif;
+  letter-spacing: -0.01em;
+  color: #333;
+}
+
+.option-btn:hover {
+  border-color: #333;
+  background: #f5f5f5;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.option-btn.selected {
+  background: #1a1a1a;
+  border-color: #1a1a1a;
+  color: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.btn-primary {
+  background: #4a90e2 !important;
+  border-color: #4a90e2 !important;
+  color: white !important;
+  font-weight: 600 !important;
+  margin-left: auto !important;
+}
+
+.btn-primary:hover {
+  background: #3a7bc8 !important;
+  border-color: #3a7bc8 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3) !important;
+}
+
+.btn-consulting {
+  background: linear-gradient(135deg, #ff6b6b, #ff8787) !important;
+  border: none !important;
+  color: white !important;
+  font-weight: 700 !important;
+  animation: bounce 2s ease-in-out infinite !important;
+  box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4) !important;
+  text-decoration: none !important;
+  display: inline-block !important;
+}
+
+.btn-consulting:hover {
+  background: linear-gradient(135deg, #ee5a52, #ff7676) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 16px rgba(255, 107, 107, 0.5) !important;
+  animation: none !important;
+}
+
+.btn-more {
+  background: #f5f5f5 !important;
+  border-color: #333 !important;
+  color: #333 !important;
+  font-weight: 600 !important;
+  width: 100%;
+  margin-top: 16px;
+}
+
+.btn-more:hover {
+  background: #e8e8e8 !important;
+  border-color: #1a1a1a !important;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.typing-indicator {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.typing-dots {
+  display: flex;
+  gap: 5px;
+  padding: 16px 20px;
+  background: white;
+  border-radius: 18px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.typing-dot {
+  width: 8px;
+  height: 8px;
+  background: #4a90e2;
+  border-radius: 50%;
+  animation: typing 1.4s ease-in-out infinite both;
+}
+
+.typing-dot:nth-child(1) { animation-delay: -0.32s; }
+.typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes typing {
+  0%, 80%, 100% { transform: scale(0.7); opacity: 0.4; }
+  40% { transform: scale(1.1); opacity: 1; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 10000;
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.modal-overlay.active {
+  display: flex;
+}
+
+.loading-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 15000;
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.loading-overlay.active {
+  display: flex;
+}
+
+.loading-content {
+  text-align: center;
+  padding: 40px;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  max-width: 400px;
+  animation: slideUp 0.3s ease-out;
+}
+
+.loading-spinner {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 24px;
+  border: 4px solid #e8eaed;
+  border-top: 4px solid #4a90e2;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 12px;
+  font-family: 'Pretendard', sans-serif;
+}
+
+.loading-text {
+  font-size: 15px;
+  color: #666;
+  line-height: 1.6;
+  font-family: 'Pretendard', sans-serif;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 16px;
+  padding: 30px;
+  max-width: 90%;
+  width: auto;
+  max-height: 85vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.modal-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: #f5f5f5;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s ease;
+  color: #333;
+  font-weight: 300;
+}
+
+.modal-close:hover {
+  background: #e8e8e8;
+  transform: rotate(90deg);
+}
+
+.results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+  margin: 12px 0;
+}
+
+.result-card {
+  background: white;
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border: 1px solid #e8eaed;
+  text-align: left;
+}
+
+.result-card.hidden {
+  display: none;
+}
+
+.result-card:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  transform: translateY(-4px);
+  background: #f8f9fa;
+}
+
+.result-card h4 {
+  color: #1a1a1a;
+  font-size: 15px;
+  margin: 0;
+  font-weight: 700;
+  line-height: 1.4;
+  min-height: 42px;
+}
+
+.result-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.result-card-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  background: #e3f2fd;
+  color: #1976d2;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.result-card-badge.match-rate {
+  background: #f3e5f5;
+  color: #7b1fa2;
+}
+
+.result-card-badge.status-ongoing {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.result-card-badge.status-upcoming {
+  background: #fff3e0;
+  color: #f57c00;
+}
+
+.result-card-badge.status-closed {
+  background: #ffebee;
+  color: #c62828;
+}
+
+.result-card-info {
+  font-size: 13px;
+  color: #666;
+  line-height: 1.6;
+  margin: 8px 0;
+}
+
+.result-card-info strong {
+  color: #333;
+  font-weight: 600;
+}
+
+.result-card-link {
+  display: block;
+  margin-top: 12px;
+  padding: 12px 20px;
+  background: #4a90e2;
+  color: white !important;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14px;
+  border-radius: 8px;
+  text-align: center;
+  transition: all 0.25s ease;
+  cursor: pointer;
+}
+
+.result-card-link:hover {
+  background: #3a7bc8;
+  color: white !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+}
+
+.results-header {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 14px;
+  color: #1a1a1a;
+}
+
+input[type="number"] {
+  padding: 11px 18px;
+  border: 2px solid #e1e8f0;
+  border-radius: 22px;
+  font-size: 14px;
+  width: 180px;
+  font-family: 'Pretendard', sans-serif;
+  letter-spacing: -0.01em;
+  transition: all 0.25s ease;
+  background: white;
+}
+
+input[type="number"]:focus {
+  outline: none;
+  border-color: #4a90e2;
+  box-shadow: 0 0 0 4px rgba(74, 144, 226, 0.12);
+}
+
+@media (max-width: 1024px) {
+  .results-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  #searchChatContainer {
+    border-radius: 0;
+  }
+  
+  .start-content {
+    padding: 30px 20px;
+  }
+  
+  .start-main-title {
+    font-size: 32px;
+    margin-bottom: 12px;
+  }
+  
+  .start-subtitle {
+    font-size: 20px;
+    margin-bottom: 30px;
+  }
+  
+  .bot-image {
+    width: 150px;
+    margin-bottom: 30px;
+  }
+  
+  .start-button {
+    padding: 14px 36px;
+    font-size: 16px;
+  }
+  
+  .chat-messages {
+    padding: 20px 16px;
+  }
+  
+  .chat-bubble {
+    max-width: 85%;
+  }
+  
+  .option-buttons {
+    flex-direction: column;
+  }
+  
+  .option-btn {
+    text-align: center;
+    width: 100%;
+  }
+  
+  .btn-primary {
+    margin-left: 0 !important;
+  }
+  
+  input[type="number"] {
+    width: 100%;
+  }
+  
+  .chat-avatar {
+    width: 38px;
+    height: 38px;
+    font-size: 18px;
+  }
+  
+  .results-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  .result-card {
+    padding: 20px;
+  }
+  
+  .result-card h4 {
+    font-size: 15px;
+    min-height: auto;
+  }
+  
+  .modal-content {
+    padding: 24px 18px;
+    max-width: 95%;
+    max-height: 90vh;
+  }
+}
+
+@media (max-width: 480px) {
+  .start-main-title {
+    font-size: 28px;
+  }
+  
+  .start-subtitle {
+    font-size: 18px;
+  }
+  
+  .bot-image {
+    width: 120px;
+  }
+  
+  .start-button {
+    padding: 12px 30px;
+    font-size: 15px;
+  }
+  
+  .chat-messages {
+    padding: 16px 12px;
+    gap: 12px;
+  }
+  
+  .chat-bubble {
+    padding: 12px 16px;
+    font-size: 14px;
+  }
+  
+  .greeting-text,
+  .question-text {
+    font-size: 15px;
+  }
+  
+  .option-btn {
+    padding: 10px 16px;
+    font-size: 13px;
+  }
+  
+  .results-header {
+    font-size: 16px;
+  }
+  
+  .result-card h4 {
+    font-size: 14px;
+  }
+  
+  .result-card-info {
+    font-size: 12px;
+  }
+  
+  .loading-content {
+    padding: 30px 24px;
+    margin: 0 20px;
+  }
+  
+  .loading-spinner {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 20px;
+  }
+  
+  .loading-title {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+  
+  .loading-text {
+    font-size: 14px;
+  }
+}
+</style>
+
+<script>
+// 기업마당 API 설정
+const API_BASE_URL = 'https://www.bizinfo.go.kr/uss/rss/bizinfoApi.do';
+const API_KEY = 's1wgwK';
+
+let formData = {
+  region: null,
+  foundedYear: null,
+  companySize: null,
+  industry: null,
+  improvement: []
+};
+
+let searchResults = [];
+let currentShowCount = 6;
+
+function startChatbot() {
+  document.getElementById('startScreen').style.display = 'none';
+  const chatMessages = document.getElementById('chatMessages');
+  chatMessages.style.display = 'flex';
+  document.getElementById('searchChatContainer').style.background = '#f5f7fa';
+  showStep1();
+}
+
+function addMessage(isUser, content) {
+  const messageDiv = document.createElement('div');
+  messageDiv.className = 'chat-message' + (isUser ? ' user-message' : '');
+  
+  const avatar = document.createElement('div');
+  avatar.className = 'chat-avatar' + (isUser ? ' user-avatar' : '');
+  avatar.innerHTML = isUser ? '👤' : '🤖';
+  
+  const bubble = document.createElement('div');
+  bubble.className = 'chat-bubble' + (isUser ? ' user' : '');
+  bubble.innerHTML = content;
+  
+  messageDiv.appendChild(avatar);
+  messageDiv.appendChild(bubble);
+  
+  document.getElementById('chatMessages').appendChild(messageDiv);
+  scrollToBottom();
+}
+
+function showTyping() {
+  const typingDiv = document.createElement('div');
+  typingDiv.id = 'typingIndicator';
+  typingDiv.className = 'chat-message';
+  typingDiv.innerHTML = '<div class="chat-avatar">🤖</div><div class="typing-dots"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>';
+  document.getElementById('chatMessages').appendChild(typingDiv);
+  scrollToBottom();
+}
+
+function hideTyping() {
+  const typing = document.getElementById('typingIndicator');
+  if (typing) typing.remove();
+}
+
+function showLoadingModal() {
+  const modal = document.getElementById('loadingModal');
+  modal.classList.add('active');
+}
+
+function hideLoadingModal() {
+  const modal = document.getElementById('loadingModal');
+  modal.classList.remove('active');
+}
+
+function scrollToBottom() {
+  const container = document.getElementById('chatMessages');
+  if (container) {
+    setTimeout(function() {
+      container.scrollTop = container.scrollHeight;
+    }, 100);
+  }
+}
+
+function showStep1() {
+  const districts = ['서울', '경기', '인천', '부산', '대구', '광주', '대전', '울산', '세종', '강원', '충북', '충남', '전북', '전남', '경북', '경남', '제주'];
+  const buttons = districts.map(function(d) { return '<button type="button" class="option-btn" data-district="' + d + '">' + d + '</button>'; }).join('');
+  const content = '<div class="greeting-text">안녕하세요😊 귀사에 딱 맞는 정부지원사업 찾아드릴게요!</div><div class="question-text">먼저, 어느 지역에서 사업하고 계신가요?</div><div class="option-buttons">' + buttons + '</div>';
+  addMessage(false, content);
+}
+
+function showStep2() {
+  const content = '<div class="question-text">업력은 어떻게 되시나요?</div><div class="option-buttons"><button type="button" class="option-btn" data-year="pre">창업 준비중 (예비창업)</button><button type="button" class="option-btn" data-year="under3">3년 이하</button><button type="button" class="option-btn" data-year="under7">7년 이하</button><button type="button" class="option-btn" data-year="over7">7년 초과</button></div>';
+  addMessage(false, content);
+}
+
+function showStep3() {
+  const content = '<div class="question-text">기업 형태를 선택해 주세요!</div><div class="option-buttons"><button type="button" class="option-btn" data-size="예비창업자">예비창업자</button><button type="button" class="option-btn" data-size="소상공인">소상공인</button><button type="button" class="option-btn" data-size="중소기업">중소기업</button><button type="button" class="option-btn" data-size="중견기업">중견기업</button></div>';
+  addMessage(false, content);
+}
+
+function showStep4() {
+  const industries = ['제조업', 'IT/소프트웨어', '서비스업', '도소매업', '건설업', '운수업', '숙박/음식점업', '기타'];
+  const buttons = industries.map(function(i) { return '<button type="button" class="option-btn" data-industry="' + i + '">' + i + '</button>'; }).join('');
+  const content = '<div class="question-text">사업분야를 선택해 주세요!</div><div class="option-buttons">' + buttons + '</div>';
+  addMessage(false, content);
+}
+
+function showStep5() {
+  const improvements = ['기술개발', '판로개척', '수출확대', '인력양성', '시설현대화', '자금조달', '경영혁신', '창업준비'];
+  const buttons = improvements.map(function(i) { return '<button type="button" class="option-btn multi-select" data-improvement="' + i + '">' + i + '</button>'; }).join('');
+  const content = '<div class="question-text">마지막으로, 희망하는 개선방향을 선택해 주세요! (여러 개 선택 가능)</div><div class="option-buttons">' + buttons + '<button type="button" class="option-btn btn-primary" onclick="submitMultiSelect()">지금 바로 결과 보기</button></div>';
+  addMessage(false, content);
+}
+
+function generateHashtags(formData) {
+  const tags = [];
+  
+  tags.push(formData.region);
+  
+  const improvementMapping = {
+    '기술개발': '기술',
+    '판로개척': '내수',
+    '수출확대': '수출',
+    '인력양성': '인력',
+    '시설현대화': '기술',
+    '자금조달': '금융',
+    '경영혁신': '경영',
+    '창업준비': '창업'
+  };
+  
+  formData.improvement.forEach(function(imp) {
+    const category = improvementMapping[imp];
+    if (category && tags.indexOf(category) === -1) {
+      tags.push(category);
+    }
+  });
+  
+  if (formData.industry === 'IT/소프트웨어') {
+    tags.push('소프트웨어');
+  } else if (formData.industry === '제조업') {
+    tags.push('제조업');
+  }
+  
+  return tags.join(',');
+}
+
+function calculateMatchRate(program, formData) {
+  const hashtags = program.hashtags ? program.hashtags.toLowerCase() : '';
+  const title = program.pblancNm ? program.pblancNm.toLowerCase() : '';
+  const content = program.bsnsSumryCn ? program.bsnsSumryCn.toLowerCase().replace(/<[^>]*>/g, '') : '';
+  const agency = program.jrsdInsttNm ? program.jrsdInsttNm.toLowerCase() : '';
+  const executor = program.excInsttNm ? program.excInsttNm.toLowerCase() : '';
+  const searchText = hashtags + ' ' + title + ' ' + content + ' ' + agency + ' ' + executor;
+  
+  // 지역 매칭
+  const localGovs = [
+    { name: '서울', keywords: ['서울특별시', '서울시', '서울'] },
+    { name: '부산', keywords: ['부산광역시', '부산시', '부산'] },
+    { name: '대구', keywords: ['대구광역시', '대구시', '대구'] },
+    { name: '인천', keywords: ['인천광역시', '인천시', '인천'] },
+    { name: '광주', keywords: ['광주광역시', '광주시', '광주'] },
+    { name: '대전', keywords: ['대전광역시', '대전시', '대전'] },
+    { name: '울산', keywords: ['울산광역시', '울산시', '울산'] },
+    { name: '세종', keywords: ['세종특별자치시', '세종시', '세종'] },
+    { name: '경기', keywords: ['경기도', '경기'] },
+    { name: '강원', keywords: ['강원특별자치도', '강원도', '강원'] },
+    { name: '충북', keywords: ['충청북도', '충북'] },
+    { name: '충남', keywords: ['충청남도', '충남'] },
+    { name: '전북', keywords: ['전북특별자치도', '전라북도', '전북'] },
+    { name: '전남', keywords: ['전라남도', '전남'] },
+    { name: '경북', keywords: ['경상북도', '경북'] },
+    { name: '경남', keywords: ['경상남도', '경남'] },
+    { name: '제주', keywords: ['제주특별자치도', '제주도', '제주'] }
+  ];
+  
+  const centralGovKeywords = ['중소벤처기업부', '중기부', '산업통상자원부', '산업부', '과학기술정보통신부', '고용노동부', '중소기업진흥공단', '창업진흥원'];
+  
+  let isCentralGov = false;
+  for (let i = 0; i < centralGovKeywords.length; i++) {
+    if (agency.indexOf(centralGovKeywords[i]) !== -1 || executor.indexOf(centralGovKeywords[i]) !== -1) {
+      isCentralGov = true;
+      break;
+    }
+  }
+  
+  if (!isCentralGov) {
+    let matchedRegion = null;
+    for (let i = 0; i < localGovs.length; i++) {
+      const region = localGovs[i];
+      for (let j = 0; j < region.keywords.length; j++) {
+        if (agency.indexOf(region.keywords[j]) !== -1 || executor.indexOf(region.keywords[j]) !== -1) {
+          matchedRegion = region.name;
+          break;
+        }
+      }
+      if (matchedRegion) break;
+    }
+    
+    if (matchedRegion && matchedRegion !== formData.region) {
+      return 0;
+    }
+  }
+  
+  let score = 50;
+  
+  // 업력 매칭
+  const ageKeywords = {
+    'pre': ['예비창업', '창업준비'],
+    'under3': ['초기', '3년', '창업'],
+    'under7': ['성장', '7년'],
+    'over7': ['안정']
+  };
+  
+  const ageWords = ageKeywords[formData.foundedYear] || [];
+  for (let i = 0; i < ageWords.length; i++) {
+    if (searchText.indexOf(ageWords[i]) !== -1) {
+      score += 10;
+      break;
+    }
+  }
+  
+  // 기업규모 매칭
+  if (searchText.indexOf(formData.companySize) !== -1) {
+    score += 10;
+  }
+  
+  // 개선방향 매칭
+  for (let i = 0; i < formData.improvement.length; i++) {
+    if (searchText.indexOf(formData.improvement[i]) !== -1) {
+      score += 5;
+    }
+  }
+  
+  return Math.min(score, 100);
+}
+
+function determineStatus(dateRange) {
+  if (!dateRange || dateRange.indexOf('상시') !== -1) {
+    return 'ongoing';
+  }
+  
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  
+  const dates = dateRange.split('~');
+  
+  if (dates.length === 2) {
+    const startStr = dates[0].trim();
+    const endStr = dates[1].trim();
+    
+    const startDate = new Date(startStr.substring(0, 4), parseInt(startStr.substring(4, 6)) - 1, startStr.substring(6, 8));
+    const endDate = new Date(endStr.substring(0, 4), parseInt(endStr.substring(4, 6)) - 1, endStr.substring(6, 8));
+    
+    if (today < startDate) {
+      return 'upcoming';
+    } else if (today > endDate) {
+      return 'closed';
+    } else {
+      return 'ongoing';
+    }
+  }
+  
+  return 'ongoing';
+}
+
+async function searchProjects() {
+  showTyping();
+  showLoadingModal();
+  
+  try {
+    const hashtags = generateHashtags(formData);
+    const url = API_BASE_URL + '?crtfcKey=' + API_KEY + '&dataType=json&searchCnt=500&hashtags=' + encodeURIComponent(hashtags);
+    
+    console.log('API 요청 URL:', url);
+    
+    const response = await fetch(url);
+    
+    if (!response.ok) {
+      throw new Error('API 호출 실패 (상태코드: ' + response.status + ')');
+    }
+    
+    const data = await response.json();
+    
+    console.log('API 응답 데이터:', data);
+    
+    hideTyping();
+    hideLoadingModal();
+    
+    if (data.jsonArray && data.jsonArray.length > 0) {
+      const programs = data.jsonArray.map(function(program) {
+        const status = determineStatus(program.reqstBeginEndDe);
+        const matchRate = calculateMatchRate(program, formData);
+        
+        return {
+          title: program.pblancNm,
+          agency: program.jrsdInsttNm,
+          executor: program.excInsttNm || '',
+          period: program.reqstBeginEndDe,
+          link: 'https://www.bizinfo.go.kr' + program.pblancUrl,
+          status: status,
+          matchRate: matchRate,
+          hashtags: program.hashtags || '',
+          summary: program.bsnsSumryCn ? program.bsnsSumryCn.replace(/<[^>]*>/g, '').substring(0, 100) : ''
+        };
+      }).filter(function(p) {
+        return p.matchRate >= 50;
+      }).sort(function(a, b) {
+        if (b.matchRate !== a.matchRate) {
+          return b.matchRate - a.matchRate;
+        }
+        const statusOrder = { 'ongoing': 1, 'upcoming': 2, 'closed': 3 };
+        return statusOrder[a.status] - statusOrder[b.status];
+      }).slice(0, 30);
+      
+      searchResults = programs;
+      currentShowCount = 6;
+      showResults(programs);
+    } else {
+      hideTyping();
+      hideLoadingModal();
+      addMessage(false, '<div class="question-text">조건에 맞는 지원사업을 찾지 못했어요. 조건을 조금 바꿔서 다시 검색해볼까요?</div>');
+      setTimeout(function() {
+        addMessage(false, '<div class="option-buttons"><button type="button" class="option-btn" onclick="location.reload()">다시 검색하기</button><a href="http://kbmc.or.kr/contact" class="option-btn btn-consulting">전문가 상담 신청하기</a></div>');
+      }, 500);
+    }
+    
+  } catch (err) {
+    hideTyping();
+    hideLoadingModal();
+    console.error('검색 오류:', err);
+    addMessage(false, '<div class="question-text" style="color: #d93025;">검색 중 오류가 발생했어요. 잠시 후 다시 시도해주세요.<br><small style="font-size: 12px; font-weight: 400;">(' + err.message + ')</small></div>');
+    setTimeout(function() {
+      addMessage(false, '<div class="option-buttons"><button type="button" class="option-btn" onclick="location.reload()">다시 검색하기</button><a href="http://kbmc.or.kr/contact" class="option-btn btn-consulting">전문가 상담 신청하기</a></div>');
+    }, 500);
+  }
+}
+
+function showResults(items) {
+  const modal = document.getElementById('resultsModal');
+  const modalResults = document.getElementById('modalResults');
+  
+  let resultsHtml = '<div style="margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid #e8eaed;"><p style="color: #777; font-size: 12px; margin-bottom: 14px; line-height: 1.6;">※ 지원사업은 수시로 변경될 수 있으니 기업마당에서 꼭 확인해 주세요.</p><div class="option-buttons" style="margin-top: 0;"><button type="button" class="option-btn" onclick="location.reload()">다시 검색하기</button><a href="http://kbmc.or.kr/contact" class="option-btn btn-consulting">지금 바로 전문가 상담 받기</a></div></div>';
+  
+  resultsHtml += '<div class="results-header">🎯 총 ' + items.length + '개의 맞춤 지원사업을 찾았어요!</div>';
+  resultsHtml += '<div class="results-grid" id="resultsGrid">';
+  
+  items.forEach(function(item, index) {
+    const hiddenClass = index >= currentShowCount ? 'hidden' : '';
+    const statusClass = 'status-' + item.status;
+    const statusText = item.status === 'ongoing' ? '공고중' : (item.status === 'upcoming' ? '공고예정' : '마감');
+    
+    resultsHtml += '<div class="result-card ' + hiddenClass + '" data-index="' + index + '"><div class="result-card-meta">';
+    if (item.agency) resultsHtml += '<span class="result-card-badge">' + item.agency + '</span>';
+    resultsHtml += '<span class="result-card-badge match-rate">매칭률 ' + item.matchRate + '%</span>';
+    resultsHtml += '<span class="result-card-badge ' + statusClass + '">' + statusText + '</span>';
+    resultsHtml += '</div><h4>' + item.title + '</h4>';
+    
+    if (item.executor) {
+      resultsHtml += '<div class="result-card-info"><strong>수행기관:</strong> ' + item.executor + '</div>';
+    }
+    if (item.summary) {
+      resultsHtml += '<div class="result-card-info" style="color: #666; font-size: 12px; margin-top: 8px;">' + item.summary + '...</div>';
+    }
+    
+    resultsHtml += '<div class="result-card-info"><strong>접수기간:</strong> ' + (item.period || '상시') + '</div><a href="' + item.link + '" class="result-card-link" target="_blank" rel="noopener">자세히 보기</a></div>';
+  });
+  
+  resultsHtml += '</div>';
+
+  if (items.length > 6) {
+    resultsHtml += '<button type="button" class="option-btn btn-more" id="showMoreBtn" onclick="showMoreResults()">더보기 (' + Math.min(currentShowCount, items.length) + ' / ' + items.length + ')</button>';
+  }
+
+  modalResults.innerHTML = resultsHtml;
+  modal.classList.add('active');
+  
+  addMessage(false, '<div class="question-text">검색 결과를 팝업으로 표시했어요! 🎉</div>');
+}
+
+function closeResultsModal() {
+  const modal = document.getElementById('resultsModal');
+  modal.classList.remove('active');
+}
+
+function showMoreResults() {
+  currentShowCount += 6;
+  const cards = document.querySelectorAll('.result-card');
+  
+  cards.forEach(function(card, index) {
+    if (index < currentShowCount) {
+      card.classList.remove('hidden');
+    }
+  });
+
+  const btn = document.getElementById('showMoreBtn');
+  if (btn) {
+    if (currentShowCount >= searchResults.length) {
+      btn.style.display = 'none';
+    } else {
+      btn.innerHTML = '더보기 (' + Math.min(currentShowCount, searchResults.length) + ' / ' + searchResults.length + ')';
+    }
+  }
+}
+
+function submitMultiSelect() {
+  const buttons = document.querySelectorAll('.option-btn.multi-select.selected');
+  const values = Array.from(buttons).map(function(btn) {
+    return btn.dataset.improvement;
+  });
+  
+  formData.improvement = values;
+  
+  if (values.length > 0) {
+    addMessage(true, values.join(', '));
+  } else {
+    addMessage(true, '선택 안 함');
+  }
+  
+  showTyping();
+  setTimeout(function() {
+    hideTyping();
+    searchProjects();
+  }, 800);
+}
+
+document.addEventListener('click', function(e) {
+  if (e.target.classList.contains('option-btn') && e.target.dataset.district) {
+    formData.region = e.target.dataset.district;
+    addMessage(true, e.target.dataset.district);
+    showTyping();
+    setTimeout(function() { hideTyping(); showStep2(); }, 800);
+  }
+  
+  if (e.target.classList.contains('option-btn') && e.target.dataset.year) {
+    formData.foundedYear = e.target.dataset.year;
+    const yearText = {'pre': '창업 준비중', 'under3': '3년 이하', 'under7': '7년 이하', 'over7': '7년 초과'};
+    addMessage(true, yearText[e.target.dataset.year]);
+    showTyping();
+    setTimeout(function() { hideTyping(); showStep3(); }, 800);
+  }
+  
+  if (e.target.classList.contains('option-btn') && e.target.dataset.size) {
+    formData.companySize = e.target.dataset.size;
+    addMessage(true, e.target.dataset.size);
+    showTyping();
+    setTimeout(function() { hideTyping(); showStep4(); }, 800);
+  }
+  
+  if (e.target.classList.contains('option-btn') && e.target.dataset.industry) {
+    formData.industry = e.target.dataset.industry;
+    addMessage(true, e.target.dataset.industry);
+    showTyping();
+    setTimeout(function() { hideTyping(); showStep5(); }, 800);
+  }
+  
+  if (e.target.classList.contains('multi-select')) {
+    e.target.classList.toggle('selected');
+  }
+  
+  if (e.target.classList.contains('modal-overlay')) {
+    closeResultsModal();
+  }
+});
+</script>
+
+</body>
+</html>
