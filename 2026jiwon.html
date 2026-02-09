@@ -1,0 +1,3361 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026 중소벤처기업부 지원사업 통합 검색</title>
+    <style>
+        :root {
+            --primary: #283f55;
+            --primary-dark: #1a2d3f;
+            --primary-light: #3d5a73;
+            --accent: #1e3a5f;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #283f55 0%, #1e3a5f 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(40, 63, 85, 0.15);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #283f55 0%, #1e3a5f 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .pdf-notice {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px 20px;
+            margin: 20px 40px;
+            border-radius: 8px;
+        }
+
+        .pdf-notice strong {
+            color: #856404;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .pdf-notice p {
+            color: #856404;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
+        .search-section {
+            padding: 30px 40px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #283f55;
+        }
+
+        .search-box button {
+            padding: 15px 30px;
+            background: #283f55;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .search-box button:hover {
+            background: #1a2d3f;
+            transform: translateY(-2px);
+        }
+
+        .filters {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .filter-group label {
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .filter-group select {
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .filter-group select:focus {
+            outline: none;
+            border-color: #283f55;
+        }
+
+        .results {
+            padding: 40px;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .results-header h2 {
+            font-size: 1.8em;
+            color: #333;
+        }
+
+        .results-count {
+            font-size: 1.1em;
+            color: #283f55;
+            font-weight: 600;
+        }
+
+        .program-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .program-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            padding: 25px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .program-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(40, 63, 85, 0.1);
+            border-color: #283f55;
+        }
+
+        .program-category {
+            display: inline-block;
+            padding: 6px 12px;
+            background: linear-gradient(135deg, #283f55, #1e3a5f);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .program-title {
+            font-size: 1.25em;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+
+        .program-org {
+            color: #283f55;
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 0.95em;
+        }
+
+        .program-info {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .info-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.9em;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #666;
+            min-width: 80px;
+        }
+
+        .info-value {
+            color: #333;
+            flex: 1;
+        }
+
+        .pdf-page {
+            display: inline-block;
+            padding: 4px 10px;
+            background: #e3f2fd;
+            color: #1976d2;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background: white;
+            max-width: 800px;
+            margin: 50px auto;
+            border-radius: 20px;
+            padding: 40px;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 30px;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.3s;
+        }
+
+        .modal-close:hover {
+            color: #333;
+        }
+
+        .modal-title {
+            font-size: 2em;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 20px;
+            padding-right: 40px;
+        }
+
+        .modal-pdf-ref {
+            background: #e3f2fd;
+            border-left: 4px solid #1976d2;
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            border-radius: 8px;
+        }
+
+        .modal-pdf-ref strong {
+            color: #1565c0;
+            display: block;
+            margin-bottom: 5px;
+            font-size: 1.1em;
+        }
+
+        .modal-pdf-ref p {
+            color: #424242;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
+        .modal-section {
+            margin-bottom: 25px;
+        }
+
+        .modal-section h3 {
+            font-size: 1.3em;
+            color: #283f55;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .modal-section p {
+            color: #666;
+            line-height: 1.8;
+            font-size: 1em;
+        }
+
+        .modal-info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .modal-info-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .modal-info-item strong {
+            display: block;
+            color: #283f55;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+        }
+
+        .amount-box {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .amount-box strong {
+            color: #2e7d32;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .amount-box p {
+            color: #1b5e20;
+            font-size: 1.05em;
+            font-weight: 600;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .no-results p {
+            font-size: 1.2em;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .program-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-content {
+                margin: 20px;
+                padding: 30px 20px;
+            }
+
+            .modal-info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>2026 중소벤처기업부 지원사업 통합 검색</h1>
+            <p>귀사의 사업 목표에 맞는 정부 지원사업을 검색하실 수 있습니다.</p>
+        </div>
+
+        <div class="pdf-notice">
+            <strong>📄 PDF 원본 참조 안내</strong>
+            <p>각 사업의 상세 내용은 "2026년도 중소벤처기업 지원사업" PDF 원본을 함께 참조하시기 바랍니다. 상세보기에 표시된 페이지 번호에서 확인하실 수 있습니다.</p>
+        </div>
+
+        <div class="search-section">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="사업명, 지원대상, 분야 등으로 검색하십시오 (예: 융자, R&D, 수출)">
+                <button onclick="searchPrograms()">검색</button>
+            </div>
+
+            <div class="filters">
+                <div class="filter-group">
+                    <label>사업 유형</label>
+                    <select id="typeFilter" onchange="filterPrograms()">
+                        <option value="">전체</option>
+                        <optgroup label="금융지원">
+                            <option value="정책자금">정책자금</option>
+                            <option value="보증기금">보증기금</option>
+                        </optgroup>
+                        <optgroup label="기술/R&D">
+                            <option value="R&D">R&D</option>
+                            <option value="기술개발지원">기술개발지원</option>
+                        </optgroup>
+                        <optgroup label="경영지원">
+                            <option value="인력지원">인력지원</option>
+                            <option value="판로지원">판로지원</option>
+                            <option value="수출지원">수출지원</option>
+                        </optgroup>
+                        <optgroup label="특화지원">
+                            <option value="여성기업지원">여성기업지원</option>
+                            <option value="장애인기업지원">장애인기업지원</option>
+                            <option value="지역기업지원">지역기업지원</option>
+                            <option value="탄소중립지원">탄소중립지원</option>
+                        </optgroup>
+                        <optgroup label="창업/소상공인">
+                            <option value="창업지원">창업지원</option>
+                            <option value="소상공인">소상공인</option>
+                            <option value="전통시장">전통시장</option>
+                            <option value="소상공인보증">소상공인보증</option>
+                        </optgroup>
+                        <option value="기타지원">기타지원</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>지원 형태</label>
+                    <select id="supportFilter" onchange="filterPrograms()">
+                        <option value="">전체</option>
+                        <option value="융자">융자(유상)</option>
+                        <option value="출연">출연(무상)</option>
+                        <option value="보증">보증</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>접수 상태</label>
+                    <select id="statusFilter" onchange="filterPrograms()">
+                        <option value="">전체</option>
+                        <option value="접수중">접수중</option>
+                        <option value="접수예정">접수예정</option>
+                        <option value="상시">상시접수</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="results">
+            <div class="results-header">
+                <h2>검색 결과</h2>
+                <span class="results-count" id="resultsCount">총 208개 사업</span>
+            </div>
+            <div class="program-grid" id="programGrid"></div>
+        </div>
+    </div>
+
+    <div class="modal" id="detailModal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <script>
+        const programs = [
+    {
+        id: 1,
+        code: "1-1",
+        name: "정책자금 지원시 공통적으로 적용되는 사항",
+        type: "정책자금",
+        org: "중소벤처기업진흥공단",
+        target: "중소기업",
+        support: "융자",
+        status: "접수예정",
+        page: 6,
+        overview: "혁신창업사업화자금 등 6개 자금 및 이차보전 지원 시 융자대상 및 절차, 융자제한기업, 융자시기 등 공통적으로 적용",
+        amount: "정책자금 대출 잔액과 신규 대출예정액을 합산하여 기업당 60억원"
+    },
+    {
+        id: 2,
+        code: "1-2",
+        name: "혁신창업사업화자금(융자)",
+        type: "정책자금",
+        org: "중소벤처기업진흥공단",
+        target: "중소기업",
+        support: "융자",
+        status: "접수예정",
+        page: 17,
+        overview: "기술력과 사업성은 우수하나 민간 금융기관에서 자금 조달이 어려운 벤처‧스타트업을 집중 육성하고 중소벤처기업이 보유한 우수 기술의 사업화를 지원",
+        amount: "중소기업 정책자금 : 융자 4조 643억원, 이차보전 3,670억원 * 혁신창업사업화자금(1조 6,058억원), 신시장진출지원자금(4,794억원),"
+    },
+    {
+        id: 3,
+        code: "1-3",
+        name: "신성장기반자금(융자)",
+        type: "정책자금",
+        org: "중소벤처기업진흥공단",
+        target: "중소기업",
+        support: "융자",
+        status: "접수예정",
+        page: 22,
+        overview: "민간 금융기관에서 자금 조달이 어려운 성장유망 중소벤처기업의 생산성 향상, 스마트화, 탄소중립, 스케일업에 필요한 자금을 지원하여 미래 성장 동력 창출",
+        amount: "’25년 ’26년"
+    },
+    {
+        id: 4,
+        code: "1-4",
+        name: "재도약지원자금",
+        type: "정책자금",
+        org: "중소벤처기업진흥공단",
+        target: "중소기업",
+        support: "융자",
+        status: "접수예정",
+        page: 27,
+        overview: "사업전환, 구조조정, 재창업 지원으로 재도약과 경영정상화를 위한 사회적 기반 조성",
+        amount: "문의처 서류작성"
+    },
+    {
+        id: 5,
+        code: "1-5",
+        name: "긴급경영안정자금(융자)",
+        type: "정책자금",
+        org: "중소벤처기업진흥공단",
+        target: "중소기업",
+        support: "융자",
+        status: "접수예정",
+        page: 31,
+        overview: "재해 피해 기업, 일시적 경영애로 기업에 긴급한 자금소요를 지원하여 중소기업의 안정적인 경영기반 조성",
+        amount: "긴급경영안정자금 : 2,500억원"
+    },
+    {
+        id: 6,
+        code: "1-6",
+        name: "신시장진출지원자금(융자)",
+        type: "정책자금",
+        org: "중소벤처기업진흥공단",
+        target: "중소기업",
+        support: "융자",
+        status: "접수예정",
+        page: 35,
+        overview: "민간 금융기관에서 자금조달이 어려운 중소벤처기업이 보유한 우수 기술‧제품의 글로벌화 촉진 및 수출인프라 조성에 필요한 자금을 지원하여 수출 중소기업 육성",
+        amount: "긴급경영안정자금 : 2,500억원"
+    },
+    {
+        id: 7,
+        code: "1-7",
+        name: "밸류체인안정화자금(융자)",
+        type: "정책자금",
+        org: "중소벤처기업진흥공단",
+        target: "중소기업",
+        support: "융자",
+        status: "접수예정",
+        page: 38,
+        overview: "단기 생산자금 공급, 중소기업 보유 매출채권의 조기 유동화를 지원하여 단기 유동성 공급 강화",
+        amount: "(동반성장 네트워크론) 1,395억원 (매출채권 팩토링) 590억원"
+    },
+    {
+        id: 8,
+        code: "1-8",
+        name: "정책자금 이차보전 지원",
+        type: "정책자금",
+        org: "중소벤처기업진흥공단",
+        target: "중소기업",
+        support: "융자",
+        status: "접수예정",
+        page: 40,
+        overview: "고용창출, 수출‧매출 증대 등 국가경제 기여도가 높은 중소벤처기업의 성장 가속화를 위해 이차보전 방식으로 지원",
+        amount: "(동반성장 네트워크론) 1,395억원 (매출채권 팩토링) 590억원"
+    },
+    {
+        id: 9,
+        code: "2-1",
+        name: "신용보증기금",
+        type: "보증기금",
+        org: "신용보증기금",
+        target: "중소기업",
+        support: "보증",
+        status: "접수예정",
+        page: 44,
+        overview: "기업의 미래성장성을 평가하여 기업 경영에 필요한 각종 채무에 대한 보증을 지원함으로써 중소기업이 자금융통을 원활히 할 수 있도록 지원하는 제도",
+        amount: "보증공급 63.9조원으로 운용 예정 ＊ ’25년 지원현황 (11월말 기준) : 63.4조원"
+    },
+    {
+        id: 10,
+        code: "2-2",
+        name: "기술보증기금",
+        type: "보증기금",
+        org: "기술보증기금",
+        target: "중소기업",
+        support: "보증",
+        status: "접수예정",
+        page: 49,
+        overview: "< 전년대비 달라지는 내용 > 구분",
+        amount: ""
+    },
+    {
+        id: 11,
+        code: "2-3",
+        name: "지역신용보증재단",
+        type: "보증기금",
+        org: "지역신용보증재단",
+        target: "중소기업",
+        support: "보증",
+        status: "접수예정",
+        page: 53,
+        overview: "담보력이 부족한 소기업 ･소상공인 등에게 보증서를 제공함으로써 소기업 ․ 소상공인 등이 은행에서 자금을 원활히 조달할 수 있도록 지원",
+        amount: "26조원 보증공급 계획(보증잔액 43.9조원)"
+    },
+    {
+        id: 12,
+        code: "2-4",
+        name: "매출채권보험",
+        type: "보증기금",
+        org: "서울보증보험",
+        target: "중소기업",
+        support: "보증",
+        status: "접수예정",
+        page: 57,
+        overview: "중소기업이 물품 또는 용역을 외상으로 제공하였으나, 거래상대방의 부도 등으로 대금을 받지 못할 경우를 대비하는 보험 경기 전망이 불투명할 경우 매출채권을 회수하지 못할 가능성이 높아지는데 매출채권보험에 가입하면 이러한 위험을 줄일 수 있음",
+        amount: "26조원 보증공급 계획(보증잔액 43.9조원)"
+    },
+    {
+        id: 13,
+        code: "3-1",
+        name: "중소기업기술혁신개발(R&D)",
+        type: "R&D",
+        org: "중소기업기술정보진흥원",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 64,
+        overview: "중소기업의 글로벌 시장확대와 기술경쟁력 강화를 위해 전략기술 개발 및 글로벌 기술협력을 통한 R&D지원으로 중소기업의 혁신성장을 촉진하도록 지원",
+        amount: "’26년 내역사업"
+    },
+    {
+        id: 14,
+        code: "3-2",
+        name: "창업성장기술개발(R&D)",
+        type: "R&D",
+        org: "중소기업기술정보진흥원",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 68,
+        overview: "성장 잠재력을 보유한 창업 초기 중소기업의 기술개발 지원을 통해 기술창업 활성화 및 창업 초기 중소기업의 성장 촉진",
+        amount: ""
+    },
+    {
+        id: 15,
+        code: "3-3",
+        name: "민관공동기술사업화(R&D)",
+        type: "R&D",
+        org: "중소기업기술정보진흥원",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 72,
+        overview: "민관공동기술사업화(R&D) 사업입니다.",
+        amount: ""
+    },
+    {
+        id: 16,
+        code: "3-4",
+        name: "투 ․ 융자연계기술개발(R&D)",
+        type: "R&D",
+        org: "중소기업기술정보진흥원",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 77,
+        overview: "투 ․ 융자연계기술개발(R&D) 사업입니다.",
+        amount: "일반형 300"
+    },
+    {
+        id: 17,
+        code: "3-5",
+        name: "산학연 Collabo R&D",
+        type: "R&D",
+        org: "중소기업기술정보진흥원",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 81,
+        overview: "산학연 협력R&D 활성화를 통한 중소기업의 혁신성장 촉진과 일자리 창출을 목적으로 중소기업과 대학 또는 연구기관과의 협력R&D를 지원",
+        amount: ""
+    },
+    {
+        id: 18,
+        code: "4-1",
+        name: "중소기업 스마트서비스 지원",
+        type: "기술개발지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 86,
+        overview: "중소기업의 서비스 분야를 대상으로 빅데이터·AI 등 첨단 ICT를 활용한 혁신을 지원하여 서비스 고부가가치화, 신사업(서비스) 창출 등 도모",
+        amount: "신청방법 ’25년"
+    },
+    {
+        id: 19,
+        code: "4-2",
+        name: "혁신제품 지정 사업",
+        type: "기술개발지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 89,
+        overview: "중소기업 R&D지원사업을 통해 개발된 기술혁신 우수제품을 혁신 제품으로 지정하여 초기 판로지원 및 공공구매 연계 활성화 지원",
+        amount: ""
+    },
+    {
+        id: 20,
+        code: "4-3",
+        name: "중소기업 기술거래 기반조성",
+        type: "기술개발지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 93,
+        overview: "중소기업의 개방형 기술혁신을 적극 지원하기 위해 기술거래시장의 기반을 조성",
+        amount: ""
+    },
+    {
+        id: 21,
+        code: "5-1",
+        name: "스마트공장 구축지원",
+        type: "기술개발지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 98,
+        overview: "제품설계·생산공정 개선 등을 위한 스마트공장 솔루션 구축, 솔루션 연동 자동화장비·제어기 센서 등 구입 지원 및 ICT를 접목한 생산 현장 맞춤형 생산정보시스템 구축 지원",
+        amount: "사 ICT융합"
+    },
+    {
+        id: 22,
+        code: "5-2",
+        name: "디지털협업공장 구축사업",
+        type: "기술개발지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 102,
+        overview: "개별공장의 스마트화 지원을 넘어 스마트공장 간 데이터 기반의 상호연결을 통해 시너지 창출 및 기업 간 연계성 강화",
+        amount: ""
+    },
+    {
+        id: 23,
+        code: "5-3",
+        name: "자율형공장 구축지원",
+        type: "기술개발지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 106,
+        overview: "(자율형공장) AI·디지털트윈 기반 실시간 관제, 분석·예측 등 작업자 개입을 최소화하는 자율형공장 구축 지원을 통해 글로벌 경쟁력 향상 < 자율형공장 전년대비 달라지는 내용 > 구분",
+        amount: ""
+    },
+    {
+        id: 24,
+        code: "5-4",
+        name: "로봇활용 제조혁신 지원사업",
+        type: "기술개발지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 109,
+        overview: "중소·중견기업 제조공정에 로봇 도입을 지원하여 생산성 및 품질 향상, 산업재해 감소 등 제조산업의 디지털전환 기여",
+        amount: ""
+    },
+    {
+        id: 25,
+        code: "5-5",
+        name: "2026년도 제조기반기업 공정자동화 지원사업",
+        type: "기술개발지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 114,
+        overview: "투·융자연계기술개발사업은 민간투자사(VC 등), 연구개발전문회사 등 민간 전문역량을 활용하여 기술집약형 유망 중소벤처기업을 발굴하고, 민간투자와 연계하여 정부 R&D 지원 및 매칭투자를 통해 기업의 스케일업 촉진 및 글로벌 진출을 지원",
+        amount: "일반형 300"
+    },
+    {
+        id: 26,
+        code: "5-6",
+        name: "스마트공장 수준확인제도",
+        type: "기술개발지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 118,
+        overview: "중소·중견 제조기업의 자발적인 스마트공장 구축 및 고도화를 유도하고 스마트화 수준을 진단하는 스마트공장 수준확인 제도 운영",
+        amount: ""
+    },
+    {
+        id: 27,
+        code: "5-7",
+        name: "공급기업 역량진단",
+        type: "기술개발지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 120,
+        overview: "중소·중견 제조기업의 자발적인 스마트공장 구축 및 고도화를 유도하고 스마트화 수준을 진단하는 스마트공장 수준확인 제도 운영",
+        amount: "스마트공장 구축을 포함한 제조DX 전략 수립, 제조혁신 지원사업 사전기획"
+    },
+    {
+        id: 28,
+        code: "5-8",
+        name: "제조DX멘토단 활용지원사업",
+        type: "기술개발지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 123,
+        overview: "대기업 등 현장경험이 풍부한 제조혁신 전문가(제조DX멘토단)를 활용하여 스마트공장 기획·구축 지도 및 운영 애로사항 해결지원 < 전년 대비 달라지는 내용 > 구분",
+        amount: "스마트공장 구축을 포함한 제조DX 전략 수립, 제조혁신 지원사업 사전기획"
+    },
+    {
+        id: 29,
+        code: "5-9",
+        name: "클라우드 종합솔루션 지원사업",
+        type: "기술개발지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 125,
+        overview: "제조솔루션을 공용 클라우드 환경에서 활용가능한 서비스형 소프트웨어 (SaaS) 형태의 솔루션 전환 및 종합솔루션 개발·출시 < 전년 대비 달라지는 내용 > 구분",
+        amount: "스마트공장 구축을 포함한 제조DX 전략 수립, 제조혁신 지원사업 사전기획"
+    },
+    {
+        id: 30,
+        code: "5-10",
+        name: "제조데이터 상품가공 지원",
+        type: "기술개발지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 127,
+        overview: "제조데이터 상품화 지원을 통해 제조기업 현장에서 수집·저장된 제조 데이터의 품질 향상 및 부가가치 증대 도모",
+        amount: "과제당 지원규모"
+    },
+    {
+        id: 31,
+        code: "5-11",
+        name: "제조 분야 AI 응용제품 신속 상용화 사업",
+        type: "기술개발지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 130,
+        overview: "중소·중견기업이 제조현장에 신속하게 적용할 수 있는 AI 응용제품 개발을 지원하여, 중소 제조업에 AX 제품을 빠르게 보급·확산",
+        amount: ""
+    },
+    {
+        id: 32,
+        code: "5-12",
+        name: "중소기업 기술탈취 근절",
+        type: "기술개발지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 134,
+        overview: "중소기업의 핵심기술 탈취를 근절하기 위하여 중소기업 기술보호 역량수준 강화 및 기술분쟁에 따른 신속하고 원만한 해결을 위한 조정 ･ 중재 등을 지원하고 있음",
+        amount: "- (사전예방) 기업별 최대 3개월, 60시간 이내(1,500만원 상당) - (사후대응) 기업별 최대 6개월, 80시간 이내(2,000만원 상당)"
+    },
+    {
+        id: 33,
+        code: "5-13",
+        name: "기술보호 선도기업 육성 및 피해회복 지원",
+        type: "기술개발지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 154,
+        overview: "중소기업의 기술보호 수준진단*에 따라 바우처를 지원하여 선도기업 으로 육성함으로써 기술보호 역량 수준을 강화하고자 함 * 기술보호 수준진단 : 중소기업이 보유한 기술보호 인프라에 대해 세부지표에 따라 정량평가",
+        amount: ""
+    },
+    {
+        id: 34,
+        code: "6-1",
+        name: "중소기업 특성화고 인력양성사업",
+        type: "인력지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 164,
+        overview: "특성화고생 대상 산업현장 수요를 반영한 중소기업 맞춤형 직업교육을 통해 우수 기능인력 양성 및 중소기업 취업연계",
+        amount: "특성화고 158개교 지원예산"
+    },
+    {
+        id: 35,
+        code: "6-2",
+        name: "중소기업 인력양성대학(기술사관 육성)",
+        type: "인력지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 168,
+        overview: "직업계고-전문대 연계교육과정(2+2년) 운영을 통해 중소기업 현장맞춤형 전문기술인력을 체계적으로 양성하여 중소기업에 취업하도록 연계",
+        amount: ""
+    },
+    {
+        id: 36,
+        code: "6-3",
+        name: "중소기업 인력양성대학(중소기업 계약학과)",
+        type: "인력지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 171,
+        overview: "대학과 협약을 통해 기업이 필요로 하는 학위과정(전문학사~박사)을 설치하고, 협약기업의 재직자 또는 채용예정자가 2년간 교육과정을 이수하여 학위를 취득할 수 있도록 등록금 등 교육비를 지원함으로써 근로자 직무역량 향상",
+        amount: ""
+    },
+    {
+        id: 37,
+        code: "6-4",
+        name: "중소기업 외국전문인력 활용 지원사업",
+        type: "인력지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 174,
+        overview: "국내 외국인 유학생 졸업(예정)자를 대상으로 취업 맞춤형 교육, 인턴십·현장실습 등 기회를 제공하여 중소기업 취업 활성화",
+        amount: ""
+    },
+    {
+        id: 38,
+        code: "6-5",
+        name: "연수사업",
+        type: "인력지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 180,
+        overview: "(E-7-1 고용추천) 국내 중소기업과의 계약에 따라 전문직종(24개)에 종사하려는 외국인 유학생 등을 위해 E-7-1을 발급받을 수 있도록 고용추천 지원 (E-7-4 전환추천) 최근 10년간 4년 이상 비전문취업(E-9), 방문 취업(H-2) 등의 자격으로 국내 체류 중인 외국인이 E-7-4로 전환할 수 있도록 전환추천 지원",
+        amount: ""
+    },
+    {
+        id: 39,
+        code: "6-6",
+        name: "병역지정업체(산업기능요원) 제도",
+        type: "인력지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 183,
+        overview: "국가산업 발전·육성 및 중소기업의 인력난 해소를 위해 병역자원 일부를 병무청장이 지정한 병역지정업체(기간산업체)에서 제조·생산인력으로 활용하도록 지원하는 제도",
+        amount: ""
+    },
+    {
+        id: 40,
+        code: "7-1",
+        name: "내일채움공제",
+        type: "인력지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 190,
+        overview: "중소･중견기업 사업주와 근로자가 공동으로 적립한 공제금에 복리이자를 더하여 3년 이상 장기 재직한 근로자에게 성과보상금 형태로 지급하는 정책성 공제",
+        amount: ""
+    },
+    {
+        id: 41,
+        code: "7-2",
+        name: "중소기업 재직자 우대 저축공제",
+        type: "인력지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 193,
+        overview: "중소기업 사업주와 근로자가 공동으로 적립한 공제금에 이자를 더하여 3년 또는 5년 재직한 근로자에게 성과보상금 형태로 지급하는 정책성 공제",
+        amount: ""
+    },
+    {
+        id: 42,
+        code: "7-3",
+        name: "청년연계형 내일채움공제",
+        type: "인력지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 196,
+        overview: "청년내일채움공제를 만기한 근로자, 중소･중견기업이 공동으로 적립한 공제금에 복리이자를 더하여 3년 재직한 근로자에게 성과보상금 형태로 지급하는 정책성 공제",
+        amount: ""
+    },
+    {
+        id: 43,
+        code: "7-4",
+        name: "중소기업 연구인력 지원(R&D)",
+        type: "인력지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 198,
+        overview: "이공계 등 신진 연구인력의 채용 지원을 통해 중소기업의 기술혁신 경쟁력 제고 및 청년 일자리 창출",
+        amount: ""
+    },
+    {
+        id: 44,
+        code: "7-5",
+        name: "중소기업 연구인력 지원(R&D)",
+        type: "인력지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 202,
+        overview: "이공계 등 고경력 연구인력의 채용 지원을 통해 중소기업 기술개발 역량 강화 및 신중년 일자리 창출",
+        amount: ""
+    },
+    {
+        id: 45,
+        code: "7-6",
+        name: "중소기업 연구인력 지원(R&D)",
+        type: "인력지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 206,
+        overview: "공공연 연구인력을 중소기업에 파견하여 기술 노하우 전수 및 R&D 수행 지원을 통한 기술혁신역량 강화",
+        amount: ""
+    },
+    {
+        id: 46,
+        code: "7-7",
+        name: "중소기업 연구인력 지원(R&D)",
+        type: "인력지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 209,
+        overview: "현장맞춤형 연구인력 양성을 통해 중소기업의 안정적인 연구인력 확보 및 기술경쟁력 제고",
+        amount: ""
+    },
+    {
+        id: 47,
+        code: "7-8",
+        name: "중소기업-근로자간 성과공유 확산 사업",
+        type: "인력지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 212,
+        overview: "중소기업-근로자간 성과공유 문화 확산을 통해 대-중소기업 임금격차를 해소하고, 좋은 일자리 창출하여 중소기업의 우수 인력 유입 촉진 < 전년 대비 달라지는 내용 > 구분",
+        amount: ""
+    },
+    {
+        id: 48,
+        code: "7-9",
+        name: "중소기업 장기근속자 주택우선공급",
+        type: "인력지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 214,
+        overview: "중소기업-근로자간 성과공유 문화 확산을 통해 대-중소기업 임금격차를 해소하고, 좋은 일자리 창출하여 중소기업의 우수 인력 유입 촉진 < 전년 대비 달라지는 내용 > 구분",
+        amount: ""
+    },
+    {
+        id: 49,
+        code: "8-1",
+        name: "중기간 경쟁제품, 공사용자재 직접구매",
+        type: "판로지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 220,
+        overview: "공공기관은 특별한 사유가 없는 한 ʻ중소기업자간 경쟁제품ʼ 및 ʻ공사용 자재 직접구매대상ʼ에 지정된 품목은 중소기업자간 제한경쟁 또는 지명경쟁으로 조달하고 있음",
+        amount: "(ʼ22) 37,561개사, (’23) 38,239개사, (’24) 41,300개사, (’25.11) 36,414개사"
+    },
+    {
+        id: 50,
+        code: "8-2",
+        name: "직접생산확인제도",
+        type: "판로지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 224,
+        overview: "공공기관이 발주한 중소기업자간 경쟁제품에 대해 경쟁입찰로 참여 하거나, 1천만원 이상의 수의계약을 체결하기 위해서 직접생산 확인 증명서가 필요",
+        amount: "(ʼ22) 37,561개사, (’23) 38,239개사, (’24) 41,300개사, (’25.11) 36,414개사"
+    },
+    {
+        id: 51,
+        code: "8-3",
+        name: "계약이행능력심사",
+        type: "판로지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 227,
+        overview: "계약이행능력심사 사업입니다.",
+        amount: "(ʼ22) 37,561개사, (’23) 38,239개사, (’24) 41,300개사, (’25.11) 36,414개사"
+    },
+    {
+        id: 52,
+        code: "8-4",
+        name: "적격조합 확인제도",
+        type: "판로지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 230,
+        overview: "적격조합 확인제도 사업입니다.",
+        amount: ""
+    },
+    {
+        id: 53,
+        code: "8-5",
+        name: "조합추천 수의계약",
+        type: "판로지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 232,
+        overview: "공공기관은 물품을 구매할 때 중소기업 물품 구매액의 15% 이상을 중소기업이 개발한 기술개발제품(성능인증, NET, NEP, GS(1등급), 우수조달물품 등 13종)으로 우선 구매하여 중소기업 기술개발제품의 판로를 지원",
+        amount: ""
+    },
+    {
+        id: 54,
+        code: "8-6",
+        name: "기술개발제품 공공기관 실증지원 사업",
+        type: "판로지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 234,
+        overview: "공공기관은 물품을 구매할 때 중소기업 물품 구매액의 15% 이상을 중소기업이 개발한 기술개발제품(성능인증, NET, NEP, GS(1등급), 우수조달물품 등 13종)으로 우선 구매하여 중소기업 기술개발제품의 판로를 지원",
+        amount: "공공기관의 기술개발제품 구매액 공공기관은 우선구매대상 기술개발제품의 구매목표비율이 포함된"
+    },
+    {
+        id: 55,
+        code: "9-1",
+        name: "기술개발제품 우선구매",
+        type: "판로지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 238,
+        overview: "공공기관은 물품을 구매할 때 중소기업 물품 구매액의 15% 이상을 중소기업이 개발한 기술개발제품(성능인증, NET, NEP, GS(1등급), 우수조달물품 등 13종)으로 우선 구매하여 중소기업 기술개발제품의 판로를 지원",
+        amount: "공공기관의 기술개발제품 구매액 공공기관은 우선구매대상 기술개발제품의 구매목표비율이 포함된"
+    },
+    {
+        id: 56,
+        code: "9-2",
+        name: "성능인증제도",
+        type: "판로지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 243,
+        overview: "중소벤처기업부에서 중소기업이 개발한 기술개발제품이 성능을 확보 하였음을 확인·증명하여 공공기관의 기술개발제품 구매를 지원 (성능인증 취득 시 ʻ기술개발제품 우선구매제도ʼ의 대상에 포함)",
+        amount: "발급건수 : (’22) 397건 → (’23) 317건 → (’24) 273건 * 성능인증 발급은 신규, 연장신청 건수를 포함 (발급년도 기준)"
+    },
+    {
+        id: 57,
+        code: "9-3",
+        name: "기술개발제품 시범구매제도",
+        type: "판로지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 246,
+        overview: "우선구매 대상 기술개발제품의 구매 활성화와 창업자의 원활한 판로 개척 지원을 위하여 별도의 평가 절차를 통해 시범구매제품을 선정하는 방식으로 공공기관의 기술개발제품 구매 의사결정을 대행",
+        amount: "발급건수 : (’22) 397건 → (’23) 317건 → (’24) 273건 * 성능인증 발급은 신규, 연장신청 건수를 포함 (발급년도 기준)"
+    },
+    {
+        id: 58,
+        code: "10-1",
+        name: "판로진출지원",
+        type: "판로지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 252,
+        overview: "우수한 중소기업 제품을 발굴하여 온·오프라인 채널 및 중소기업 제품 전용판매장 등 연계를 통해 기업 경쟁력 강화 및 판로 확대를 지원",
+        amount: ""
+    },
+    {
+        id: 59,
+        code: "10-2",
+        name: "MRO 납품 중소기업 지원",
+        type: "판로지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 257,
+        overview: "중소 소모성자재(이하 “MRO”) 납품업 종합지원센터를 통하여 소모성 자재를 납품하는 중소기업을 전문적으로 지원 · 육성",
+        amount: "연초 300개사 내외 ＊ ’25년의 경우 회차별 100~300개사 선정"
+    },
+    {
+        id: 60,
+        code: "10-3",
+        name: "동행축제",
+        type: "판로지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 260,
+        overview: "대형유통망, 중소기업·소상공인, 전통시장 등이 참여하는 대규모 상생·판촉 행사 「대한민국 동행축제」를 통해 내수 활성화 촉진",
+        amount: "연초 300개사 내외 ＊ ’25년의 경우 회차별 100~300개사 선정"
+    },
+    {
+        id: 61,
+        code: "11-1",
+        name: "수출바우처",
+        type: "수출지원",
+        org: "KOTRA",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 266,
+        overview: "해외시장 진출을 희망하는 내수 및 수출 중소기업에 디자인 개발, 홍보·광고, 바이어 발굴 등 맞춤형 수출 서비스를 종합 지원하여 수출 선도기업으로 육성",
+        amount: "연초 300개사 내외 ＊ ’25년의 경우 회차별 100~300개사 선정"
+    },
+    {
+        id: 62,
+        code: "11-2",
+        name: "수출컨소시엄",
+        type: "수출지원",
+        org: "KOTRA",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 273,
+        overview: "중소기업 간 수출컨소시엄*을 구성하여 해외전시회 및 수출상담회 참가 지원 * 업종별 협단체, 수출유관기관 등이 주관단체가 되어 해외전시회 또는 수출상담회별 참여 중소기업 모집‧선정",
+        amount: "약 80개 컨소시엄 약 100개 컨소시엄"
+    },
+    {
+        id: 63,
+        code: "11-3",
+        name: "전자상거래수출시장진출",
+        type: "수출지원",
+        org: "KOTRA",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 277,
+        overview: "중소기업의 온라인을 통한 수출 확대를 위해 온라인 해외판매 및 물류 등 지원",
+        amount: ""
+    },
+    {
+        id: 64,
+        code: "11-4",
+        name: "해외수출규제대응지원(해외규격인증획득지원)",
+        type: "수출지원",
+        org: "KOTRA",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 279,
+        overview: "수출 대상 국가에서 요구하는 해외규격인증 등 수출규제 대응을 지원",
+        amount: ""
+    },
+    {
+        id: 65,
+        code: "11-5",
+        name: "글로벌강소기업 1,000+ 프로젝트",
+        type: "수출지원",
+        org: "KOTRA",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 284,
+        overview: "성장잠재력을 보유한 중소기업을 ‘글로벌 강소기업 프로젝트 지정 기업’으로 선정하여 수출지원기관의 해외마케팅, 수출금융･보증 등 우대 지원 수출규모별 성장사다리 구축을 위해 지원 대상을 구분하고, 중기부, KOTRA, 무역보험공사 등 20여개 수출 유관기관을 통해 우대 서비스를 제공",
+        amount: ""
+    },
+    {
+        id: 66,
+        code: "11-6",
+        name: "대･중소기업 동반진출 지원사업",
+        type: "수출지원",
+        org: "KOTRA",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 288,
+        overview: "대 · 중견기업, 공공기관 등(주관기업)이 보유한 해외 인프라(거점, 유통망 등) 및 네트워크를 활용하여 중소기업 해외진출 및 판로 개척을 지원 주관기업의 업종별, 지역별 특성에 맞추어 한류 마케팅 및 현지 유통망 입점, 해외법인 설립, 해외실증(PoC) 등을 지원 < 전년 대비 달라지는 내용 > 구분",
+        amount: ""
+    },
+    {
+        id: 67,
+        code: "11-7",
+        name: "글로벌비즈니스센터",
+        type: "수출지원",
+        org: "KOTRA",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 292,
+        overview: "중소기업의 수출 증대를 위해 세계 주요 교역거점에 글로벌비즈니스 센터를 운영하고 현지 전문기관과 협업하여 특성화·전문화된 서비스 제공 < 전년 대비 달라지는 내용 > 구분",
+        amount: ""
+    },
+    {
+        id: 68,
+        code: "12-1",
+        name: "여성기업종합지원센터 운영",
+        type: "여성기업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 300,
+        overview: "산학연 협력R&D 활성화를 통한 중소기업의 혁신성장 촉진과 일자리 창출을 목적으로 중소기업과 대학 또는 연구기관과의 협력R&D를 지원",
+        amount: "일반형 300"
+    },
+    {
+        id: 69,
+        code: "12-2",
+        name: "여성창업 액셀러레이팅",
+        type: "여성기업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 304,
+        overview: "우수 여성창업자의 발굴과 성장을 위한 ①여성창업경진대회 개최 및 육성 프로그램 운영, 여성창업기업의 해외 진출을 위한 ②글로벌 액셀러레이팅 프로그램 지원",
+        amount: ""
+    },
+    {
+        id: 70,
+        code: "12-3",
+        name: "여성기업 판로역량 강화 지원 사업",
+        type: "여성기업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 309,
+        overview: "여성기업 제품의 판로역량 강화를 위한 맞춤형 MD상담회, 홈쇼핑입점, SNS광고홍보영상 제작 등 지원",
+        amount: ""
+    },
+    {
+        id: 71,
+        code: "12-4",
+        name: "여성기업 확인서 발급",
+        type: "여성기업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 312,
+        overview: "여성이 소유하고 실질적으로 경영하는 기업에 대해 여성기업 확인서를 발급하여 공공기관의 여성기업제품 우선구매 시 여성기업임을 확인",
+        amount: ""
+    },
+    {
+        id: 72,
+        code: "12-5",
+        name: "여성기업제품 공공구매 지원",
+        type: "여성기업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 316,
+        overview: "여성기업 공공입찰 실무교육 실시 및 맞춤형 입찰정보 서비스 제공 지원, 여성기업 홍보를 위한 공공구매 홍보사이트 제품등록 및 전자홍보책자를 통한 여성기업 홍보 지원",
+        amount: ""
+    },
+    {
+        id: 73,
+        code: "12-6",
+        name: "여성기업 맞춤형 인력 매칭 플랫폼 운영",
+        type: "여성기업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 319,
+        overview: "여성기업이 원하는 맞춤형 인력 채용을 위한 온라인 플랫폼 서비스로 여성기업의 구인정보 등록부터 일자리 정책 연계·상담·교육 등 사후 관리까지 지원",
+        amount: "전국 6개권역(서울/경기/인천/경상/호남/충청)"
+    },
+    {
+        id: 74,
+        code: "12-7",
+        name: "여성기업 경영애로 해소",
+        type: "여성기업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 321,
+        overview: "여성기업인이 현장에서 체감하는 경영상 애로사항들을 전문위원과 선배 여성 CEO 멘토링단에서 수시 상담하여 문제 해결",
+        amount: "전국 6개권역(서울/경기/인천/경상/호남/충청)"
+    },
+    {
+        id: 75,
+        code: "12-8",
+        name: "여성 CEO 비즈니스 아카데미",
+        type: "여성기업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 324,
+        overview: "전국 권역별 여성CEO 대상 기업별 맞춤형 특화 교육 지원 및 여성 기업 간 협력체계 구축을 위한 네트워킹 개최 지원 등",
+        amount: "1,200명(30개교 선정) 800명(개별/팀 신청)"
+    },
+    {
+        id: 76,
+        code: "12-9",
+        name: "미래여성경제인육성",
+        type: "여성기업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 326,
+        overview: "전국 고교 및 대학 여학생 대상으로 혁신적인 창업아이디어를 발굴하여 창업 멘토링, IP코칭 및 출원 지원을 통해 미래 여성경제인, 여성 창업가로 성장할 수 있도록 육성 < 전년 대비 달라지는 내용 > 구분",
+        amount: "1,200명(30개교 선정) 800명(개별/팀 신청)"
+    },
+    {
+        id: 77,
+        code: "12-10",
+        name: "전국 여성CEO 경영연수",
+        type: "여성기업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 328,
+        overview: "전국 여성CEO들이 한자리에서 경험 및 정보를 공유하는 자리로, 여성 경영인간 네트워킹을 강화할 수 있도록 지원",
+        amount: "1,200명(30개교 선정) 800명(개별/팀 신청)"
+    },
+    {
+        id: 78,
+        code: "12-11",
+        name: "펨테크 산업 육성",
+        type: "여성기업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 330,
+        overview: "전국 여성CEO들이 한자리에서 경험 및 정보를 공유하는 자리로, 여성 경영인간 네트워킹을 강화할 수 있도록 지원",
+        amount: ""
+    },
+    {
+        id: 79,
+        code: "13-1",
+        name: "장애인 맞춤형 창업교육",
+        type: "장애인기업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 334,
+        overview: "장애인 예비창업자 및 재기창업자, 3년 미만의 초기창업자를 대상으로 창업 이론교육, 전문가와의 1:1 컨설팅, 오프라인 실무교육 등을 통해 성공적인 창업지원",
+        amount: ""
+    },
+    {
+        id: 80,
+        code: "13-2",
+        name: "장애인 창업 사업화 지원사업",
+        type: "장애인기업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 337,
+        overview: "창업의지가 있는 장애인 예비창업자 및 업종전환희망자에게 초기 사업화 자금을 지원하여 안정적인 창업 기반 마련",
+        amount: ""
+    },
+    {
+        id: 81,
+        code: "13-3",
+        name: "가치키울 창업스타 발굴전",
+        type: "장애인기업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 340,
+        overview: "우수한 창업아이템 및 유망 아이디어를 보유한 장애인 예비창업자 및 초기창업자를 발굴·시상하여 창업 분위기 조성",
+        amount: ""
+    },
+    {
+        id: 82,
+        code: "13-4",
+        name: "발달장애인 가족창업 특화사업장 운영",
+        type: "장애인기업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 343,
+        overview: "발달장애인 및 가족의 공동창업을 위해 창업 이론 및 기술교육, 지역별 특성에 맞는 생산설비 및 기자재 등을 지원하여 발달장애인 가족의 창업 기반 마련",
+        amount: ""
+    },
+    {
+        id: 83,
+        code: "13-5",
+        name: "국내외 전시회 참가지원",
+        type: "장애인기업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 346,
+        overview: "국내외 유명 전시회 참가를 통해 마케팅 및 판로개척을 할 수 있도록 국내외 전시회 참가비용 지원(부스임차료, 홍보비 등)",
+        amount: ""
+    },
+    {
+        id: 84,
+        code: "13-6",
+        name: "장애인기업 수출지원",
+        type: "장애인기업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 349,
+        overview: "수출 물류비, 해외 바이어 초청 수출상담회, 시장개척단, 해외 유망 전시회 한국관 지원 등을 통해 장애인기업의 해외시장 개척 기반 마련",
+        amount: "제품디자인 및 시제품 제작지원 15개사 내외 지원"
+    },
+    {
+        id: 85,
+        code: "13-7",
+        name: "제품디자인 및 시제품 제작 지원",
+        type: "장애인기업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 353,
+        overview: "기술 개발 비용지원을 통해 기업 부담 절감 및 기술 사업화 기반을 마련하고, 장애인기업의 신제품 개발 촉진 및 기업 경쟁력 제고",
+        amount: "제품디자인 및 시제품 제작지원 15개사 내외 지원"
+    },
+    {
+        id: 86,
+        code: "13-8",
+        name: "판로지원(인증획득 및 마케팅)",
+        type: "장애인기업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 357,
+        overview: "장애인기업의 우수 기술 사업화 기반 마련을 위한 인증획득 또는 마케팅 활동 비용지원을 통해 장애인기업 제품 신뢰성 확보 및 기업 경쟁력 강화",
+        amount: "인증획득 또는 마케팅 활동 지원 25개사 내외 지원"
+    },
+    {
+        id: 87,
+        code: "13-9",
+        name: "1인 사업주 보조공학기기 지원사업",
+        type: "장애인기업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 361,
+        overview: "1인 중증장애인 사업주의 경영활동 안정화 및 장애인 고용촉진을 위한 보조공학기기 구입자금 지원",
+        amount: ""
+    },
+    {
+        id: 88,
+        code: "13-10",
+        name: "MAS 컨설팅 및 등록",
+        type: "장애인기업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 364,
+        overview: "장애인기업의 공공구매시장 진출 기반 마련을 위한 MAS 등록 및 공공입찰 컨설팅 지원",
+        amount: ""
+    },
+    {
+        id: 89,
+        code: "13-11",
+        name: "업무지원인 서비스",
+        type: "장애인기업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 367,
+        overview: "근로자가 없는 중증장애경제인을 대상으로 업무를 보조할 수 있는 업무지원인 서비스를 통해 경영활동 안정화 지원",
+        amount: ""
+    },
+    {
+        id: 90,
+        code: "13-12",
+        name: "전국장애경제인대회",
+        type: "장애인기업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 370,
+        overview: "국가 경제발전에 이바지한 모범 장애경제인과 장애인기업 지원 유공자를 선정하여 정부포상을 실시하고, 다양한 부대행사를 통해 장애인기업 관계자의 교류와 성과 확산 촉진",
+        amount: ""
+    },
+    {
+        id: 91,
+        code: "13-13",
+        name: "공공구매제도 운영",
+        type: "장애인기업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 374,
+        overview: "장애인기업의 판로지원 및 경쟁력 향상을 위해 공공기관의 장애인 기업제품 구매를 촉진하여 장애인기업제품 판로확대 및 구매력을 강화하는 다양한 지원제도",
+        amount: ""
+    },
+    {
+        id: 92,
+        code: "13-14",
+        name: "장애인기업 창업보육실 운영",
+        type: "장애인기업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 377,
+        overview: "우수한 창업아이템을 보유한 창업초기의 장애인기업 및 예비 창업자를 대상으로 비즈니스 공간 및 사무기기, 기업지원정책 등을 지원",
+        amount: ""
+    },
+    {
+        id: 93,
+        code: "14-1",
+        name: "중소기업 혁신바우처 지원사업",
+        type: "지역기업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 382,
+        overview: "지역산업 및 제조기업의 경쟁력 강화에 필요한 컨설팅, 기술지원, 마케팅 맞춤형 지원으로 중소기업의 혁신성장 역량 강화",
+        amount: ""
+    },
+    {
+        id: 94,
+        code: "14-2",
+        name: "규제자유특구제도 운영",
+        type: "지역기업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 386,
+        overview: "규제로 추진이 어려운 혁신사업·전략산업에 대해 실증특례·임시허가 등을 지원하는 규제자유특구를 지정하여, 혁신·전략산업에 대한 실증 및 안전성 검증을 통해 규제개선 및 사업화를 추진 <규제자유특구 – 광역 연계형 규제자유특구 비교> 구분",
+        amount: ""
+    },
+    {
+        id: 95,
+        code: "14-3",
+        name: "글로벌혁신 규제자유특구제도 운영",
+        type: "지역기업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 389,
+        overview: "글로벌혁신 규제자유특구(이하 글로벌특구)는 규제자유특구 제도의 일종으로서, 신산업 분야 글로벌 경쟁력을 보유한 혁신기업이 집적된 곳에 규제특례, 국내외 실증 등 글로벌 스탠다드에 맞는 제도를 예외적으로 적용, 해외시장 진출을 지원",
+        amount: ""
+    },
+    {
+        id: 96,
+        code: "14-4",
+        name: "지역특화발전특구제도 운영",
+        type: "지역기업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 392,
+        overview: "비수도권 주력산업분야 중소기업 대상 기술지도, 사업화, 역량강화 등 메뉴판식 기업성장 프로그램 지원을 통해 혁신성장 및 지역경제 활성화 촉진",
+        amount: ""
+    },
+    {
+        id: 97,
+        code: "14-5",
+        name: "지역특화산업육성",
+        type: "지역기업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 396,
+        overview: "비수도권 주력산업분야 중소기업 대상 기술지도, 사업화, 역량강화 등 메뉴판식 기업성장 프로그램 지원을 통해 혁신성장 및 지역경제 활성화 촉진",
+        amount: "① 주력산업 생태계 구축 : (’26년) 157개 과제, 최대 2년간 7억원/연"
+    },
+    {
+        id: 98,
+        code: "14-6",
+        name: "지역혁신선도기업육성(R&D)",
+        type: "지역기업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 400,
+        overview: "개별공장의 스마트화 지원을 넘어 스마트공장 간 데이터 기반의 상호연결을 통해 시너지 창출 및 기업 간 연계성 강화",
+        amount: "사 ICT융합"
+    },
+    {
+        id: 99,
+        code: "14-7",
+        name: "중소기업 밀집지역 위기대응 기반구축",
+        type: "지역기업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 404,
+        overview: "지역특성에 기반, 지역·중앙이 협력하여 위기대응 체계 구축 및 위기 기업 적시 지원으로 신속한 경영정상화 및 지역경제 성장을 도모하고, 선제적으로 지원하는 대응체계 구축·운영",
+        amount: "- (밀집지역 위기대응 체계구축) 비수도권 12개 시·도별 약 10~16 개사 내외"
+    },
+    {
+        id: 100,
+        code: "14-8",
+        name: "지역중소기업 교류협업 지원",
+        type: "지역기업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 408,
+        overview: "중소기업 간 경영·기술정보 교류·협업 지원을 통해 핵심역량을 연계하고 협업계획 수립을 촉진함으로써 기업 간 협업 활성화 도모",
+        amount: "10개사 17개사"
+    },
+    {
+        id: 101,
+        code: "15-1",
+        name: "중소기업 탄소중립 설비투자 지원",
+        type: "탄소중립지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 412,
+        overview: "중소기업의 에너지 고효율 및 친환경 설비도입 지원을 통한 에너지 효율 향상 및 친환경 전환 촉진 < 전년 대비 달라지는 내용 > 구분",
+        amount: "10개사 17개사"
+    },
+    {
+        id: 102,
+        code: "15-2",
+        name: "중소기업 탄소중립 사업화 지원",
+        type: "탄소중립지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 415,
+        overview: "대규모 자금과 장기간 소요되는 탄소중립 기술의 상용화 및 실증 지원 < 전년 대비 달라지는 내용 > 구분",
+        amount: "10개사 17개사"
+    },
+    {
+        id: 103,
+        code: "15-3",
+        name: "중소기업 기후공시 ․ 공급망 실사대응 기반구축",
+        type: "탄소중립지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 418,
+        overview: "협력 중소기업에 지속가능경영 수준진단을 통한 맞춤형 역량강화 지원 (컨설팅, 교육 등)을 제공하여 EU 공급망 실사 지침 시행(’28.7월~) 대비 공급망 재편 등 리스크 점검지원",
+        amount: "∙ 인증 획득 및 ESG 경영보고서 작성 등 3단계 지원 비율 5%"
+    },
+    {
+        id: 104,
+        code: "15-4",
+        name: "디지털 기반 자동화 MRV 보급 사업",
+        type: "탄소중립지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 421,
+        overview: "탄소 배출량 산정을 위한 모니터링 시스템 및 에너지 사용량 측정을 위한 계측 인프라 구축, 적격 검증기관을 활용한 배출량 검증 지원 < 전년 대비 달라지는 내용 > 구분",
+        amount: ""
+    },
+    {
+        id: 105,
+        code: "15-5",
+        name: "중소기업 수출 핵심품목 탄소감축 기술개발(R&D)",
+        type: "탄소중립지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 424,
+        overview: "CBAM(’26~) 등 글로벌 탄소 규제의 확대·강화에 따라, 수출 중소 기업의 탄소 감축 핵심기술 확보를 위한 R&D 지원",
+        amount: ""
+    },
+    {
+        id: 106,
+        code: "1-1",
+        name: "예비창업패키지",
+        type: "창업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 434,
+        overview: "혁신적인 기술창업 아이디어를 보유한 예비창업자의 창업 사업화 준비 단계를 지원하여 성공적인 창업시장 안착 유도 < 전년 대비 달라지는 내용 > 구분",
+        amount: ""
+    },
+    {
+        id: 107,
+        code: "1-2",
+        name: "초기창업패키지",
+        type: "창업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 438,
+        overview: "유망 창업 아이템을 보유한 업력 3년 이내 창업기업을 대상으로 사업화 자금 및 창업프로그램을 지원하여 사업 안정화와 성장 지원",
+        amount: ""
+    },
+    {
+        id: 108,
+        code: "1-3",
+        name: "창업도약패키지",
+        type: "창업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 442,
+        overview: "도약기 창업기업(업력 3~7년)에 대해 사업모델 및 제품 ․ 서비스 고도화에 필요한 사업화 자금, 주관기관 특화 프로그램 등을 지원하여 스케일업 촉진",
+        amount: ""
+    },
+    {
+        id: 109,
+        code: "1-4",
+        name: "재도전성공패키지",
+        type: "창업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 446,
+        overview: "폐업 후 재창업을 준비하는 예비재창업자의 재창업 및 재창업기업의 성장 지원, 실패 인식 개선 및 재창업 저변 확대",
+        amount: ""
+    },
+    {
+        id: 110,
+        code: "1-5",
+        name: "창업중심대학",
+        type: "창업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 449,
+        overview: "권역별 창업중심대학을 통해 우수한 사업모델을 보유한 지역 창업기업과 대학생 ․ 교수 등 대학발 창업기업에 사업화를 위한 자금과 수요에 기반한 성장 촉진 프로그램을 지원",
+        amount: ""
+    },
+    {
+        id: 111,
+        code: "1-6",
+        name: "초격차 스타트업 프로젝트",
+        type: "창업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 453,
+        overview: "독보적 기술력을 바탕으로 글로벌 시장을 선도하고, 국가 경제의 미래를 이끌어 갈 유망 초격차 기술 창업기업 발굴 및 사업화 지원",
+        amount: ""
+    },
+    {
+        id: 112,
+        code: "1-7",
+        name: "팁스(TIPS)",
+        type: "창업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 457,
+        overview: "민간 투자사를 통해 우수 창업기업을 발굴, 민간투자와 정부자금을 매칭 지원하여 고급 기술 인력의 창업 활성화 도모",
+        amount: ""
+    },
+    {
+        id: 113,
+        code: "1-8",
+        name: "민관협력 오픈이노베이션 지원사업",
+        type: "창업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 462,
+        overview: "오픈이노베이션 (O/I) 수요가 있는 대기업 등과 스타트업 간 협업체계 구축, 협업 수행을 지원하여 기업간 동반성장 촉진",
+        amount: ""
+    },
+    {
+        id: 114,
+        code: "1-9",
+        name: "K-스타트업 그랜드챌린지",
+        type: "창업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 466,
+        overview: "해외 우수 스타트업의 국내 유입 및 아시아 시장 진출을 지원하고 한국을 아시아 최고의 스타트업 비즈니스 허브로 육성",
+        amount: ""
+    },
+    {
+        id: 115,
+        code: "1-10",
+        name: "유니콘브릿지 사업",
+        type: "창업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 469,
+        overview: "혁신성 및 성장성을 검증받은 잠재 유니콘들을 발굴하여 글로벌 경쟁력을 갖춘 유니콘으로 육성하는 사업으로, 선정기업에 정부지원금과 기술 금융 및 후속지원 프로그램을 제공",
+        amount: ""
+    },
+    {
+        id: 116,
+        code: "1-11",
+        name: "글로벌 액셀러레이팅 지원사업",
+        type: "창업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 472,
+        overview: "글로벌 진출을 희망하는 창업기업의 글로벌 진출 가능성을 타진하고 글로벌 기업으로서 경쟁력 함양 유도",
+        amount: ""
+    },
+    {
+        id: 117,
+        code: "1-12",
+        name: "코리아 스타트업 센터(KSC)",
+        type: "창업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 474,
+        overview: "전 세계 혁신 거점에 창업기업 해외진출 플랫폼을 조성하고, 현지 사무공간 제공, 사업화·투자유치·네트워크 등 맞춤형 프로그램을 통해 글로벌 스케일업 지원 < 전년 대비 달라지는 내용 > 구 분 스타트업·벤처 캠퍼스 (SVC)",
+        amount: ""
+    },
+    {
+        id: 118,
+        code: "1-13",
+        name: "글로벌기업 협업프로그램(Around X)",
+        type: "창업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 478,
+        overview: "글로벌 기업이 보유한 인프라와 기술‧경영 역량을, 정부와 협업하여 창업기업의 성장(scale-up)과 글로벌 시장으로의 진출 및 안착 등 지원 < 전년 대비 달라지는 내용 > 구분",
+        amount: ""
+    },
+    {
+        id: 119,
+        code: "1-14",
+        name: "청년창업사관학교",
+        type: "창업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 481,
+        overview: "유망 창업아이템 및 혁신 기술을 보유한 우수한 청년창업자를 발굴하여 창업 사업화자금, 교육·코칭, 투자유치 등 창업 全 단계를 패키지 방식 으로 일괄지원",
+        amount: ""
+    },
+    {
+        id: 120,
+        code: "1-15",
+        name: "스타트업 AI 기술인력양성(이어드림 스쿨)",
+        type: "창업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 486,
+        overview: "청년을 인공지능 실무 기술 인력으로 양성하여 청년인재와 혁신 벤처‧ 스타트업 간 미스매치 해소 및 스타트업의 기술 경쟁력 제고",
+        amount: ""
+    },
+    {
+        id: 121,
+        code: "1-16",
+        name: "해외인력 취업매칭 지원",
+        type: "창업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 490,
+        overview: "국내 중소・벤처기업의 AI・SW 인력난 해소를 위하여, 기업수요에 기반한 베트남 SW인재 발굴 및 적기 매칭 지원",
+        amount: ""
+    },
+    {
+        id: 122,
+        code: "2-1",
+        name: "청소년 비즈쿨",
+        type: "창업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 494,
+        overview: "청소년을 대상으로 기업가정신 함양 및 모의 창업 관련교육을 통해 꿈․끼․도전정신․진취성을 갖춘 ‘융합형 창의인재’ 양성",
+        amount: ""
+    },
+    {
+        id: 123,
+        code: "2-2",
+        name: "창업에듀",
+        type: "창업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 497,
+        overview: "(예비)창업자의 성공 창업을 지원하기 위한 온라인 창업 교육포털로 900여개의 창업강좌 서비스를 무료 제공",
+        amount: "11팀 19팀"
+    },
+    {
+        id: 124,
+        code: "2-3",
+        name: "도전! K-스타트업",
+        type: "창업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 499,
+        overview: "(예비)창업자의 성공 창업을 지원하기 위한 온라인 창업 교육포털로 900여개의 창업강좌 서비스를 무료 제공",
+        amount: "11팀 19팀"
+    },
+    {
+        id: 125,
+        code: "2-4",
+        name: "스타트업 해외전시회",
+        type: "창업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 502,
+        overview: "국내 유망 창업기업의 글로벌 시장 진출 지원을 위해 대륙·시장권별 해외전시회에서 K-Startup 브랜드를 활용한 전시 참가 및 현지 프로그램 지원",
+        amount: "11팀 19팀"
+    },
+    {
+        id: 126,
+        code: "2-5",
+        name: "온라인 법인설립시스템",
+        type: "창업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 505,
+        overview: "법인설립에 필요한 기관을 직접 방문하지 않고 온라인을 통해 법인 설립을 할 수 있도록 지원하는 시스템",
+        amount: "11팀 19팀"
+    },
+    {
+        id: 127,
+        code: "2-6",
+        name: "창업지원포털(K-Startup)",
+        type: "창업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 507,
+        overview: "법인설립에 필요한 기관을 직접 방문하지 않고 온라인을 통해 법인 설립을 할 수 있도록 지원하는 시스템",
+        amount: ""
+    },
+    {
+        id: 128,
+        code: "2-7",
+        name: "스타트업 원스톱 지원센터",
+        type: "창업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 509,
+        overview: "전국 17개 창조경제혁신센터를 통해 지역 인재의 창의적 아이디어 사업화 및 창업 등 지원",
+        amount: ""
+    },
+    {
+        id: 129,
+        code: "3-1",
+        name: "창조경제혁신센터",
+        type: "창업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 512,
+        overview: "전국 17개 창조경제혁신센터를 통해 지역 인재의 창의적 아이디어 사업화 및 창업 등 지원",
+        amount: ""
+    },
+    {
+        id: 130,
+        code: "3-2",
+        name: "창업존 운영",
+        type: "창업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 515,
+        overview: "Data·Network·AI 등 미래 유망 (예비) 창업기업을 발굴하여 입주 공간, 맞춤형 보육 프로그램 등을 제공함으로써 창업기업의 성장을 집중 지원",
+        amount: "전국 24개 중장년 기술창업센터 전국 24개 중장년 기술창업센터"
+    },
+    {
+        id: 131,
+        code: "3-3",
+        name: "중장년 기술창업센터",
+        type: "창업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 518,
+        overview: "숙련된 경험･네트워크를 보유한 역량 있는 중장년(만 40세 이상) (예비)창업자의 기술 창업 활성화를 위한 창업교육 및 거점을 지원",
+        amount: "전국 24개 중장년 기술창업센터 전국 24개 중장년 기술창업센터"
+    },
+    {
+        id: 132,
+        code: "3-4",
+        name: "1인 창조기업 활성화 지원사업",
+        type: "창업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 521,
+        overview: "1인 창조기업이 안정적으로 사업화를 할 수 있도록 센터운영을 통해 사무공간 제공 및 경영지원과 판로개척 등 지원",
+        amount: "전국 43개 1인 창조기업 지원센터 전국 40개 1인 창조기업 지원센터"
+    },
+    {
+        id: 133,
+        code: "3-5",
+        name: "메이커 스페이스",
+        type: "창업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 524,
+        overview: "창의적인 아이디어를 실현하고 제조 창업으로 이어질 수 있도록 메이커 스페이스를 운영하고 있으며, 메이커 문화 확산과 제조 창업을 촉진하기 위해 교육 및 시제품 제작 등을 지원",
+        amount: ""
+    },
+    {
+        id: 134,
+        code: "3-6",
+        name: "창업보육센터 지원사업",
+        type: "창업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 526,
+        overview: "창의적인 아이디어를 실현하고 제조 창업으로 이어질 수 있도록 메이커 스페이스를 운영하고 있으며, 메이커 문화 확산과 제조 창업을 촉진하기 위해 교육 및 시제품 제작 등을 지원",
+        amount: ""
+    },
+    {
+        id: 135,
+        code: "3-7",
+        name: "글로벌 스타트업 센터(GSC)",
+        type: "창업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 529,
+        overview: "외국인 창업자의 발굴부터 국내 정착까지 지원하는 종합지원센터 역할을 통해 한국 창업 생태계 글로벌화 촉진 및 경쟁력 강화",
+        amount: ""
+    },
+    {
+        id: 136,
+        code: "4-1",
+        name: "진로제시 컨설팅",
+        type: "창업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 534,
+        overview: "외국인 창업자의 발굴부터 국내 정착까지 지원하는 종합지원센터 역할을 통해 한국 창업 생태계 글로벌화 촉진 및 경쟁력 강화",
+        amount: ""
+    },
+    {
+        id: 137,
+        code: "4-2",
+        name: "회생 컨설팅",
+        type: "창업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 537,
+        overview: "회생가능성이 높은 기업의 ‘채무자 회생 및 파산에 관한 법률’에 따른 회생절차 신청부터 회생계획 인가까지 전문가 상담 절차 진행 등을 지원(워크아웃의 경우 실사 및 자구계획 작성비용 지원)",
+        amount: ""
+    },
+    {
+        id: 138,
+        code: "4-3",
+        name: "선제적 자율구조개선 프로그램",
+        type: "창업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 540,
+        overview: "중진공과 협약 은행*․투자기관(벤처캐피탈, PE)이 협력하여 위기징후 중소 기업을 선제 발굴하고 구조개선을 지원하여 신속한 경영정상화를 촉진 * 기업은행, 수출입은행, 경남은행, 농협은행, 산업은행, 국민은행, iM뱅크, 신한은행, 우리은행, 하나은행, 부산은행, 기술보증기금, 지역신용보증재단",
+        amount: ""
+    },
+    {
+        id: 139,
+        code: "4-4",
+        name: "구조혁신지원사업",
+        type: "창업지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 544,
+        overview: "산업구조 변화에 효과적으로 대응하고 신사업·신기술 일자리로의 전환, 중소기업 디지털화 지원을 위해 진단, 컨설팅, 후속 사업까지 원스톱 으로 지원",
+        amount: ""
+    },
+    {
+        id: 140,
+        code: "1-1",
+        name: "혁신 소상공인 창업지원",
+        type: "소상공인",
+        org: "소상공인시장진흥공단",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 554,
+        overview: "성장 가능성이 높은 유망 아이템으로 창업을 준비하는 예비 소상공인을 선발하여 교육, 창업아카데미, 피칭대회, 사업화 지원금, 보육공간 등을 패키지로 지원하여 기업가형 소상공인 육성 기반을 마련",
+        amount: "500명 내외 550명 내외"
+    },
+    {
+        id: 141,
+        code: "1-2",
+        name: "강한 소상공인 성장지원",
+        type: "소상공인",
+        org: "소상공인시장진흥공단",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 558,
+        overview: "기업가정신, 창의·혁신적 아이템 등을 보유한 소상공인을 발굴·선별하여 다양한 분야와의 융합·연결 및 사업화자금을 지원",
+        amount: "220개사 내외 240개사 내외"
+    },
+    {
+        id: 142,
+        code: "1-3",
+        name: "로컬크리에이터 육성",
+        type: "소상공인",
+        org: "소상공인시장진흥공단",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 561,
+        overview: "지역의 자원과 문화 특성을 소재로 혁신적인 아이디어를 결합해 사업적 가치를 창출하는 로컬크리에이터(지역가치 창업가)를 발굴·육성",
+        amount: "230개사 내외 280개사 내외"
+    },
+    {
+        id: 143,
+        code: "1-4",
+        name: "로컬브랜드 창출",
+        type: "소상공인",
+        org: "소상공인시장진흥공단",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 564,
+        overview: "골목상권 내 로컬크리에이터·소상공인 등이 상호간의 사업아이템 및 지역의 인적·물적 자산을 연결하는 로컬브랜드 구축",
+        amount: "8개팀 10개팀"
+    },
+    {
+        id: 144,
+        code: "1-5",
+        name: "우리동네 크라우드펀딩",
+        type: "소상공인",
+        org: "소상공인시장진흥공단",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 567,
+        overview: "소상공인에 적합한 크라우드펀딩 방식의 민간자금 연계를 통해 기업가형 소상공인으로 육성",
+        amount: ""
+    },
+    {
+        id: 145,
+        code: "1-6",
+        name: "혁신 소상공인 투자연계",
+        type: "소상공인",
+        org: "소상공인시장진흥공단",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 570,
+        overview: "소상공인 중 소기업으로 성장이 가능한 기업을 선발, 브랜딩 ․ 마케팅 ․ 제품 고도화 등을 집중 지원, 기업으로서의 성장을 지원",
+        amount: ""
+    },
+    {
+        id: 146,
+        code: "1-7",
+        name: "혁신 소상공인 AI 활용지원",
+        type: "소상공인",
+        org: "소상공인시장진흥공단",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 573,
+        overview: "AI를 활용한 제품개발 및 서비스 도입으로 소상공인의 비용절감, 업무 효율화 및 차별화된 제품‧서비스 창출을 지원",
+        amount: ""
+    },
+    {
+        id: 147,
+        code: "1-8",
+        name: "글로벌 소상공인(K-소상공인) 육성",
+        type: "소상공인",
+        org: "소상공인시장진흥공단",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 575,
+        overview: "유망 소상공인의 제품을 수출형으로 전환하고 맞춤형 해외판로 연결하여 소비재 수출을 선도하는 기업으로 육성",
+        amount: ""
+    },
+    {
+        id: 148,
+        code: "2-1",
+        name: "소상공인 협업활성화 사업",
+        type: "소상공인",
+        org: "소상공인시장진흥공단",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 578,
+        overview: "소상공인 협업활성화 사업은 5인 이상 소상공인의 협업을 지원하여 소상공인 간 공동사업 및 판로지원을 통해 소상공인의 경쟁력을 제고하고 성장을 촉진하기 위한 사업",
+        amount: ""
+    },
+    {
+        id: 149,
+        code: "2-2",
+        name: "소공인 판로개척 지원",
+        type: "소상공인",
+        org: "소상공인시장진흥공단",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 581,
+        overview: "제품품질력과 성장잠재력을 보유한 소공인을 대상으로 국내·외 판로 개척 바우처 지원을 통해 우수소공인으로 성장촉진 및 매출향상에 기여",
+        amount: ""
+    },
+    {
+        id: 150,
+        code: "2-3",
+        name: "소공인 클린제조환경조성",
+        type: "소상공인",
+        org: "소상공인시장진흥공단",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 584,
+        overview: "소공인 작업장 내 현장진단을 통해 산업재해 예방 및 에너지효율화 개선을 위한 환경개선 비용 지원",
+        amount: ""
+    },
+    {
+        id: 151,
+        code: "2-4",
+        name: "지역소공인육성(舊 소공인지원센터 설치 · 운영)",
+        type: "소상공인",
+        org: "소상공인시장진흥공단",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 587,
+        overview: "소공인 집적지(구) 활성화와 소공인 협업 등 지원을 위한 소공인 복합 지원센터 구축 및 소공인 특화지원센터를 설치·운영 등을 지원",
+        amount: "1,800개사 내외 2,000개사 내외"
+    },
+    {
+        id: 152,
+        code: "2-5",
+        name: "소공인 스마트제조지원",
+        type: "소상공인",
+        org: "소상공인시장진흥공단",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 591,
+        overview: "소공인이 수작업 위주 작업공정을 디지털 기술(IoT, AI 등)과 접목하여 스마트화할 수 있도록 하드웨어(H/W), 소프트웨어(S/W) 구축 등을 지원 < 전년 대비 달라지는 내용 > 구분",
+        amount: "1,800개사 내외 2,000개사 내외"
+    },
+    {
+        id: 153,
+        code: "2-6",
+        name: "백년소상공인 육성 사업",
+        type: "소상공인",
+        org: "소상공인시장진흥공단",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 594,
+        overview: "백년소상공인 육성 사업은 오랜 업력을 보유하고 지역사회 공헌도가 높은 우수 소상공인을 발굴하여 성장과 판로 개척을 지원하는 사업",
+        amount: ""
+    },
+    {
+        id: 154,
+        code: "2-7",
+        name: "지역상권 육성(글로컬 상권)",
+        type: "소상공인",
+        org: "소상공인시장진흥공단",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 597,
+        overview: "국내외 관광객이 이동·숙박·식음·체험 등 K-컬처를 소비하는 글로컬 상권 조성을 위해 글로벌 브랜드 개발, 앵커스토어 육성 등 집중 지원",
+        amount: ""
+    },
+    {
+        id: 155,
+        code: "2-8",
+        name: "지역상권 육성(로컬거점 상권)",
+        type: "소상공인",
+        org: "소상공인시장진흥공단",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 599,
+        overview: "국내외 관광객이 이동·숙박·식음·체험 등 K-컬처를 소비하는 글로컬 상권 조성을 위해 글로벌 브랜드 개발, 앵커스토어 육성 등 집중 지원",
+        amount: ""
+    },
+    {
+        id: 156,
+        code: "2-9",
+        name: "지역상권 육성(유망 골목상권)",
+        type: "소상공인",
+        org: "소상공인시장진흥공단",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 601,
+        overview: "지역의 특화산업·제조업 등과 접목한 로컬콘텐츠 개발, 상권 브랜딩 등을 종합 지원하여 지역경제와 로컬의 거점상권으로 조성",
+        amount: ""
+    },
+    {
+        id: 157,
+        code: "2-10",
+        name: "소상공인 빅데이터 플랫폼(소상공인365)",
+        type: "소상공인",
+        org: "소상공인시장진흥공단",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 603,
+        overview: "상인 조직화 등이 이루어지지 않아 자생적 기반이 부족한 중·소규모 골목상권의 협동조합 결성 등 공동체 조직화와 역량강화, 골목 브랜딩· 마케팅을 종합지원",
+        amount: ""
+    },
+    {
+        id: 158,
+        code: "2-11",
+        name: "소상공인 온라인판로 지원",
+        type: "소상공인",
+        org: "소상공인시장진흥공단",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 606,
+        overview: "비대면·온라인 중심의 유통환경 변화에 대응, 소상공인 디지털 역량에 맞춘 차별화된 지원을 통해 온라인 시장 진출 활성화",
+        amount: "3,000개 3,500개"
+    },
+    {
+        id: 159,
+        code: "2-12",
+        name: "브랜드 소상공인 육성지원 (TOPS)",
+        type: "소상공인",
+        org: "소상공인시장진흥공단",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 610,
+        overview: "민간 플랫폼사의 역량을 활용하여 온라인 시장의 판매 스타 소상공인을 발굴하고, 단계별 마케팅·판촉 등을 지원하여, 소기업으로 성장 지원",
+        amount: "3,000개 3,500개"
+    },
+    {
+        id: 160,
+        code: "2-13",
+        name: "소상공인 스마트상점 기술보급",
+        type: "소상공인",
+        org: "소상공인시장진흥공단",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 614,
+        overview: "소비·유통환경의 비대면·디지털화에 대응하기 위하여 소상공인 사업장에 스마트기술* 도입을 지원 * 주문(키오스크), 생산(조리 로봇), 서비스(스마트미러, 서빙로봇), 경영(매출분석 AI) 등",
+        amount: "11,000개 16,000개"
+    },
+    {
+        id: 161,
+        code: "2-14",
+        name: "소상공인 경영안정바우처",
+        type: "소상공인",
+        org: "소상공인시장진흥공단",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 619,
+        overview: "영세 소상공인의 경영안정 지원을 위해 공과금, 4대 보험 등 정해진 사용처에서 자유롭게 사용할 수 있는 바우처를 지급",
+        amount: ""
+    },
+    {
+        id: 162,
+        code: "3-1",
+        name: "소기업･소상공인 공제제도(노란우산)",
+        type: "소상공인",
+        org: "소상공인시장진흥공단",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 624,
+        overview: "사업주가 매월 일정부금을 납부하여 폐업, 사망, 질병･부상으로 인한 퇴임, 노령 은퇴 시 생활안정과 사업재기를 위한 퇴직금마련 지원",
+        amount: ""
+    },
+    {
+        id: 163,
+        code: "3-2",
+        name: "희망리턴패키지",
+        type: "소상공인",
+        org: "소상공인시장진흥공단",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 629,
+        overview: "소상공인의 경영위기를 개선하고, 폐업부담 경감 및 신속한 재기를 위해 폐업에서 취업·사업화까지 패키지로 지원",
+        amount: ""
+    },
+    {
+        id: 164,
+        code: "3-3",
+        name: "소상공인 고용보험료 지원사업",
+        type: "소상공인",
+        org: "소상공인시장진흥공단",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 633,
+        overview: "소상공인에게 보험료를 지원하여 ‘자영업자 고용보험’ 가입·유지 비용 부담 완화와 사회안전망으로 편입을 촉진",
+        amount: "대출금리"
+    },
+    {
+        id: 165,
+        code: "4-1",
+        name: "일반경영안정자금",
+        type: "소상공인",
+        org: "소상공인시장진흥공단",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 638,
+        overview: "일반 소상공인(업력 무관)의 소상공인 자생력 제고 및 생업안전망 구축을 위해 경영활동 등에 필요한 자금을 지원",
+        amount: "대출금리"
+    },
+    {
+        id: 166,
+        code: "4-2",
+        name: "특별경영안정자금",
+        type: "소상공인",
+        org: "소상공인시장진흥공단",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 640,
+        overview: "재난 피해, 일시적 경영애로, 금융소외 계층(장애인, 중·저신용자 등), 등에게 경영안정을 위한 자금 지원",
+        amount: "대출금리"
+    },
+    {
+        id: 167,
+        code: "4-3",
+        name: "성장기반자금",
+        type: "소상공인",
+        org: "소상공인시장진흥공단",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 643,
+        overview: "유망 소상공인의 성장촉진을 도모하기 위한 자금 지원",
+        amount: "Ministry of SMEs and Startups"
+    },
+    {
+        id: 168,
+        code: "4-4",
+        name: "코로나19 피해 소상공인 분할상환 특례지원",
+        type: "소상공인",
+        org: "소상공인시장진흥공단",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 647,
+        overview: "코로나19 기간 누적된 채무로 경영애로를 겪고 있는 정책자금 차주 대상으로 상환기간 연장 및 금리 감면을 지원",
+        amount: "- 79곳 시장(439.32억원) ＊ ’26년 건립 33, 개보수 13, 이용보조 33"
+    },
+    {
+        id: 169,
+        code: "5-1",
+        name: "전통시장 주차환경개선사업",
+        type: "전통시장",
+        org: "소상공인시장진흥공단",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 654,
+        overview: "전통시장 및 상점가의 가장 큰 불편사항인 주차환경을 개선하기 위해 주차장 건립 · 개 · 보수 지원 및 전통시장 인근의 공공 ･ 사설주차장 이용보조를 지원 < 전년 대비 달라지는 내용 > 구분",
+        amount: "- 79곳 시장(439.32억원) ＊ ’26년 건립 33, 개보수 13, 이용보조 33"
+    },
+    {
+        id: 170,
+        code: "5-2",
+        name: "전통시장 안전관리패키지",
+        type: "전통시장",
+        org: "소상공인시장진흥공단",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 658,
+        overview: "재해로부터 안전한 전통시장의 조성을 위해 전기·소방·가스·기타분야에 대해 개별점포 내 안전시설의 설치‧정비를 지원",
+        amount: ""
+    },
+    {
+        id: 171,
+        code: "5-3",
+        name: "시장경영지원(舊 시장경영패키지)",
+        type: "전통시장",
+        org: "소상공인시장진흥공단",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 661,
+        overview: "정책 수요자 스스로 선택·설계·추진하는 사업을 통해 전통시장의 자생력을 강화하고 지속가능한 발전 유도",
+        amount: ""
+    },
+    {
+        id: 172,
+        code: "5-4",
+        name: "온누리상품권 발행",
+        type: "전통시장",
+        org: "소상공인시장진흥공단",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 665,
+        overview: "온누리상품권은 전통시장 및 상점가의 판매 촉진을 위해 발행하는 법정 상품권으로, 전국 24.2만여개의 가맹점에서 사용 가능",
+        amount: ""
+    },
+    {
+        id: 173,
+        code: "5-5",
+        name: "전통시장 육성",
+        type: "전통시장",
+        org: "소상공인시장진흥공단",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 668,
+        overview: "지역의 역사·문화·관광 자원과 연계하여 전통시장의 차별화된 경쟁력 강화 및 시장별 브랜딩 전략을 고도화하여 지역 랜드마크로 육성",
+        amount: ""
+    },
+    {
+        id: 174,
+        code: "5-6",
+        name: "전통시장 화재공제",
+        type: "전통시장",
+        org: "소상공인시장진흥공단",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 673,
+        overview: "전통시장 상인을 대상으로 저가의 보장성 공제사업을 도입, 가입자 납부 공제료로 재원을 조성하여 화재 피해 발생시 가입한도 내 실손을 보상",
+        amount: ""
+    },
+    {
+        id: 175,
+        code: "5-7",
+        name: "전통시장 화재 안전점검",
+        type: "전통시장",
+        org: "소상공인시장진흥공단",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 676,
+        overview: "전통시장 시설물에 대한 사전점검을 통해 화재 등 안전 위험요인을 파악 ․ 개선하고, 소방 ․ 전기 ․ 가스 등 분야별 전문기관과 연계하여 체계적인 안전점검 및 안전교육을 지원",
+        amount: ""
+    },
+    {
+        id: 176,
+        code: "6-1",
+        name: "소기업･소상공인 등 신용보증지원",
+        type: "소상공인보증",
+        org: "소상공인시장진흥공단",
+        target: "중소기업",
+        support: "보증",
+        status: "접수예정",
+        page: 682,
+        overview: "소기업 ･소상공인 등의 운전자금 및 시설자금 등에 대하여 보증을 지원함으로써 금융회사 등으로부터 자금융통을 원활히 할 수 있도록 지원",
+        amount: "2026년 보증잔액 43.9조원으로 운용 (단위 : 건/억원)"
+    },
+    {
+        id: 177,
+        code: "6-2",
+        name: "영세관광사업자 금융지원 협약보증",
+        type: "소상공인보증",
+        org: "소상공인시장진흥공단",
+        target: "중소기업",
+        support: "보증",
+        status: "접수예정",
+        page: 685,
+        overview: "신용과 담보력이 부족하여 관광기금 융자대상에서 제외되었던 관광 업체에 대한 금융지원 확대를 위한 상품",
+        amount: "보증규모 : 2,900억원 ＊ 취급 금융회사 : 농협은행"
+    },
+    {
+        id: 178,
+        code: "6-3",
+        name: "재해중소기업 특례보증",
+        type: "소상공인보증",
+        org: "소상공인시장진흥공단",
+        target: "중소기업",
+        support: "보증",
+        status: "접수예정",
+        page: 688,
+        overview: "공장, 점포 및 시설이 재해로 파손되거나 유실되어 피해를 입은 재해중소기업에 대한 신속한 보증지원을 통해 지역경제 활성화를 도모",
+        amount: "보증규모 : 2,900억원 ＊ 취급 금융회사 : 농협은행"
+    },
+    {
+        id: 179,
+        code: "6-4",
+        name: "장애인기업 특례보증",
+        type: "소상공인보증",
+        org: "소상공인시장진흥공단",
+        target: "중소기업",
+        support: "보증",
+        status: "접수예정",
+        page: 691,
+        overview: "장애인기업에 대한 금융지원 확대로 장애인기업에 대한 경영안정 및 성장지원을 통해 장애인의 사회적･경제적 자립을 도모하고 고용기회를 확대",
+        amount: "보증규모 : 상시 지원"
+    },
+    {
+        id: 180,
+        code: "6-5",
+        name: "사회적경제기업 특례보증",
+        type: "소상공인보증",
+        org: "소상공인시장진흥공단",
+        target: "중소기업",
+        support: "보증",
+        status: "접수예정",
+        page: 694,
+        overview: "사회적기업, 협동조합, 마을기업, 자활기업, 소비자생활협동조합에 대한 보증지원을 통해 사회적금융 활성화 및 지역경제발전을 도모",
+        amount: "보증규모 : 상시 지원"
+    },
+    {
+        id: 181,
+        code: "6-6",
+        name: "온[溫, ON]택트 특례보증",
+        type: "소상공인보증",
+        org: "소상공인시장진흥공단",
+        target: "중소기업",
+        support: "보증",
+        status: "접수예정",
+        page: 697,
+        overview: "코로나19로 부상한 비대면 문화에 대응하고, 신속한 보증지원이 가능 하도록 프로세스를 혁신하여 재단과 은행 방문없이 전 과정을 앱(APP)을 통해 처리하는 보증상품",
+        amount: "보증규모 : 상시지원 * 취급 금융회사 : 국민･기업･농협･신한･우리･하나･경남･광주･아이엠･부산･전북･"
+    },
+    {
+        id: 182,
+        code: "6-7",
+        name: "기업가형 소상공인 지원 협약보증",
+        type: "소상공인보증",
+        org: "소상공인시장진흥공단",
+        target: "중소기업",
+        support: "보증",
+        status: "접수예정",
+        page: 700,
+        overview: "성장잠재력을 갖춘 기업가형 소상공인이 지역 상권을 견인하는 거점 브랜드로의 성장을 지원하기 위한 전용 상품",
+        amount: "보증규모 : 1조원 ＊ 취급 금융회사 : 국민·농협·신한·우리·기업·하나·아이엠·경남·제주은행, 케이·"
+    },
+    {
+        id: 183,
+        code: "6-8",
+        name: "녹색기업지원 특례보증",
+        type: "소상공인보증",
+        org: "소상공인시장진흥공단",
+        target: "중소기업",
+        support: "보증",
+        status: "접수예정",
+        page: 703,
+        overview: "기업환경 패러다임 변화에 따른 ESG가치 실천 중소기업·소상공인을 육성하기 위한 보증상품",
+        amount: "보증규모 : 1,005억원 * 취급 금융회사 : 국민은행"
+    },
+    {
+        id: 184,
+        code: "6-9",
+        name: "수출유망 중소기업 지원 특례보증",
+        type: "소상공인보증",
+        org: "소상공인시장진흥공단",
+        target: "중소기업",
+        support: "보증",
+        status: "접수예정",
+        page: 706,
+        overview: "국내외 경기침체로 자금난을 겪고 있는 수출기업 및 수출 가능성이 높은 유망 중소기업에 대해 경영안정자금을 지원하는 보증상품",
+        amount: "보증규모 : 1,000억원"
+    },
+    {
+        id: 185,
+        code: "6-10",
+        name: "소기업·소상공인 전환보증",
+        type: "소상공인보증",
+        org: "소상공인시장진흥공단",
+        target: "중소기업",
+        support: "보증",
+        status: "접수예정",
+        page: 709,
+        overview: "대출금의 원금(분할상환원금 포함) 상환 부담으로 어려움을 겪고 있는 소기업ㆍ소상공인에게 만기상환 구조 전환을 통한 경영 안정을 지원하는 보증상품",
+        amount: "보증규모 : 200억원"
+    },
+    {
+        id: 186,
+        code: "6-11",
+        name: "KB소상공인컨설팅과 함께하는 금융지원 협약보증",
+        type: "소상공인보증",
+        org: "소상공인시장진흥공단",
+        target: "중소기업",
+        support: "보증",
+        status: "접수예정",
+        page: 712,
+        overview: "경기침체 장기화로 경영애로를 겪고 있는 소기업·소상공인에 대해 국민은행 소상공인컨설팅과 연계한 금융지원 보증상품",
+        amount: "보증규모 : 6조원 * 취급 금융회사 : 국민･농협･신한･우리･하나･기업･SC제일･IM뱅크･부산･광주･전북･"
+    },
+    {
+        id: 187,
+        code: "6-12",
+        name: "소상공인 비즈플러스 카드보증",
+        type: "소상공인보증",
+        org: "소상공인시장진흥공단",
+        target: "중소기업",
+        support: "보증",
+        status: "접수예정",
+        page: 715,
+        overview: "대내외 경영 여건 악화로 사업운영이 어려운 중·저신용 소상공인에 기업구매카드와 연계한 보증지원을 통해 단기 자금 유동성 지원 및 내수 활성화를 도모하는 보증상품",
+        amount: "보증규모 : 1,050억원 * 취급 금융회사 : 국민은행"
+    },
+    {
+        id: 188,
+        code: "6-13",
+        name: "폐업 분할상환 특례보증(폐업 특례 브릿지보증)",
+        type: "소상공인보증",
+        org: "소상공인시장진흥공단",
+        target: "중소기업",
+        support: "보증",
+        status: "접수예정",
+        page: 718,
+        overview: "재단의 보증을 이용 중 코로나19 등 경기침체로 인해 폐업한 자에 대한 재기를 지원하는 보증상품",
+        amount: "보증규모 : 6,300억원 * 취급 금융회사 : 기업은행"
+    },
+    {
+        id: 189,
+        code: "6-14",
+        name: "골목상권 살리기 금융지원 협약보증",
+        type: "소상공인보증",
+        org: "소상공인시장진흥공단",
+        target: "중소기업",
+        support: "보증",
+        status: "접수예정",
+        page: 721,
+        overview: "골목상권 소상공인의 자금 부담 완화 및 사업 안착을 도모하는 보증상품",
+        amount: "보증규모 : 3,750억원 * 취급 금융회사 : 농협･신한･우리･하나･기업･국민･SC제일･수협･아이엠･부산･광주･"
+    },
+    {
+        id: 190,
+        code: "6-15",
+        name: "소상공인 성장촉진 보증대출",
+        type: "소상공인보증",
+        org: "소상공인시장진흥공단",
+        target: "중소기업",
+        support: "보증",
+        status: "접수예정",
+        page: 724,
+        overview: "성장 유망 소기업·소상공인을 발굴하고, 경쟁력 강화 및 경기활성화를 위한 보증상품",
+        amount: "보증규모 : 1,800억원 * 취급 금융회사 : 기업은행"
+    },
+    {
+        id: 191,
+        code: "6-16",
+        name: "생계형 적합업종 금융지원 협약보증",
+        type: "소상공인보증",
+        org: "소상공인시장진흥공단",
+        target: "중소기업",
+        support: "보증",
+        status: "접수예정",
+        page: 727,
+        overview: "생계형 적합업종을 영위하는 소상공인을 보호·육성하고, 경영안정과 경쟁력 강화 도모하는 보증상품",
+        amount: "보증규모 : 3조원(연간 1조원)"
+    },
+    {
+        id: 192,
+        code: "6-17",
+        name: "햇살론(자영업자) 신용보증",
+        type: "소상공인보증",
+        org: "소상공인시장진흥공단",
+        target: "중소기업",
+        support: "보증",
+        status: "접수예정",
+        page: 730,
+        overview: "일반 영세기업, 저신용 ･저소득 자영업자에게 담보로 활용할 수 있는 보증서를 제공함으로써, 소기업, 소상공인 등이 서민금융회사에서 자금을 지원",
+        amount: "보증규모 : 300억원 * 취급 금융회사 : 농협은행･케이뱅크"
+    },
+    {
+        id: 193,
+        code: "1-1",
+        name: "중소기업 옴부즈만",
+        type: "기타지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 740,
+        overview: "비즈니스지원단 기술 및 경영애로를 겪는 중소기업의 어려움을 해결하기 위해 상담 및 전문가 현장 방문을 통해 기업의 문제를 해결하는 전문가 전문가 구성 현황",
+        amount: ""
+    },
+    {
+        id: 194,
+        code: "2-1",
+        name: "원스톱기업애로 종합지원",
+        type: "기타지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 744,
+        overview: "비즈니스지원단 기술 및 경영애로를 겪는 중소기업의 어려움을 해결하기 위해 상담 및 전문가 현장 방문을 통해 기업의 문제를 해결하는 전문가 전문가 구성 현황",
+        amount: ""
+    },
+    {
+        id: 195,
+        code: "3-1",
+        name: "거래 공정화",
+        type: "기타지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 748,
+        overview: "수·위탁 기업간 거래에서 발생한 불공정행위로 어려움을 겪고 있는 중소기업에 법률상담, 신고접수 및 분쟁조정을 통한 문제 해결을 지원",
+        amount: ""
+    },
+    {
+        id: 196,
+        code: "3-2",
+        name: "주요 원재료 확인 등 연동약정 체결",
+        type: "기타지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 752,
+        overview: "공신력 있는 전문기관을 통해 주요 원재료 확인 및 연동제 교육 · 연동약정 체결 컨설팅 등 납품대금 연동약정 체결지원",
+        amount: ""
+    },
+    {
+        id: 197,
+        code: "3-3",
+        name: "성과공유제 확산(성과공유 확인제)",
+        type: "기타지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 755,
+        overview: "대기업 등 위탁기업이 협력사(수탁기업)와 사전에 합의를 통해 신제품 개발･판로개척･생산성 향상 등 공동협력 활동을 추진하고, 그 성과를 합의한 계약대로 공유하는 계약모델",
+        amount: ""
+    },
+    {
+        id: 198,
+        code: "3-4",
+        name: "상생누리 플랫폼 운영",
+        type: "기타지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 757,
+        overview: "대기업·공공기관의 상생협력 프로그램 정보를 상생누리 플랫폼 한 곳에 모아 잠재 역량을 보유한 중소기업(협력사 및 미거래 중소기업)이 빠르게 검색, 참여할 수 있도록 기회 제공 ＊ 상생협력 종합 플랫폼(www.winwinnuri.or.kr) 정착을 통해 중소기업 혁신성장 지원 및 상생협력 문화 조성",
+        amount: ""
+    },
+    {
+        id: 199,
+        code: "3-5",
+        name: "상생결제제도",
+        type: "기타지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 760,
+        overview: "거래기업이 결제일에 현금을 받고, 구매기업 신용도 수준의 낮은 금융 비용으로 대금을 조기에 현금화할 수 있는 대금결제 제도",
+        amount: ""
+    },
+    {
+        id: 200,
+        code: "3-6",
+        name: "민관공동 전략형 상생협력사업(공급망 ESG)",
+        type: "기타지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 762,
+        overview: "거래기업이 결제일에 현금을 받고, 구매기업 신용도 수준의 낮은 금융 비용으로 대금을 조기에 현금화할 수 있는 대금결제 제도",
+        amount: ""
+    },
+    {
+        id: 201,
+        code: "3-7",
+        name: "민관공동 전략형 상생협력사업(창의트랙)",
+        type: "기타지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 765,
+        overview: "대‧중소기업 등 기업 간 자발적 상생협력 확산을 위해 대·중소기업 등이 자율 기획한 창의적 상생협력 과제를 지원",
+        amount: ""
+    },
+    {
+        id: 202,
+        code: "3-8",
+        name: "영세기업 경쟁력 강화사업",
+        type: "기타지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 768,
+        overview: "영세 중소·소상공인의 자생력 강화를 위해 대기업의 전문성과 자원을 활용하여 신제품·신사업 개발을 지원",
+        amount: ""
+    },
+    {
+        id: 203,
+        code: "4-1",
+        name: "명문(名門)장수기업 확인제도",
+        type: "기타지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 774,
+        overview: "명문(名門)장수기업 확인제도 사업입니다.",
+        amount: ""
+    },
+    {
+        id: 204,
+        code: "4-2",
+        name: "이노비즈 확인제도",
+        type: "기타지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 777,
+        overview: "이노비즈 확인제도 사업입니다.",
+        amount: ""
+    },
+    {
+        id: 205,
+        code: "4-3",
+        name: "메인비즈 확인제도",
+        type: "기타지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 780,
+        overview: "메인비즈 확인제도 사업입니다.",
+        amount: ""
+    },
+    {
+        id: 206,
+        code: "4-4",
+        name: "경영혁신 마일리지 제도",
+        type: "기타지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 783,
+        overview: "경영혁신 마일리지 제도 사업입니다.",
+        amount: ""
+    },
+    {
+        id: 207,
+        code: "4-5",
+        name: "벤처기업 확인제도",
+        type: "기타지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 787,
+        overview: "창업기업제품 공공기관 우선구매제도 도입에 따른 창업기업 확인서 발급 지원",
+        amount: ""
+    },
+    {
+        id: 208,
+        code: "4-6",
+        name: "창업기업 확인(창업기업제품 공공구매제도)",
+        type: "기타지원",
+        org: "중소벤처기업부",
+        target: "중소기업",
+        support: "출연",
+        status: "접수예정",
+        page: 791,
+        overview: "창업기업제품 공공기관 우선구매제도 도입에 따른 창업기업 확인서 발급 지원",
+        amount: ""
+    }        ];
+
+        let filteredPrograms = [...programs];
+
+        function renderPrograms(programsToRender) {
+            const grid = document.getElementById('programGrid');
+            
+            if (programsToRender.length === 0) {
+                grid.innerHTML = `
+                    <div class="no-results">
+                        <p>검색 조건에 해당하는 사업이 없습니다.</p>
+                        <p style="font-size: 0.9em; margin-top: 10px;">검색어 또는 필터 조건을 변경하여 다시 검색하십시오.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = programsToRender.map(program => `
+                <div class="program-card" onclick="showDetail(${program.id})">
+                    <div>
+                        <span class="program-category">${program.type}</span>
+                    </div>
+                    <div class="program-title">${program.name}</div>
+                    <div class="program-org">${program.org}</div>
+                    <div class="program-info">
+                        <div class="info-row">
+                            <span class="info-label">지원형태</span>
+                            <span class="info-value">${program.support}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">접수상태</span>
+                            <span class="info-value">${program.status}</span>
+                        </div>
+                    </div>
+                    <div class="pdf-page">📄 PDF ${program.page}페이지</div>
+                </div>
+            `).join('');
+
+            document.getElementById('resultsCount').textContent = `총 ${programsToRender.length}개 사업`;
+        }
+
+        function searchPrograms() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            
+            filteredPrograms = programs.filter(program => 
+                program.name.toLowerCase().includes(searchTerm) ||
+                program.overview.toLowerCase().includes(searchTerm) ||
+                program.type.toLowerCase().includes(searchTerm) ||
+                program.code.toLowerCase().includes(searchTerm)
+            );
+
+            renderPrograms(filteredPrograms);
+        }
+
+        function filterPrograms() {
+            const type = document.getElementById('typeFilter').value;
+            const support = document.getElementById('supportFilter').value;
+            const status = document.getElementById('statusFilter').value;
+
+            filteredPrograms = programs.filter(program => {
+                const typeMatch = !type || program.type === type;
+                const supportMatch = !support || program.support === support;
+                const statusMatch = !status || program.status === status;
+
+                return typeMatch && supportMatch && statusMatch;
+            });
+
+            renderPrograms(filteredPrograms);
+        }
+
+        function showDetail(id) {
+            const program = programs.find(p => p.id === id);
+            const modal = document.getElementById('detailModal');
+            const modalBody = document.getElementById('modalBody');
+
+            const amountHtml = program.amount ? `
+                <div class="amount-box">
+                    <strong>💰 지원규모</strong>
+                    <p>${program.amount}</p>
+                </div>
+            ` : '';
+
+            modalBody.innerHTML = `
+                <h2 class="modal-title">${program.name}</h2>
+                
+                <div class="modal-pdf-ref">
+                    <strong>📄 PDF 원본 참조</strong>
+                    <p>상세한 사업 내용은 <strong>"2026년도 중소벤처기업 지원사업" PDF ${program.page}페이지</strong>를 참조하시기 바랍니다.<br>
+                    사업코드: ${program.code}</p>
+                </div>
+                
+                <div class="modal-section">
+                    <h3>사업 개요</h3>
+                    <p>${program.overview || '상세 내용은 PDF를 참조하시기 바랍니다.'}</p>
+                </div>
+
+                ${amountHtml}
+
+                <div class="modal-info-grid">
+                    <div class="modal-info-item">
+                        <strong>사업유형</strong>
+                        ${program.type}
+                    </div>
+                    <div class="modal-info-item">
+                        <strong>주관기관</strong>
+                        ${program.org}
+                    </div>
+                    <div class="modal-info-item">
+                        <strong>지원형태</strong>
+                        ${program.support}
+                    </div>
+                    <div class="modal-info-item">
+                        <strong>접수상태</strong>
+                        ${program.status}
+                    </div>
+                    <div class="modal-info-item">
+                        <strong>사업코드</strong>
+                        ${program.code}
+                    </div>
+                    <div class="modal-info-item">
+                        <strong>PDF 페이지</strong>
+                        ${program.page}페이지
+                    </div>
+                </div>
+
+                <div class="modal-section" style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #e0e0e0;">
+                    <p style="font-size: 0.9em; color: #666; line-height: 1.7;">
+                        ※ 지원대상, 지원내용, 융자한도, 대출금리, 신청방법 등 상세한 사업 내용은<br>
+                        <strong>"2026년도 중소벤처기업 지원사업" PDF ${program.page}페이지</strong> 또는<br>
+                        <strong>기업마당(www.bizinfo.go.kr)</strong> 및 주관기관 홈페이지를 참조하시기 바랍니다.
+                    </p>
+                </div>
+            `;
+
+            modal.style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('detailModal').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('detailModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchPrograms();
+            }
+        });
+
+        // 초기 렌더링
+        renderPrograms(programs);
+    </script>
+</body>
+</html>
